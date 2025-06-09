@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encapsulamento em Python</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Encapsulamento em Python</title>
+<style>
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -205,341 +206,315 @@
     </style>
 </head>
 <body>
-    <div class="slide-container">
-        <!-- Slide 1 -->
-        <div class="slide active" id="slide1">
-            <h1 class="slide-title">Encapsulamento em Python</h1>
-            <div class="slide-content">
-                <p>Controlando o acesso aos dados com métodos get/set</p>
-                <div class="analogy">
-                    <p><strong>Princípio fundamental da POO:</strong> Proteger os dados internos e controlar como eles podem ser acessados e modificados.</p>
-                </div>
-            </div>
-            <div class="slide-number">1/11</div>
-        </div>
+<div class="slide-container">
+<!-- Slide 1 -->
+<div class="slide active" id="slide1">
+<h1 class="slide-title">Encapsulamento em Python</h1>
+<div class="slide-content">
+    <div class="analogy">
+<p><strong>Princípio fundamental da POO:</strong> Proteger os dados internos e controlar como eles podem ser acessados e modificados.</p>
+</div>
+<img src="A_flat,_digital_illustration_features_a_capsule-sh.png" style="max-width: 300px; margin: 20px auto; display: block;"/>
 
-        <!-- Slide 2 -->
-        <div class="slide" id="slide2">
-            <h1 class="slide-title">O que é Encapsulamento?</h1>
-            <div class="slide-content">
-                <p><strong>Definição:</strong><br>
+</div>
+<div class="slide-number">1/11</div>
+</div>
+<!-- Slide 2 -->
+<div class="slide" id="slide2">
+<h1 class="slide-title">O que é Encapsulamento?</h1>
+<div class="slide-content">
+<p><strong>Definição:</strong><br/>
                 Princípio fundamental da POO que:</p>
-                <ul class="benefits-list">
-                    <li><strong>Protege</strong> os dados internos de uma classe</li>
-                    <li><strong>Controla</strong> como esses dados podem ser acessados e modificados</li>
-                    <li><strong>Organiza</strong> o código em uma interface clara e segura</li>
-                </ul>
-                
-                <div class="analogy">
-                    <p><strong>Analogia:</strong> Como um cofre bancário</p>
-                    <ul>
-                        <li>Você não acessa o dinheiro diretamente</li>
-                        <li>Usa métodos controlados (como uma combinação) para depositar/retirar</li>
-                    </ul>
+<ul class="benefits-list">
+<li><strong>Protege</strong> os dados internos de uma classe</li>
+<li><strong>Controla</strong> como esses dados podem ser acessados e modificados</li>
+<li><strong>Organiza</strong> o código em uma interface clara e segura</li>
+</ul>
+<div class="analogy">
+<p><strong>Analogia:</strong> Como um cofre bancário</p>
+<ul>
+<li>Você não acessa o dinheiro diretamente</li>
+<li>Usa métodos controlados (como uma combinação) para depositar/retirar</li>
+</ul>
+</div>
+</div>
+<div class="slide-number">2/11</div>
+</div>
+<!-- Slide 3 -->
+<div class="slide" id="slide3">
+<h1 class="slide-title">Modificadores de Acesso em Python</h1>
+<div class="slide-content">
+<p>Python utiliza convenções para indicar acessibilidade:</p>
+<table class="comparison-table">
+<tr>
+<th>Convenção</th>
+<th>Exemplo</th>
+<th>Descrição</th>
+</tr>
+<tr>
+<td><strong>Público</strong></td>
+<td><code>atributo</code></td>
+<td>Acessível por qualquer código</td>
+</tr>
+<tr>
+<td><strong>Protegido</strong></td>
+<td><code>_atributo</code></td>
+<td>Sinaliza uso interno (convenção)</td>
+</tr>
+<tr>
+<td><strong>Privado</strong></td>
+<td><code>__atributo</code></td>
+<td>Acesso restrito à própria classe</td>
+</tr>
+</table>
+<div class="code-block">
+<span class="code-keyword">class</span> <span class="code-function">Conta</span>:<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">self</span>.saldo = <span class="code-number">0</span> <span class="code-comment"># Público</span><br/>
+                        <span class="code-keyword">self</span>._senha = <span class="code-string">"123"</span> <span class="code-comment"># Protegido</span><br/>
+                        <span class="code-keyword">self</span>.__codigo = <span class="code-string">"X1"</span> <span class="code-comment"># Privado</span>
+</div>
+</div>
+<div class="slide-number">3/11</div>
+</div>
+<!-- Slide 4 -->
+<div class="slide" id="slide4">
+<h1 class="slide-title">Implementando Get/Set Tradicionais</h1>
+<div class="slide-content">
+<p>Padrão clássico de encapsulamento:</p>
+<div class="code-block">
+<span class="code-keyword">class</span> <span class="code-function">Pessoa</span>:<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">self</span>.__idade = <span class="code-number">0</span> <span class="code-comment"># Atributo privado</span><br/>
+<br/>
+                      <span class="code-comment"># Método getter</span><br/>
+                      <span class="code-keyword">def</span> <span class="code-function">get_idade</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__idade<br/>
+<br/>
+                      <span class="code-comment"># Método setter</span><br/>
+                      <span class="code-keyword">def</span> <span class="code-function">set_idade</span>(<span class="code-keyword">self</span>, nova_idade):<br/>
+                        <span class="code-keyword">if</span> nova_idade &gt;= <span class="code-number">0</span>:<br/>
+                          <span class="code-keyword">self</span>.__idade = nova_idade<br/>
+                        <span class="code-keyword">else</span>:<br/>
+                          <span class="code-keyword">print</span>(<span class="code-string">"Idade não pode ser negativa!"</span>)
                 </div>
-            </div>
-            <div class="slide-number">2/11</div>
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="slide" id="slide3">
-            <h1 class="slide-title">Modificadores de Acesso em Python</h1>
-            <div class="slide-content">
-                <p>Python utiliza convenções para indicar acessibilidade:</p>
-                
-                <table class="comparison-table">
-                    <tr>
-                        <th>Convenção</th>
-                        <th>Exemplo</th>
-                        <th>Descrição</th>
-                    </tr>
-                    <tr>
-                        <td><strong>Público</strong></td>
-                        <td><code>atributo</code></td>
-                        <td>Acessível por qualquer código</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Protegido</strong></td>
-                        <td><code>_atributo</code></td>
-                        <td>Sinaliza uso interno (convenção)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Privado</strong></td>
-                        <td><code>__atributo</code></td>
-                        <td>Acesso restrito à própria classe</td>
-                    </tr>
-                </table>
-                
-                <div class="code-block">
-                    <span class="code-keyword">class</span> <span class="code-function">Conta</span>:<br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.saldo = <span class="code-number">0</span>       <span class="code-comment"># Público</span><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._senha = <span class="code-string">"123"</span>  <span class="code-comment"># Protegido</span><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__codigo = <span class="code-string">"X1"</span> <span class="code-comment"># Privado</span>
-                </div>
-            </div>
-            <div class="slide-number">3/11</div>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="slide" id="slide4">
-            <h1 class="slide-title">Implementando Get/Set Tradicionais</h1>
-            <div class="slide-content">
-                <p>Padrão clássico de encapsulamento:</p>
-                
-                <div class="code-block">
-                    <span class="code-keyword">class</span> <span class="code-function">Pessoa</span>:<br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__idade = <span class="code-number">0</span>  <span class="code-comment"># Atributo privado</span><br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-comment"># Método getter</span><br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_idade</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__idade<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-comment"># Método setter</span><br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">set_idade</span>(<span class="code-keyword">self</span>, nova_idade):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> nova_idade >= <span class="code-number">0</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__idade = nova_idade<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Idade não pode ser negativa!"</span>)
-                </div>
-                
-                <p><strong>Uso:</strong></p>
-                <div class="code-block">
-                    p = <span class="code-function">Pessoa</span>()<br>
-                    p.<span class="code-function">set_idade</span>(<span class="code-number">25</span>)<br>
-                    <span class="code-keyword">print</span>(p.<span class="code-function">get_idade</span>())  <span class="code-comment"># 25</span><br>
+<p><strong>Uso:</strong></p>
+<div class="code-block">
+                    p = <span class="code-function">Pessoa</span>()<br/>
+                    p.<span class="code-function">set_idade</span>(<span class="code-number">25</span>)<br/>
+<span class="code-keyword">print</span>(p.<span class="code-function">get_idade</span>())  <span class="code-comment"># 25</span><br/>
                     p.<span class="code-function">set_idade</span>(-<span class="code-number">5</span>)       <span class="code-comment"># Exibe mensagem de erro</span>
+</div>
+</div>
+<div class="slide-number">4/11</div>
+</div>
+<!-- Slide 5 -->
+<div class="slide" id="slide5">
+<h1 class="slide-title">Vantagens dos Métodos Get/Set</h1>
+<div class="slide-content">
+<ul class="benefits-list">
+<li><strong>Controle explícito</strong> sobre acesso aos dados</li>
+<li><strong>Validações centralizadas</strong> nos métodos set</li>
+<li><strong>Flexibilidade</strong> para alterar implementação interna</li>
+<li><strong>Compatibilidade</strong> com padrões de outras linguagens (Java, C++)</li>
+</ul>
+<p><strong>Exemplo com validação:</strong></p>
+<div class="code-block">
+<span class="code-keyword">class</span> <span class="code-function">ContaBancaria</span>:<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">self</span>.__saldo = <span class="code-number">0.0</span><br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">get_saldo</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__saldo<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">depositar</span>(<span class="code-keyword">self</span>, valor):<br/>
+                        <span class="code-keyword">if</span> valor &gt; <span class="code-number">0</span>:<br/>
+                          <span class="code-keyword">self</span>.__saldo += valor<br/>
+                        <span class="code-keyword">else</span>:<br/>
+                          <span class="code-keyword">print</span>(<span class="code-string">"Valor inválido!"</span>)<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">sacar</span>(<span class="code-keyword">self</span>, valor):<br/>
+                        <span class="code-keyword">if</span> <span class="code-number">0</span> &lt; valor &lt;= <span class="code-keyword">self</span>.__saldo:<br/>
+                          <span class="code-keyword">self</span>.__saldo -= valor<br/>
+                          <span class="code-keyword">return</span> <span class="code-keyword">True</span><br/>
+                        <span class="code-keyword">print</span>(<span class="code-string">"Operação inválida!"</span>)<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">False</span>
+</div>
+</div>
+<div class="slide-number">5/11</div>
+</div>
+<!-- Slide 6 -->
+<div class="slide" id="slide6">
+<h1 class="slide-title">Exemplo Completo - Produto</h1>
+<div class="slide-content">
+<div class="code-block">
+<span class="code-keyword">class</span> <span class="code-function">Produto</span>:<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, nome):<br/>
+                        <span class="code-keyword">self</span>.__nome = nome<br/>
+                        <span class="code-keyword">self</span>.__preco = <span class="code-number">0.0</span><br/>
+                        <span class="code-keyword">self</span>.__estoque = <span class="code-number">0</span><br/>
+<br/>
+                      <span class="code-comment"># Getters</span><br/>
+                      <span class="code-keyword">def</span> <span class="code-function">get_nome</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__nome<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">get_preco</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__preco<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">get_estoque</span>(<span class="code-keyword">self</span>):<br/>
+                        <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__estoque<br/>
+<br/>
+                      <span class="code-comment"># Setters com validação</span><br/>
+                      <span class="code-keyword">def</span> <span class="code-function">set_preco</span>(<span class="code-keyword">self</span>, novo_preco):<br/>
+                        <span class="code-keyword">if</span> novo_preco &gt;= <span class="code-number">0</span>:<br/>
+                          <span class="code-keyword">self</span>.__preco = novo_preco<br/>
+                        <span class="code-keyword">else</span>:<br/>
+                          <span class="code-keyword">print</span>(<span class="code-string">"Preço não pode ser negativo!"</span>)<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">set_estoque</span>(<span class="code-keyword">self</span>, quantidade):<br/>
+                        <span class="code-keyword">if</span> quantidade &gt;= <span class="code-number">0</span>:<br/>
+                          <span class="code-keyword">self</span>.__estoque = quantidade<br/>
+                        <span class="code-keyword">else</span>:<br/>
+                          <span class="code-keyword">print</span>(<span class="code-string">"Estoque não pode ser negativo!"</span>)<br/>
+<br/>
+                      <span class="code-keyword">def</span> <span class="code-function">aplicar_desconto</span>(<span class="code-keyword">self</span>, percentual):<br/>
+                        <span class="code-keyword">if</span> <span class="code-number">0</span> &lt; percentual &lt;= <span class="code-number">100</span>:<br/>
+                          <span class="code-keyword">self</span>.__preco *= (<span class="code-number">1</span> - percentual/<span class="code-number">100</span>)
                 </div>
-            </div>
-            <div class="slide-number">4/11</div>
-        </div>
-
-        <!-- Slide 5 -->
-        <div class="slide" id="slide5">
-            <h1 class="slide-title">Vantagens dos Métodos Get/Set</h1>
-            <div class="slide-content">
-                <ul class="benefits-list">
-                    <li><strong>Controle explícito</strong> sobre acesso aos dados</li>
-                    <li><strong>Validações centralizadas</strong> nos métodos set</li>
-                    <li><strong>Flexibilidade</strong> para alterar implementação interna</li>
-                    <li><strong>Compatibilidade</strong> com padrões de outras linguagens (Java, C++)</li>
-                </ul>
-                
-                <p><strong>Exemplo com validação:</strong></p>
-                <div class="code-block">
-                    <span class="code-keyword">class</span> <span class="code-function">ContaBancaria</span>:<br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__saldo = <span class="code-number">0.0</span><br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_saldo</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__saldo<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">depositar</span>(<span class="code-keyword">self</span>, valor):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> valor > <span class="code-number">0</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__saldo += valor<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Valor inválido!"</span>)<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">sacar</span>(<span class="code-keyword">self</span>, valor):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> <span class="code-number">0</span> < valor <= <span class="code-keyword">self</span>.__saldo:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__saldo -= valor<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">True</span><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Operação inválida!"</span>)<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">False</span>
+</div>
+<div class="slide-number">6/11</div>
+</div>
+<!-- Slide 7 -->
+<div class="slide" id="slide7">
+<h1 class="slide-title">Quando Usar Encapsulamento?</h1>
+<div class="slide-content">
+<div class="use-case-item"><strong>Atributos críticos</strong> (ex.: saldo bancário, senhas, dados sensíveis)</div>
+<div class="use-case-item"><strong>Validações complexas</strong> (ex.: idade ≥ 0, e-mail válido, formato de CPF)</div>
+<div class="use-case-item"><strong>Controle de estado</strong> (ex.: um Carro não pode <code>ligar()</code> se já estiver ligado)</div>
+<div class="example-box">
+<p><strong>Exemplo do Mundo Real:</strong></p>
+<p>Um aplicativo de clima:</p>
+<ul>
+<li>Expõe apenas a temperatura (<code>get_temperatura()</code>)</li>
+<li>Esconde como os dados são obtidos (API externa, cálculos internos)</li>
+</ul>
+<p><strong>Benefício:</strong> Se a fonte de dados mudar, o código que consome a classe não precisa ser alterado!</p>
+</div>
+</div>
+<div class="slide-number">7/11</div>
+</div>
+<!-- Slide 8 -->
+<div class="slide" id="slide8">
+<h1 class="slide-title">Quando Usar Get/Set Tradicionais?</h1>
+<div class="slide-content">
+<p>Situações ideais:</p>
+<ol>
+<li><strong>Projetos com equipe multidisciplinar</strong> (mais explícito)</li>
+<li><strong>Integração com outras linguagens</strong></li>
+<li><strong>Quando precisa de nomes descritivos</strong> para operações complexas</li>
+<li><strong>Legados de código</strong> que já utilizam esse padrão</li>
+</ol>
+<p><strong>Caso de uso típico:</strong></p>
+<div class="code-block">
+                    produto = <span class="code-function">Produto</span>(<span class="code-string">"Notebook"</span>)<br/>
+                    produto.<span class="code-function">set_preco</span>(<span class="code-number">4500</span>)<br/>
+                    produto.<span class="code-function">set_estoque</span>(<span class="code-number">10</span>)<br/>
+                    produto.<span class="code-function">aplicar_desconto</span>(<span class="code-number">15</span>)<br/>
+<span class="code-keyword">print</span>(<span class="code-string">f"<span class="code-keyword">{</span>produto.<span class="code-function">get_nome</span>()<span class="code-keyword">}</span>: R$<span class="code-keyword">{</span>produto.<span class="code-function">get_preco</span>()<span class="code-keyword">}</span>"</span>)
                 </div>
-            </div>
-            <div class="slide-number">5/11</div>
-        </div>
-
-        <!-- Slide 6 -->
-        <div class="slide" id="slide6">
-            <h1 class="slide-title">Exemplo Completo - Produto</h1>
-            <div class="slide-content">
-                <div class="code-block">
-                    <span class="code-keyword">class</span> <span class="code-function">Produto</span>:<br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, nome):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__nome = nome<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__preco = <span class="code-number">0.0</span><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__estoque = <span class="code-number">0</span><br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-comment"># Getters</span><br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_nome</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__nome<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_preco</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__preco<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_estoque</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__estoque<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-comment"># Setters com validação</span><br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">set_preco</span>(<span class="code-keyword">self</span>, novo_preco):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> novo_preco >= <span class="code-number">0</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__preco = novo_preco<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Preço não pode ser negativo!"</span>)<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">set_estoque</span>(<span class="code-keyword">self</span>, quantidade):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> quantidade >= <span class="code-number">0</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__estoque = quantidade<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">print</span>(<span class="code-string">"Estoque não pode ser negativo!"</span>)<br>
-                    <br>
-                    &nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">aplicar_desconto</span>(<span class="code-keyword">self</span>, percentual):<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> <span class="code-number">0</span> < percentual <= <span class="code-number">100</span>:<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__preco *= (<span class="code-number">1</span> - percentual/<span class="code-number">100</span>)
+</div>
+<div class="slide-number">8/11</div>
+</div>
+<!-- Slide 9 -->
+<div class="slide" id="slide9">
+<h1 class="slide-title">Boas Práticas</h1>
+<div class="slide-content">
+<ol>
+<li><strong>Use __ para atributos realmente privados</strong><br/>
+<span style="font-size: 0.9em;">(Evite acessar _Classe__atributo diretamente)</span></li>
+<li><strong>Documente seus métodos get/set</strong><br/>
+<span style="font-size: 0.9em;">(Explique o que fazem e quais validações implementam)</span></li>
+<li><strong>Mantenha a consistência</strong> em todo o projeto<br/>
+<span style="font-size: 0.9em;">(Padronize os prefixos get/set ou use @property em todo o projeto)</span></li>
+<li><strong>Prefira métodos com nomes significativos</strong> quando a operação for complexa<br/>
+<span style="font-size: 0.9em;">(Ex.: aplicarDesconto() em vez de setPrecoComDesconto())</span></li>
+</ol>
+<p><strong>Exemplo de documentação:</strong></p>
+<div class="code-block">
+<span class="code-keyword">def</span> <span class="code-function">get_saldo</span>(<span class="code-keyword">self</span>):<br/>
+                      <span class="code-comment">"""Retorna o saldo atual da conta</span><br/>
+                      <span class="code-comment">Returns:</span><br/>
+                      <span class="code-comment">    float: Valor do saldo</span><br/>
+                      <span class="code-comment">"""</span><br/>
+                      <span class="code-keyword">return</span> <span class="code-keyword">self</span>.__saldo
                 </div>
-            </div>
-            <div class="slide-number">6/11</div>
-        </div>
-
-        <!-- Slide 7 -->
-        <div class="slide" id="slide7">
-            <h1 class="slide-title">Quando Usar Encapsulamento?</h1>
-            <div class="slide-content">
-                <div class="use-case-item"><strong>Atributos críticos</strong> (ex.: saldo bancário, senhas, dados sensíveis)</div>
-                <div class="use-case-item"><strong>Validações complexas</strong> (ex.: idade ≥ 0, e-mail válido, formato de CPF)</div>
-                <div class="use-case-item"><strong>Controle de estado</strong> (ex.: um Carro não pode <code>ligar()</code> se já estiver ligado)</div>
-                
-                <div class="example-box">
-                    <p><strong>Exemplo do Mundo Real:</strong></p>
-                    <p>Um aplicativo de clima:</p>
-                    <ul>
-                        <li>Expõe apenas a temperatura (<code>get_temperatura()</code>)</li>
-                        <li>Esconde como os dados são obtidos (API externa, cálculos internos)</li>
-                    </ul>
-                    <p><strong>Benefício:</strong> Se a fonte de dados mudar, o código que consome a classe não precisa ser alterado!</p>
+</div>
+<div class="slide-number">9/11</div>
+</div>
+<!-- Slide 10 -->
+<div class="slide" id="slide10">
+<h1 class="slide-title">Comparação com @property</h1>
+<div class="slide-content">
+<table class="comparison-table">
+<tr>
+<th>Get/Set Tradicional</th>
+<th>@property</th>
+</tr>
+<tr>
+<td>Mais explícito</td>
+<td>Sintaxe mais natural</td>
+</tr>
+<tr>
+<td>Verboso</td>
+<td>Mais conciso</td>
+</tr>
+<tr>
+<td>Melhor para operações complexas</td>
+<td>Ideal para atributos simples</td>
+</tr>
+<tr>
+<td>Familiar para devs de outras linguagens</td>
+<td>Mais pythonico</td>
+</tr>
+</table>
+<p><strong>Escolha baseada em:</strong></p>
+<ul>
+<li>Padrões do projeto</li>
+<li>Familiaridade da equipe</li>
+<li>Complexidade das operações</li>
+</ul>
+</div>
+<div class="slide-number">10/11</div>
+</div>
+<!-- Slide 11 -->
+<div class="slide" id="slide11">
+<h1 class="slide-title">Conclusão</h1>
+<div class="slide-content">
+<div class="benefits-list">
+<li>Encapsulamento <strong>protege a integridade</strong> dos dados</li>
+<li>Métodos get/set fornecem <strong>controle explícito</strong></li>
+<li>Python oferece flexibilidade para <strong>escolher o padrão</strong> adequado</li>
+</div>
+<div style="margin-top: 30px;">
+<p><strong>Próximos passos:</strong></p>
+<ol>
+<li>Implemente uma classe com atributos privados</li>
+<li>Crie métodos get/set com validações</li>
+<li>Pratique com diferentes cenários de uso</li>
+</ol>
+</div>
+<div style="margin-top: 40px; text-align: center; font-size: 1.4rem;">
+<strong>Perguntas?</strong> Vamos para os exercícios práticos!
                 </div>
-            </div>
-            <div class="slide-number">7/11</div>
-        </div>
-
-        <!-- Slide 8 -->
-        <div class="slide" id="slide8">
-            <h1 class="slide-title">Quando Usar Get/Set Tradicionais?</h1>
-            <div class="slide-content">
-                <p>Situações ideais:</p>
-                <ol>
-                    <li><strong>Projetos com equipe multidisciplinar</strong> (mais explícito)</li>
-                    <li><strong>Integração com outras linguagens</strong></li>
-                    <li><strong>Quando precisa de nomes descritivos</strong> para operações complexas</li>
-                    <li><strong>Legados de código</strong> que já utilizam esse padrão</li>
-                </ol>
-                
-                <p><strong>Caso de uso típico:</strong></p>
-                <div class="code-block">
-                    produto = <span class="code-function">Produto</span>(<span class="code-string">"Notebook"</span>)<br>
-                    produto.<span class="code-function">set_preco</span>(<span class="code-number">4500</span>)<br>
-                    produto.<span class="code-function">set_estoque</span>(<span class="code-number">10</span>)<br>
-                    produto.<span class="code-function">aplicar_desconto</span>(<span class="code-number">15</span>)<br>
-                    <span class="code-keyword">print</span>(<span class="code-string">f"<span class="code-keyword">{</span>produto.<span class="code-function">get_nome</span>()<span class="code-keyword">}</span>: R$<span class="code-keyword">{</span>produto.<span class="code-function">get_preco</span>()<span class="code-keyword">}</span>"</span>)
-                </div>
-            </div>
-            <div class="slide-number">8/11</div>
-        </div>
-
-        <!-- Slide 9 -->
-        <div class="slide" id="slide9">
-            <h1 class="slide-title">Boas Práticas</h1>
-            <div class="slide-content">
-                <ol>
-                    <li><strong>Use __ para atributos realmente privados</strong><br>
-                    <span style="font-size: 0.9em;">(Evite acessar _Classe__atributo diretamente)</span></li>
-                    
-                    <li><strong>Documente seus métodos get/set</strong><br>
-                    <span style="font-size: 0.9em;">(Explique o que fazem e quais validações implementam)</span></li>
-                    
-                    <li><strong>Mantenha a consistência</strong> em todo o projeto<br>
-                    <span style="font-size: 0.9em;">(Padronize os prefixos get/set ou use @property em todo o projeto)</span></li>
-                    
-                    <li><strong>Prefira métodos com nomes significativos</strong> quando a operação for complexa<br>
-                    <span style="font-size: 0.9em;">(Ex.: aplicarDesconto() em vez de setPrecoComDesconto())</span></li>
-                </ol>
-                
-                <p><strong>Exemplo de documentação:</strong></p>
-                <div class="code-block">
-                    <span class="code-keyword">def</span> <span class="code-function">get_saldo</span>(<span class="code-keyword">self</span>):<br>
-                    &nbsp;&nbsp;<span class="code-comment">"""Retorna o saldo atual da conta</span><br>
-                    &nbsp;&nbsp;<span class="code-comment">Returns:</span><br>
-                    &nbsp;&nbsp;<span class="code-comment">&nbsp;&nbsp;&nbsp;&nbsp;float: Valor do saldo</span><br>
-                    &nbsp;&nbsp;<span class="code-comment">"""</span><br>
-                    &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-keyword">self</span>.__saldo
-                </div>
-            </div>
-            <div class="slide-number">9/11</div>
-        </div>
-
-        <!-- Slide 10 -->
-        <div class="slide" id="slide10">
-            <h1 class="slide-title">Comparação com @property</h1>
-            <div class="slide-content">
-                <table class="comparison-table">
-                    <tr>
-                        <th>Get/Set Tradicional</th>
-                        <th>@property</th>
-                    </tr>
-                    <tr>
-                        <td>Mais explícito</td>
-                        <td>Sintaxe mais natural</td>
-                    </tr>
-                    <tr>
-                        <td>Verboso</td>
-                        <td>Mais conciso</td>
-                    </tr>
-                    <tr>
-                        <td>Melhor para operações complexas</td>
-                        <td>Ideal para atributos simples</td>
-                    </tr>
-                    <tr>
-                        <td>Familiar para devs de outras linguagens</td>
-                        <td>Mais pythonico</td>
-                    </tr>
-                </table>
-                
-                <p><strong>Escolha baseada em:</strong></p>
-                <ul>
-                    <li>Padrões do projeto</li>
-                    <li>Familiaridade da equipe</li>
-                    <li>Complexidade das operações</li>
-                </ul>
-            </div>
-            <div class="slide-number">10/11</div>
-        </div>
-
-        <!-- Slide 11 -->
-        <div class="slide" id="slide11">
-            <h1 class="slide-title">Conclusão</h1>
-            <div class="slide-content">
-                <div class="benefits-list">
-                    <li>Encapsulamento <strong>protege a integridade</strong> dos dados</li>
-                    <li>Métodos get/set fornecem <strong>controle explícito</strong></li>
-                    <li>Python oferece flexibilidade para <strong>escolher o padrão</strong> adequado</li>
-                </div>
-                
-                <div style="margin-top: 30px;">
-                    <p><strong>Próximos passos:</strong></p>
-                    <ol>
-                        <li>Implemente uma classe com atributos privados</li>
-                        <li>Crie métodos get/set com validações</li>
-                        <li>Pratique com diferentes cenários de uso</li>
-                    </ol>
-                </div>
-                
-                <div style="margin-top: 40px; text-align: center; font-size: 1.4rem;">
-                    <strong>Perguntas?</strong> Vamos para os exercícios práticos!
-                </div>
-            </div>
-            <div class="slide-number">11/11</div>
-        </div>
-
-        <div class="nav-buttons">
-            <button class="nav-btn" id="prevBtn" disabled>Anterior</button>
-            <button class="nav-btn" id="nextBtn">Próximo</button>
-        </div>
-    </div>
-
-    <script>
+</div>
+<div class="slide-number">11/11</div>
+</div>
+<div class="nav-buttons">
+<button class="nav-btn" disabled="" id="prevBtn">Anterior</button>
+<button class="nav-btn" id="nextBtn">Próximo</button>
+</div>
+</div>
+<script>
         let currentSlide = 1;
         const totalSlides = 11;
         const prevBtn = document.getElementById('prevBtn');
