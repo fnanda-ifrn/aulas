@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Portfólio HTML</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .passo {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .exemplo-codigo {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .arquivos {
+            background-color: #e8f4fc;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid #3498db;
+        }
+        .dica {
+            background-color: #fff8e1;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <header class="cabecalho">
+        <h1>🖥️ Projeto: Meu Portfólio HTML</h1>
+        <p>Crie seu primeiro site completo com 5 páginas interligadas!</p>
+    </header>
+
+    <nav class="menu-navegacao">
+        <a href="autoria.html">Início</a>
+        <a href="exercicios.html">Exercícios</a>
+        <a href="projeto-portfolio.html" class="ativo">Projeto Portfólio</a>
+    </nav>
+
+    <main class="conteudo-principal">
+        <section class="passo">
+            <h2>📂 Estrutura do Projeto</h2>
+            <p>Você vai criar um portfólio pessoal organizado da seguinte forma:</p>
+            
+            <div class="arquivos">
+                <strong>Estrutura de arquivos:</strong>
+                <pre>
+📁 meu-portfolio/
+├── 📁 css/
+│   └── 📄 style.css       (Estilos do site)
+├── 📁 imagens/
+│   └── 🖼️ foto-perfil.jpg (Sua foto)
+├── 📄 autoria.html          (Página Inicial)
+├── 📄 sobre.html          (Sobre Mim)
+├── 📄 interesses.html     (Meus Interesses)
+├── 📄 projetos.html       (Meus Projetos)
+└── 📄 contato.html        (Contato)</pre>
+            </div>
+            
+            <div class="dica">
+                <strong>Dica:</strong> Crie essas pastas e arquivos antes de começar! Use o arquivo <code>style.css</code> para estilizar seu site.
+            </div>
+        </section>
+
+        <section class="passo">
+            <h2>🎯 Objetivo do Projeto</h2>
+            <p>Você vai praticar tudo que aprendeu:</p>
+            <ul>
+                <li><strong>Links entre páginas</strong> - Criando um menu de navegação funcional</li>
+                <li><strong>Âncoras</strong> - Para navegar dentro da mesma página</li>
+                <li><strong>Elementos HTML</strong> - Títulos, parágrafos, listas, imagens</li>
+                <li><strong>Organização</strong> - Estrutura de pastas e arquivos</li>
+            </ul>
+            
+            <div class="dica">
+                <strong>Elementos que você pode usar:</strong>
+                <ul>
+                    <li><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code> para títulos</li>
+                    <li><code>&lt;p&gt;</code> para parágrafos</li>
+                    <li><code>&lt;ul&gt;</code> e <code>&lt;ol&gt;</code> para listas</li>
+                    <li><code>&lt;img&gt;</code> para imagens</li>
+                    <li><code>&lt;a&gt;</code> para links e âncoras</li>
+                    <li><code>&lt;section&gt;</code> para organizar o conteúdo</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="passo">
+            <h2>1. Página Inicial (index.html)</h2>
+            <p>Sua página principal deve conter:</p>
+            <ul>
+                <li>Seu nome como título principal</li>
+                <li>Menu de navegação com links para todas as páginas</li>
+                <li>Sua foto (usando caminho relativo)</li>
+                <li>Uma breve apresentação sobre você</li>
+                <li>Lista de habilidades ou interesses principais</li>
+            </ul>
+            
+          
+            <div class="dica">
+                <strong>Dica de navegação:</strong> Todos os links do menu devem funcionar! Teste cada um deles.
+            </div>
+        </section>
+
+        <section class="passo">
+            <h2>2. Página "Sobre Mim" (sobre.html)</h2>
+            <p>Nesta página, compartilhe:</p>
+            <ul>
+                <li>Sua história e trajetória</li>
+                <li>Formação acadêmica (use listas)</li>
+                <li>Experiências relevantes</li>
+                <li>Link de volta para a página inicial</li>
+            </ul>
+            
+            <div class="dica">
+                <strong>Dica:</strong> Use parágrafos (<code>&lt;p&gt;</code>) para textos longos e listas (<code>&lt;ul&gt;</code> ou <code>&lt;ol&gt;</code>) para itens.
+            </div>
+        </section>
+
+        <section class="passo">
+            <h2>3. Página "Interesses" (interesses.html)</h2>
+            <p>Mostre seus gostos pessoais organizados em seções:</p>
+            
+            <div class="exemplo-codigo">
+&lt;h1&gt;Meus Interesses&lt;/h1&gt;
+
+&lt;section id="livros"&gt;
+    &lt;h2&gt;📚 Livros Favoritos&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;Nome do Livro 1&lt;/li&gt;
+        &lt;li&gt;Nome do Livro 2&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/section&gt;
+
+&lt;section id="musica"&gt;
+    &lt;h2&gt;🎵 Música&lt;/h2&gt;
+    &lt;p&gt;Meus artistas preferidos:&lt;/p&gt;
+    &lt;ol&gt;
+        &lt;li&gt;Artista 1&lt;/li&gt;
+        &lt;li&gt;Artista 2&lt;/li&gt;
+    &lt;/ol&gt;
+&lt;/section&gt;
+
+&lt;!-- Adicione mais seções conforme necessário --&gt;
+            </div>
+            
+            <div class="dica">
+                <strong>Dica de âncoras:</strong> Você pode criar links no topo da página para cada seção usando <code>&lt;a href="#livros"&gt;Livros&lt;/a&gt;</code>.
+            </div>
+        </section>
+
+        <section class="passo">
+            <h2>4. Página "Projetos" (projetos.html)</h2>
+            <p>Apresente seus trabalhos:</p>
+            <ul>
+                <li>Imagens dos projetos</li>
+                <li>Título para cada projeto</li>
+                <li>Descrição curta do que se trata</li>
+                <li>Tecnologias utilizadas (em lista)</li>
+            </ul>
+        </section>
+
+        <section class="passo">
+            <h2>5. Página "Contato" (contato.html)</h2>
+            <p>Crie uma página com:</p>
+            <ul>
+                <li>Seu email</li>
+                <li>Links para redes sociais</li>
+                <li>Âncora para voltar ao topo</li>
+            </ul>
+            
+        </section>
+
+        <section class="passo destaque">
+            <h2>📌 Conferindo</h2>
+            <p>Antes de finalizar, verifique se:</p>
+            <ul>
+                <li>Todas as páginas estão interligadas pelo menu</li>
+                <li>As imagens estão sendo exibidas corretamente</li>
+                <li>Os títulos estão hierarquizados (h1, h2, h3)</li>
+                <li>O conteúdo está organizado em seções</li>
+                <li>Todos os links funcionam</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="rodape">
+        <p>© 2025 Material de Aula | Profa. Fernanda Lígia - IFRN</p>
+    </footer>
+</body>
+</html>

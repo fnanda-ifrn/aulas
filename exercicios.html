@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercícios Práticos de HTML</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .exercicio {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .enunciado {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-left: 4px solid #3498db;
+            margin-bottom: 1rem;
+        }
+        .codigo {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .espaco-resposta {
+            background-color: #f1c40f;
+            padding: 0.3rem;
+            display: inline-block;
+            min-width: 50px;
+            border-bottom: 2px dashed #e67e22;
+        }
+        .dica {
+            background-color: #e8f4fc;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <header class="cabecalho">
+        <h1>💻 Exercícios Práticos de HTML</h1>
+        <p>Ponha em prática o que aprendeu!</p>
+    </header>
+
+    <nav class="menu-navegacao">
+        <a href="autoria.html">Início</a>
+        <a href="exercicios.html" class="ativo">Exercícios</a>
+        <a href="projeto-portfolio.html">Projeto Portfólio</a>
+    </nav>
+
+    <main class="conteudo-principal">
+        <section class="exercicio">
+            <h2>Exercício 1: Tag &lt;hr&gt;</h2>
+            <div class="enunciado">
+                <p>No código HTML abaixo, insira a tag <code>&lt;hr&gt;</code> para separar os dois parágrafos visualmente.</p>
+            </div>
+            <div class="codigo">
+                &lt;p&gt;Este é o primeiro parágrafo.&lt;/p&gt;<br>
+                <span class="espaco-resposta" contenteditable="true">&lt;!-- Insira a tag hr aqui --&gt;</span><br>
+                &lt;p&gt;Este é o segundo parágrafo.&lt;/p&gt;
+            </div>
+            <div class="dica">
+                <strong>Dica:</strong> A tag &lt;hr&gt; é auto-fechável e cria uma linha horizontal.
+            </div>
+        </section>
+
+        <section class="exercicio">
+            <h2>Exercício 2: Tag &lt;span&gt;</h2>
+            <div class="enunciado">
+                <p>Use a tag <code>&lt;span&gt;</code> para deixar a palavra <strong>"importante"</strong> em vermelho dentro do parágrafo.</p>
+            </div>
+            <div class="codigo">
+                &lt;p&gt;Este é um texto com uma parte <span class="espaco-resposta" contenteditable="true">&lt;!-- Use span aqui --&gt;</span>.&lt;/p&gt;
+            </div>
+            <div class="dica">
+                <strong>Dica:</strong> Use <code>style="color: red;"</code> dentro da tag span.
+            </div>
+        </section>
+
+        <section class="exercicio">
+            <h2>Exercício 3: Caminhos - Absoluto vs Relativo</h2>
+            <div class="enunciado">
+                <p>Analise a estrutura de pastas abaixo e complete o código HTML para carregar a imagem <strong>"logo.png"</strong> usando:</p>
+                <ul>
+                    <li><strong>Caminho absoluto</strong> (URL fictício)</li>
+                    <li><strong>Caminho relativo</strong> (considere que o HTML está na pasta "site")</li>
+                </ul>
+                <pre>
+📁 site
+├── 📄 index.html
+└── 📁 imagens
+    └── 🖼️ logo.png</pre>
+            </div>
+            <div class="codigo">
+                &lt;!-- Caminho Absoluto --&gt;<br>
+                &lt;img src="<span class="espaco-resposta" contenteditable="true">&lt;!-- URL completa --&gt;</span>"&gt;<br><br>
+                
+                &lt;!-- Caminho Relativo --&gt;<br>
+                &lt;img src="<span class="espaco-resposta" contenteditable="true">&lt;!-- Caminho relativo --&gt;</span>"&gt;
+            </div>
+            <div class="dica">
+                <strong>Dica:</strong> Caminho relativo começa da pasta atual, absoluto começa com http:// ou https://
+            </div>
+        </section>
+
+        <section class="exercicio">
+            <h2>Exercício 4: Links Externos</h2>
+            <div class="enunciado">
+                <p>Crie um link que:</p>
+                <ul>
+                    <li>Leve o usuário para o site <strong>"https://www.wikipedia.org"</strong></li>
+                    <li>Abra em uma <strong>nova aba</strong></li>
+                    <li>Tenha o texto <strong>"Acessar Wikipedia"</strong></li>
+                </ul>
+            </div>
+            <div class="codigo">
+                <span class="espaco-resposta" contenteditable="true">&lt;!-- Crie o link aqui --&gt;</span>
+            </div>
+            <div class="dica">
+                <strong>Dica:</strong> Use o atributo <code>target="_blank"</code> para abrir em nova aba.
+            </div>
+        </section>
+
+        <section class="exercicio">
+            <h2>Exercício 5: Âncoras (Links Internos)</h2>
+            <div class="enunciado">
+                <p>No código abaixo:</p>
+                <ol>
+                    <li>Observe que existe uma seção com <code>id="contato"</code></li>
+                    <li>Crie um link que leve o usuário até essa seção</li>
+                </ol>
+            </div>
+            <div class="codigo">
+                &lt;h2 id="contato"&gt;Entre em Contato&lt;/h2&gt;<br>
+                &lt;p&gt;Email: exemplo@site.com&lt;/p&gt;<br><br>
+                
+                <span class="espaco-resposta" contenteditable="true">&lt;!-- Crie o link para a âncora aqui --&gt;</span>
+            </div>
+            <div class="dica">
+                <strong>Dica:</strong> Links internos usam # antes do id do elemento.
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="rodape">
+        <p>© 2025 Material de Aula | Profa. Fernanda Lígia - IFRN</p>
+    </footer>
+</body>
+</html>
