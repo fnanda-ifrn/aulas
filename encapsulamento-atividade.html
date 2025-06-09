@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade Prática: Encapsulamento em Python</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 8px;
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+        }
+        
+        .objective {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .exercise {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--success);
+        }
+        
+        .exercise:nth-child(odd) {
+            border-left-color: var(--secondary);
+        }
+        
+        .exercise:nth-child(even) {
+            border-left-color: var(--warning);
+        }
+        
+        .requirements {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .requirements li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .requirements li:before {
+            content: "•";
+            color: var(--secondary);
+            font-weight: bold;
+            position: absolute;
+            left: 10px;
+        }
+        
+        .code-example {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .delivery {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .challenge {
+            background-color: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+            margin-top: 30px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .keyword {
+            color: #d63384;
+            font-weight: bold;
+        }
+        
+        .function {
+            color: #6f42c1;
+        }
+        
+        .string {
+            color: #20c997;
+        }
+        
+        .comment {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .exercise {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Atividade Prática: Encapsulamento em Python</h1>
+            <p>Programação Orientada a Objetos com foco em encapsulamento</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="objective">
+            <h2>Objetivo</h2>
+            <p>Praticar conceitos de <strong>POO</strong> (Programação Orientada a Objetos) em Python, com foco em <strong>encapsulamento</strong>, <strong>classes</strong>, <strong>objetos</strong> e <strong>métodos get/set</strong>.</p>
+        </section>
+        
+        <section class="exercise">
+            <h2>Exercício 1: Conta Bancária</h2>
+            <p>Crie uma classe <code>ContaBancaria</code> que:</p>
+            <ul class="requirements">
+                <li>Atributos: cliente, num_conta, agencia, saldo</li>
+                <li>Encapsule o <strong>saldo</strong> (atributo privado)</li>
+                <li>Tenha métodos:
+                    <ul>
+                        <li><code>depositar(valor)</code>: aumenta o saldo se <code>valor > 0</code></li>
+                        <li><code>sacar(valor)</code>: diminui o saldo se <code>valor <= saldo</code></li>
+                        <li><code>get_saldo()</code>: retorna o saldo atual</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Exemplo de uso:</h3>
+            <div class="code-example">
+                <span class="keyword">conta</span> = ContaBancaria(<span class="string">"João Silva"</span>, <span class="string">"12345-6"</span>, <span class="string">"001"</span>)<br>
+                conta.depositar(<span class="number">100</span>)<br>
+                conta.sacar(<span class="number">30</span>)<br>
+                <span class="keyword">print</span>(conta.get_saldo())  <span class="comment"># Saída: 70</span>
+            </div>
+        </section>
+        
+        <section class="exercise">
+            <h2>Exercício 2: Pessoa com Idade Controlada</h2>
+            <p>Crie uma classe <code>Pessoa</code> que:</p>
+            <ul class="requirements">
+                <li>Atributos: nome, idade</li>
+                <li>Encapsule o atributo <code>__idade</code> (privado)</li>
+                <li>Tenha métodos:
+                    <ul>
+                        <li><code>set_idade(nova_idade)</code>: só aceita valores <strong>≥ 0</strong></li>
+                        <li><code>get_idade()</code>: retorna a idade</li>
+                        <li><code>envelhecer()</code>: aumenta a idade em <strong>1 ano</strong></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Exemplo de uso:</h3>
+            <div class="code-example">
+                <span class="keyword">p</span> = Pessoa(<span class="string">"Maria"</span>)<br>
+                p.set_idade(<span class="number">25</span>)<br>
+                p.envelhecer()<br>
+                <span class="keyword">print</span>(p.get_idade())  <span class="comment"># Saída: 26</span><br>
+                p.set_idade(-<span class="number">5</span>)       <span class="comment"># Deve exibir erro!</span>
+            </div>
+        </section>
+        
+        <section class="exercise">
+            <h2>Exercício 3: Produto com Estoque</h2>
+            <p>Crie uma classe <code>Produto</code> que:</p>
+            <ul class="requirements">
+                <li>Encapsule os atributos <code>__nome</code>, <code>__preco</code> e <code>__estoque</code></li>
+                <li>Tenha métodos:
+                    <ul>
+                        <li><code>get_nome()</code>, <code>get_preco()</code>, <code>get_estoque()</code></li>
+                        <li><code>set_preco(novo_preco)</code>: só aceita valores <strong>≥ 0</strong></li>
+                        <li><code>adicionar_estoque(qtd)</code>: aumenta o estoque se <code>qtd > 0</code></li>
+                        <li><code>vender(qtd)</code>: diminui o estoque se <code>qtd <= estoque</code></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Exemplo de uso:</h3>
+            <div class="code-example">
+                <span class="keyword">produto</span> = Produto(<span class="string">"Notebook"</span>, <span class="number">4500</span>, <span class="number">10</span>)<br>
+                produto.adicionar_estoque(<span class="number">5</span>)<br>
+                produto.vender(<span class="number">3</span>)<br>
+                <span class="keyword">print</span>(produto.get_estoque())  <span class="comment"># Saída: 12</span>
+            </div>
+        </section>
+        
+        <section class="exercise">
+            <h2>Exercício 4: Carro com Estado</h2>
+            <p>Crie uma classe <code>Carro</code> que:</p>
+            <ul class="requirements">
+                <li>Atributos: marca, modelo, ano, ligado</li>
+                <li>Encapsule os atributos <code>__ligado</code> (bool) e <code>__velocidade</code></li>
+                <li>Tenha métodos:
+                    <ul>
+                        <li><code>ligar()</code>: só liga se não estiver ligado</li>
+                        <li><code>desligar()</code>: só desliga se <code>velocidade == 0</code></li>
+                        <li><code>acelerar(velocidade)</code>: aumenta a velocidade se o carro estiver ligado</li>
+                        <li><code>get_status()</code>: retorna "Ligado" ou "Desligado"</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>Exemplo de uso:</h3>
+            <div class="code-example">
+                <span class="keyword">carro</span> = Carro(<span class="string">"Ford"</span>, <span class="string">"Fiesta"</span>, <span class="number">2022</span>)<br>
+                carro.ligar()<br>
+                carro.acelerar(<span class="number">50</span>)<br>
+                <span class="keyword">print</span>(carro.get_status())  <span class="comment"># Saída: "Ligado"</span><br>
+                carro.desligar()           <span class="comment"># Só desliga se velocidade = 0</span>
+            </div>
+        </section>
+        
+        <section class="delivery">
+            <h2>Como entregar?</h2>
+            <ul class="requirements">
+                <li>Crie um arquivo <code>.py</code> para cada exercício ou um único arquivo com todas as classes</li>
+                <li>Teste cada método para garantir que as regras de encapsulamento estão funcionando</li>
+            </ul>
+        </section>
+        
+        <section class="challenge">
+            <h2>Desafio Extra (Opcional)</h2>
+            <p>Modifique a classe <code>Carro</code> para incluir um <strong>limite de velocidade máxima</strong> (ex.: 120 km/h).</p>
+        </section>
+        
+        <footer>
+            <p>Bom trabalho!</p>
+        </footer>
+    </div>
+</body>
+</html>
