@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Ana Jéssica de Moura Araújo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática INFO 2M</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluna:</strong> Ana Jéssica de Moura Araújo</div>
+        <div><strong>Nota Final:</strong> <strong>30.2/40</strong> (75.5%)</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaAcessorios (14/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>2</td>
+                <td class="correct">✔ Implementada</td>
+                <td>2/2</td>
+                <td>Classe FuncionarioLojaAcessorios correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>2</td>
+                <td class="correct">✔ Declarados</td>
+                <td>2/2</td>
+                <td>nome, salario_base, valor_total_vendas</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1.5/3</td>
+                <td>Valida zero mas não valores negativos</td>
+            </tr>
+            <tr>
+                <td>calcular_comissao()</td>
+                <td>3</td>
+                <td class="correct">✔ Correto (8%)</td>
+                <td>3/3</td>
+                <td>Cálculo preciso de 8% das vendas</td>
+            </tr>
+            <tr>
+                <td>calcular_desconto()</td>
+                <td>3</td>
+                <td class="correct">✔ Correto (5%)</td>
+                <td>3/3</td>
+                <td>Desconto de 5% do salário base</td>
+            </tr>
+            <tr>
+                <td>calcular_salario_final()</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Erro na chamada dos métodos internos</td>
+            </tr>
+            <tr>
+                <td>resumo()</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Exibe dados mas com chamada recursiva</td>
+            </tr>
+            <tr>
+                <td>Objetos (2)</td>
+                <td>3</td>
+                <td class="correct">✔ Criados</td>
+                <td>3/3</td>
+                <td>Mário e Ângelo testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erro Recorrente:</h3>
+        <pre># Chamada recursiva incorreta:
+resul2 = self.calcular_comissao(self)  # ❌
+# Correto:
+resul2 = self.calcular_comissao()      # ✅</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Remover <code>self</code> das chamadas internas em <code>resumo()</code> e <code>calcular_salario_final()</code></li>
+            <li>Adicionar validação para valores negativos no construtor:
+                <pre>if salario_base < 0 or valor_total_vendas < 0:
+    raise ValueError("Valores não podem ser negativos")</pre>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Questão 2: ExposicaoArte (8.2/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe ExposicaoArte correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="correct">✔ Declarados</td>
+                <td>1/1</td>
+                <td>nome_exposicao, artista, visitantes</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>1</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>0.5/1</td>
+                <td>Valida zero mas não negativos</td>
+            </tr>
+            <tr>
+                <td>registrar_visita()</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Não atualiza self.visitantes</td>
+            </tr>
+            <tr>
+                <td>exibir_exposicao()</td>
+                <td>1</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>0.5/1</td>
+                <td>Chamada incorreta de registrar_visita()</td>
+            </tr>
+            <tr>
+                <td>eh_destaque()</td>
+                <td>2</td>
+                <td class="correct">✔ Lógica correta</td>
+                <td>2/2</td>
+                <td>Verifica visitantes > 500</td>
+            </tr>
+            <tr>
+                <td>Objetos (3)</td>
+                <td>2</td>
+                <td class="correct">✔ Criados</td>
+                <td>2/2</td>
+                <td>Casa (560), Bola (426), Lua (708)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erro Crítico:</h3>
+        <pre>def registrar_visita(self, qtd):
+    qtd += self.visitantes  # ❌ (deveria ser self.visitantes += qtd)
+    print(qtd)</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Corrigir <code>registrar_visita()</code> para atualizar o atributo:
+                <pre>def registrar_visita(self, qtd):
+    self.visitantes += qtd  # ✅
+    return self.visitantes</pre>
+            </li>
+            <li>Modificar <code>exibir_exposicao()</code> para mostrar diretamente self.visitantes</li>
+        </ul>
+    </div>
+
+    <h2>Questão 3: CicloDaAgua (8/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe CicloDaAgua correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="correct">✔ Declarados</td>
+                <td>1/1</td>
+                <td>etapa, descricao</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>1</td>
+                <td class="correct">✔ Valida 1-4</td>
+                <td>1/1</td>
+                <td>Verifica intervalo correto</td>
+            </tr>
+            <tr>
+                <td>definir_descricao()</td>
+                <td>3</td>
+                <td class="correct">✔ Lógica correta</td>
+                <td>3/3</td>
+                <td>Etapas mapeadas corretamente</td>
+            </tr>
+            <tr>
+                <td>mostrar_etapa()</td>
+                <td>1</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>0.5/1</td>
+                <td>Repete verificação já feita</td>
+            </tr>
+            <tr>
+                <td>Objetos (4)</td>
+                <td>3</td>
+                <td class="correct">✔ Criados</td>
+                <td>3/3</td>
+                <td>Todas as etapas testadas</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Simplificar <code>mostrar_etapa()</code> usando:
+                <pre>def mostrar_etapa(self):
+    print(f"{self.etapa} → {self.descricao}")</pre>
+            </li>
+            <li>Unificar as validações para evitar repetição</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Nota</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>14/20</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>8.2/10</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>8/10</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>30.2/40 (75.5%)</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Cálculos precisos de comissão/desconto (Q1)<br>
+            - Lógica correta em eh_destaque() (Q2)<br>
+            - Testes completos com múltiplos objetos</p>
+        
+        <p><span class="warning">⚠ Atenção:</span> 
+            - Chamada recursiva nos métodos (Q1)<br>
+            - Atualização de atributos (Q2)</p>
+    </div>
+</body>
+</html>

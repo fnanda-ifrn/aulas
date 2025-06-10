@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Correção - AV1 POO</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> Ana Júlia Celestino Belchior</div>
+        <div><strong>Nota Final:</strong> <strong>18/40</strong> (45%)</div>
+    </div>
+
+    <!-- QUESTÃO 1 -->
+    <h2>Questão 1: FuncionarioLojaCalcados (4/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>3/5</td>
+                <td>Atributos corretos mas construtor com problemas</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="wrong">✘ Incompleto</td>
+                <td>0/8</td>
+                <td>Métodos de cálculo incorretos</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Condição de validação incorreta</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="correct">✔ Completo</td>
+                <td>4/4</td>
+                <td>Objeto criado e métodos testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Cálculos incorretos:
+self.valor_total_vendas = 0.15 + self.valor_total_vendas  # ❌ Deveria ser multiplicação
+
+# Validação incorreta:
+if self.salario_base or self.valor_total_vendas < 0:  # ❌ Condição lógica errada
+
+# Método resumo com valores fixos:
+print(f"Sua comissão será de: R$ {self.salario_base + 0.15}")  # ❌ Deveria usar porcentagem</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Corrigir cálculos para usar porcentagens (15% e 11%)</li>
+            <li>Corrigir condição de validação para verificar ambos valores</li>
+            <li>Implementar corretamente o método resumo()</li>
+        </ul>
+    </div>
+
+    <!-- QUESTÃO 2 -->
+    <h2>Questão 2: SessaoCinema (8/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completo</td>
+                <td>3/3</td>
+                <td>Atributos e construtor corretos</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>4/5</td>
+                <td>Métodos implementados mas não atualiza lugares</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Objeto criado e métodos testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Método não atualiza lugares:
+def reservar_lugar(self):  # ❌ Falta atualizar self.lugares_disponiveis
+
+# Atributo não utilizado:
+self.lugar  # ❌ Declarado mas não usado corretamente</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Atualizar lugares_disponiveis ao reservar lugares</li>
+            <li>Remover atributo não utilizado (lugar)</li>
+            <li>Implementar método sessao_lotada() conforme enunciado</li>
+        </ul>
+    </div>
+
+    <!-- QUESTÃO 3 -->
+    <h2>Questão 3: EstaçaoAno (6/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completo</td>
+                <td>3/3</td>
+                <td>Atributos e construtor corretos</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>3/5</td>
+                <td>Métodos implementados mas com entrada manual</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Objeto criado e métodos testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Entrada manual da estação:
+self.nome_estacao = input("Escolha a estação: ")  # ❌ Deveria ser automático
+
+# Nome da classe com caractere especial:
+class EstaçaoAno:  # ❌ Pode causar problemas</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Determinar estação automaticamente pelo mês</li>
+            <li>Evitar caracteres especiais no nome da classe</li>
+            <li>Implementar completamente definir_estacao()</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Pontuação</th>
+                <th>Desempenho</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>4/20</td>
+                <td class="wrong">✘ Insuficiente</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>8/10</td>
+                <td class="correct">✔ Bom</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>6/10</td>
+                <td class="partial">⚠ Regular</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>18/40</th>
+                <th>45%</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos positivos:</span> 
+            - Boa estruturação geral das classes<br>
+            - Uso correto de input para interação<br>
+            - Validações implementadas</p>
+        
+        <p><span class="warning">⚠ Principais problemas:</span> 
+            - Cálculos incorretos na Q1<br>
+            - Métodos não atualizam atributos na Q2<br>
+            - Lógica incompleta na Q3</p>
+        
+        <p><span class="critical">✘ Críticos:</span> 
+            - Erros nos cálculos de comissão e desconto<br>
+            - Condição de validação incorreta</p>
+    </div>
+</body>
+</html>

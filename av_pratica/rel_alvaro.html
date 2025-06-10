@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Correção - AV1 POO</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> Álvaro Claudino de Carvalho</div>
+        <div><strong>Nota Final:</strong> <strong>24/40</strong> (60%)</div>
+    </div>
+
+    <!-- QUESTÃO 1 -->
+    <h2>Questão 1: FuncionarioLojaRoupas (10/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="correct">✔ Completo</td>
+                <td>5/5</td>
+                <td>Atributos e construtor corretos</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>4/8</td>
+                <td>Métodos implementados mas com pequenos erros</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="correct">✔ Completo</td>
+                <td>3/3</td>
+                <td>Verifica valores negativos</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="correct">✔ Completo</td>
+                <td>4/4</td>
+                <td>Objeto criado e métodos testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Nome inconsistente de atributo:
+self.descontoo  # ❌ Deveria ser self.desconto
+
+# Atributos declarados duplicados:
+desconto = float  # ❌ Já declarado acima
+total = float      # ❌ Já declarado acima</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Manter consistência nos nomes de atributos (usar sempre self.desconto)</li>
+            <li>Remover declarações duplicadas de atributos</li>
+            <li>Considerar usar input apenas para testes, não como parte da classe</li>
+        </ul>
+    </div>
+
+    <!-- QUESTÃO 2 -->
+    <h2>Questão 2: Show (8/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completo</td>
+                <td>3/3</td>
+                <td>Atributos e construtor corretos</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>4/5</td>
+                <td>Método vender_ingressos() poderia ser mais completo</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Objeto criado e métodos testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Nome de atributo inconsistente:
+self.ingressos_sendo_vendidos  # ❌ Declarado como ingressos_sendo_vendido
+
+# Método vender_ingressos não atualiza atributos:
+def vender_ingressos(self):  # ❌ Só exibe, não armazena</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Manter consistência nos nomes de atributos</li>
+            <li>Atualizar atributos ao vender ingressos</li>
+            <li>Implementar método eh_sucesso() conforme enunciado</li>
+        </ul>
+    </div>
+
+    <!-- QUESTÃO 3 -->
+    <h2>Questão 3: FaseDaLua (6/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completo</td>
+                <td>3/3</td>
+                <td>Atributos e construtor corretos</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>3/5</td>
+                <td>Condicionais com erros de lógica</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Objeto criado e método testado</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Erros nas condições:
+elif self.dia_ciclo <= 8 or self.dia_ciclo >= 14:  # ❌ Deveria ser and
+elif self.dia_ciclo <= 15 or self.dia_ciclo >= 21: # ❌ Deveria ser and
+
+# Falta método mostrar_fase() conforme enunciado</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Corrigir condições lógicas (usar and em vez de or)</li>
+            <li>Implementar método mostrar_fase()</li>
+            <li>Considerar usar input apenas para testes</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Pontuação</th>
+                <th>Desempenho</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>10/20</td>
+                <td class="partial">⚠ Regular</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>8/10</td>
+                <td class="correct">✔ Bom</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>6/10</td>
+                <td class="partial">⚠ Regular</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>24/40</th>
+                <th>60%</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos positivos:</span> 
+            - Boa estruturação das classes<br>
+            - Uso correto de atributos e métodos<br>
+            - Validações implementadas</p>
+        
+        <p><span class="warning">⚠ Principais problemas:</span> 
+            - Pequenas inconsistências nos nomes de atributos<br>
+            - Condições lógicas incorretas na Q3<br>
+            - Métodos poderiam ser mais completos</p>
+        
+        <p><span class="critical">✘ Críticos:</span> 
+            - Nenhum erro crítico identificado</p>
+    </div>
+</body>
+</html>

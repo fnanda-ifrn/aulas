@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - BRUNO RAFAEL DE OLIVEIRA BARBOSA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática INFO 2M</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> BRUNO RAFAEL DE OLIVEIRA BARBOSA</div>
+        <div><strong>Nota Final:</strong> <strong>18/40</strong> (45%)</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaAcessorios (18/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>3</td>
+                <td class="correct">✔ Implementada</td>
+                <td>3/3</td>
+                <td>Classe FuncionarioLojaAcessorios correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>3</td>
+                <td class="correct">✔ Declarados</td>
+                <td>3/3</td>
+                <td>nome, salario_base, valor_total_vendas</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>3</td>
+                <td class="correct">✔ Correto</td>
+                <td>3/3</td>
+                <td>Inicializa todos atributos</td>
+            </tr>
+            <tr>
+                <td>calcular_comissao()</td>
+                <td>4</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/4</td>
+                <td>Parâmetros desnecessários e lógica confusa</td>
+            </tr>
+            <tr>
+                <td>calcular_desconto()</td>
+                <td>4</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/4</td>
+                <td>Não armazena/retorna o valor calculado</td>
+            </tr>
+            <tr>
+                <td>resumo()</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/3</td>
+                <td>Exibe dados mas com chamadas recursivas incorretas</td>
+            </tr>
+            <tr>
+                <td>Objetos (2)</td>
+                <td>3</td>
+                <td class="correct">✔ Criados</td>
+                <td>3/3</td>
+                <td>Bruno e Fernanda testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erros Principais:</h3>
+        <pre># Método com parâmetros redundantes:
+def calcular_comissao(self, comissao, valor_total_vendas):  # ❌
+    self.comissao = (self.valor_total_vendas / 100)* 8     # (valor_total_vendas já é atributo)
+
+# Chamada recursiva sem sentido:
+comissao1 = FuncionarioLojaAcessorios(self.comissao)  # ❌ (cria objeto apenas com comissão)</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões de Correção:</h3>
+        <ul>
+            <li>Simplificar métodos sem parâmetros desnecessários:
+                <pre>def calcular_comissao(self):
+    return self.valor_total_vendas * 0.08  # ✅</pre>
+            </li>
+            <li>Armazenar resultados em atributos ou retornar valores</li>
+            <li>Remover chamadas recursivas incorretas em <code>resumo()</code></li>
+            <li>Implementar <code>calcular_salario_final()</code> faltante</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Nota</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>18/20</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>18/40 (45%)</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Estrutura básica da classe correta<br>
+            - Construtor implementado conforme especificado<br>
+            - Teste com dois objetos</p>
+        
+        <p><span class="critical">✘ Pontos críticos:</span> 
+            - Lógica confusa nos métodos de cálculo<br>
+            - Chamadas recursivas incorretas<br>
+            - Falta de retorno/armazenamento dos valores calculados</p>
+    </div>
+</body>
+</html>

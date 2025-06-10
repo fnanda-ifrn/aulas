@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Ibrahim Guilherme</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .summary-table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        .summary-table th {
+            background-color: #2980b9;
+            padding: 10px;
+        }
+
+        .summary-table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+
+        .note {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .perfect-score {
+            background-color: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+        <div class="perfect-score">NOTA PERFEITA: 40/40</div>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> Ibrahim Guilherme Moraes de Oliveira</div>
+        <div><strong>Turma:</strong> Informática para Internet 2M</div>
+        <div><strong>Data:</strong> 20/05/2025</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaAcessorios (20/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong> (Loja de Acessórios)</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="correct">✔ Excelente</td>
+                <td>5/5</td>
+                <td>Atributos e métodos perfeitamente implementados</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="correct">✔ Precisos</td>
+                <td>8/8</td>
+                <td>Comissão (8%), desconto (5%) e salário final corretíssimos</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="correct">✔ Adequadas</td>
+                <td>3/3</td>
+                <td>Não exigidas pelo enunciado</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="correct">✔ Completos</td>
+                <td>4/4</td>
+                <td>2 objetos testados com resumo completo</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlights">
+        <h3><span class="checkmark">✔</span> Destaques Positivos:</h3>
+        <ul>
+            <li>Uso exemplar de type hints (<code>nome: str</code>)</li>
+            <li>Métodos de cálculo bem encapsulados</li>
+            <li>Resumo formatado de forma clara e completa</li>
+        </ul>
+    </div>
+
+    <h2>Questão 2: ExposicaoArte (10/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong> (Centro Cultural)</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Estrutura da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Impecável</td>
+                <td>3/3</td>
+                <td>Atributos e construtor perfeitos</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>4</td>
+                <td class="correct">✔ Completa</td>
+                <td>4/4</td>
+                <td>Todos métodos implementados corretamente</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>2</td>
+                <td class="correct">✔ Satisfatórias*</td>
+                <td>2/2</td>
+                <td>Mensagem de erro para visitantes negativos</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>3</td>
+                <td class="correct">✔ Abrangentes</td>
+                <td>3/3</td>
+                <td>3 exposições testadas (incluindo caso inválido)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="suggestions">
+        <h3><span class="warning">⚠</span> Sugestão para Evolução (não afeta nota):</h3>
+        <p>No futuro, quando aprender tratamento de exceções, pode substituir o <code>print("Erro")</code> por <code>raise ValueError("Mensagem")</code> para bloquear a execução.</p>
+    </div>
+
+    <h2>Questão 3: CicloDaAgua (10/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong> (Ciclo da Água)</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Estrutura da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Exemplar</td>
+                <td>3/3</td>
+                <td>Atributos e métodos muito bem organizados</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>4</td>
+                <td class="correct">✔ Perfeita</td>
+                <td>4/4</td>
+                <td>Etapas do ciclo perfeitamente mapeadas</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>2</td>
+                <td class="correct">✔ Satisfatórias*</td>
+                <td>2/2</td>
+                <td>Mensagem para etapa inválida</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>3</td>
+                <td class="correct">✔ Completos</td>
+                <td>3/3</td>
+                <td>Todas 4 etapas testadas + caso inválido</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="highlights">
+        <h3><span class="checkmark">✔</span> Excelência no Código:</h3>
+        <ul>
+            <li>Uso inteligente de <code>elif</code> para as etapas</li>
+            <li>Método <code>mostrar_etapa()</code> muito bem formatado</li>
+            <li>Teste completo incluindo caso inválido (etapa 5)</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Final</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Competência</th>
+                <th>Questão 1</th>
+                <th>Questão 2</th>
+                <th>Questão 3</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>Implementação de Classes</td>
+                <td class="correct">5/5</td>
+                <td class="correct">3/3</td>
+                <td class="correct">3/3</td>
+                <td class="correct">11/11</td>
+            </tr>
+            <tr>
+                <td>Lógica/Métodos</td>
+                <td class="correct">8/8</td>
+                <td class="correct">4/4</td>
+                <td class="correct">4/4</td>
+                <td class="correct">16/16</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td class="correct">3/3</td>
+                <td class="correct">2/2</td>
+                <td class="correct">2/2</td>
+                <td class="correct">7/7</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td class="correct">4/4</td>
+                <td class="correct">3/3</td>
+                <td class="correct">3/3</td>
+                <td class="correct">10/10</td>
+            </tr>
+            <tr>
+                <th>Total por Questão</th>
+                <th class="correct">20/20</th>
+                <th class="correct">10/10</th>
+                <th class="correct">10/10</th>
+                <th class="correct">40/40</th>
+            </tr>
+        </table>
+        <p class="note">*Validações consideradas satisfatórias pois o bloqueio de execução não era requisito nesta avaliação</p>
+    </div>
+
+    <div class="highlights">
+        <h3>Feedback Final:</h3>
+        <p><span class="checkmark">✔</span> <strong>Desempenho excepcional!</strong> O aluno demonstrou domínio completo dos conceitos de POO avaliados:</p>
+        <ul>
+            <li>Classes perfeitamente implementadas</li>
+            <li>Métodos com lógica impecável</li>
+            <li>Testes abrangentes</li>
+            <li>Código bem organizado e legível</li>
+        </ul>
+        <p><span class="warning">⚠</span> <strong>Próximos passos:</strong> Aprender tratamento de exceções para tornar as validações ainda mais robustas.</p>
+    </div>
+</body>
+</html>

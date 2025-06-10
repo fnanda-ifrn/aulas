@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Correção - Kaio Luiz Cruz Rezende</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct { color: #27ae60; font-weight: bold; }
+        .partial { color: #f39c12; font-weight: bold; }
+        .wrong { color: #e74c3c; font-weight: bold; }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table { width: 50%; margin: 20px auto; }
+        .highlights { background-color: #f0f7fc; padding: 15px; border-radius: 5px; }
+        .checkmark { color: #27ae60; }
+        .warning { color: #f39c12; }
+        .critical { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> Kaio Luiz Cruz Rezende</div>
+        <div><strong>Nota Final:</strong> <strong>32/40</strong> (80%)</div>
+    </div>
+
+    <!-- Questão 1 -->
+    <h2>Questão 1: FuncionarioLojaAcessorios (12/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="correct">✔ Completa</td>
+                <td>5/5</td>
+                <td>Atributos e métodos essenciais presentes</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="correct">✔ Corretos</td>
+                <td>8/8</td>
+                <td>Fórmulas corretas (8% comissão, 5% desconto)</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/3</td>
+                <td>Valida valores negativos mas não impede execução</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>3/4</td>
+                <td>2 objetos criados (1 com valor negativo para teste)</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Melhorar validação para bloquear execução com valores inválidos</li>
+            <li>Retornar valores nos métodos de cálculo em vez de apenas imprimir</li>
+            <li>Usar nomes mais descritivos para atributos (evitar abreviações)</li>
+        </ul>
+    </div>
+
+    <!-- Questão 2 -->
+    <h2>Questão 2: ExposicaoArte (10/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completa</td>
+                <td>3/3</td>
+                <td>Atributos e métodos essenciais presentes</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>5</td>
+                <td class="correct">✔ Completa</td>
+                <td>5/5</td>
+                <td>Todos métodos implementados corretamente</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>3 objetos criados e testados</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error-code">
+        <h3>Observação:</h3>
+        <pre># Método eh_destaque() poderia retornar booleano diretamente:
+return self.v > 500  # Em vez de print(bool(...))</pre>
+    </div>
+
+    <!-- Questão 3 -->
+    <h2>Questão 3: CicloDaAgua (10/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V3</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="correct">✔ Completa</td>
+                <td>3/3</td>
+                <td>Atributos e métodos essenciais presentes</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>5</td>
+                <td class="correct">✔ Correta</td>
+                <td>5/5</td>
+                <td>Match case implementado corretamente</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>4 objetos criados (todas as etapas testadas)</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error-code">
+        <h3>Observação:</h3>
+        <pre># Em definir_descricao(), usar atribuição (=) em vez de comparação (==):
+case 1: self.d = "Evaporação"</pre>
+    </div>
+
+    <!-- Resumo Final -->
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Pontuação</th>
+                <th>Desempenho</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>12/20</td>
+                <td class="partial">⚠ Parcial</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>10/10</td>
+                <td class="correct">✔ Excelente</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>10/10</td>
+                <td class="correct">✔ Excelente</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>32/40</th>
+                <th>80%</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Uso correto de estruturas match case (Q3)<br>
+            - Cálculos precisos na Q1<br>
+            - Testes completos em todas questões</p>
+        <p><span class="warning">⚠ Para melhorar:</span> 
+            - Validações mais robustas (bloquear execução)<br>
+            - Retorno de valores em métodos<br>
+            - Nomes mais descritivos para atributos</p>
+    </div>
+</body>
+</html>

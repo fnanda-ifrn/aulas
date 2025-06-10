@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Emilly Laviny Silva Alves</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática INFO 2M</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluna:</strong> Emilly Laviny Silva Alves</div>
+        <div><strong>Nota Final:</strong> <strong>21.5/40</strong> (53.75%)</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaRoupas (7/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>2</td>
+                <td class="correct">✔ Implementada</td>
+                <td>2/2</td>
+                <td>Classe FuncionarioLojaRoupas correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>2</td>
+                <td class="correct">✔ Declarados</td>
+                <td>2/2</td>
+                <td>nome, salario_base, valor_vendas</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>3</td>
+                <td class="correct">✔ Correto</td>
+                <td>3/3</td>
+                <td>Inicializa atributos corretamente</td>
+            </tr>
+            <tr>
+                <td>calcular_comissao()</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Parâmetro desnecessário e não retorna valor</td>
+            </tr>
+            <tr>
+                <td>calcular_desconto()</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Parâmetro desnecessário e não retorna valor</td>
+            </tr>
+            <tr>
+                <td>calcular_salario_final()</td>
+                <td>4</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/4</td>
+                <td>Cálculo completamente errado (2% do salário base)</td>
+            </tr>
+            <tr>
+                <td>resumo()</td>
+                <td>2</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/2</td>
+                <td>Tenta acessar métodos como atributos</td>
+            </tr>
+            <tr>
+                <td>Objetos (2)</td>
+                <td>3</td>
+                <td class="correct">✔ Criados</td>
+                <td>3/3</td>
+                <td>Eliza e Luiz testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erros Críticos:</h3>
+        <pre># Métodos com parâmetros desnecessários:
+def calcular_comissao(self, comissao):  # ❌ (parâmetro não usado)
+    comissao = self.valor_vendas * 0.10  # ✅ (deveria ser return)
+
+# Cálculo errado do salário final:
+salario_final = self.salario_base * 0.02  # ❌ (deveria ser: salario_base + comissão - desconto)</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Remover parâmetros desnecessários dos métodos</li>
+            <li>Implementar cálculo correto do salário final:
+                <pre>def calcular_salario_final(self):
+    comissao = self.valor_vendas * 0.10
+    desconto = self.salario_base * 0.08
+    return self.salario_base + comissao - desconto</pre>
+            </li>
+            <li>Corrigir método resumo() para chamar os métodos corretamente</li>
+        </ul>
+    </div>
+
+    <h2>Questão 2: Show (8.5/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe Show correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="correct">✔ Declarados</td>
+                <td>1/1</td>
+                <td>artista, cidade, data, ingressos_vendidos</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>1</td>
+                <td class="correct">✔ Correto</td>
+                <td>1/1</td>
+                <td>Inicializa atributos corretamente</td>
+            </tr>
+            <tr>
+                <td>vender_ingressos()</td>
+                <td>2</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/2</td>
+                <td>Lógica errada (tenta somar método + inteiro)</td>
+            </tr>
+            <tr>
+                <td>exibir_show()</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Exibe todos os detalhes corretamente</td>
+            </tr>
+            <tr>
+                <td>eh_sucesso()</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Lógica correta mas falta return</td>
+            </tr>
+            <tr>
+                <td>Objetos (3)</td>
+                <td>2</td>
+                <td class="correct">✔ Criados</td>
+                <td>2/2</td>
+                <td>Xuxa, Eliana e Maisa testados</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erro Crítico:</h3>
+        <pre># Método vender_ingressos() incorreto:
+qntd = self.vender_ingressos + ingressos_vendidos  # ❌
+# Correto:
+self.ingressos_vendidos += ingressos_vendidos  # ✅</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Corrigir método vender_ingressos():
+                <pre>def vender_ingressos(self, qtd):
+    self.ingressos_vendidos += qtd</pre>
+            </li>
+            <li>Adicionar return em eh_sucesso():
+                <pre>def eh_sucesso(self):
+    return self.ingressos_vendidos > 10000</pre>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Questão 3: FaseDaLua (6/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe FaseDaLua correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>0.5/1</td>
+                <td>nome_fase não é atribuído corretamente</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>1</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>0.5/1</td>
+                <td>Falta validação do dia_ciclo</td>
+            </tr>
+            <tr>
+                <td>dia_ciclo()</td>
+                <td>2</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/2</td>
+                <td>Verifica dia_ciclo mas não é um método útil</td>
+            </tr>
+            <tr>
+                <td>identificar_fase()</td>
+                <td>3</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/3</td>
+                <td>Verifica nome_fase em vez de dia_ciclo</td>
+            </tr>
+            <tr>
+                <td>mostrar_fase()</td>
+                <td>1</td>
+                <td class="wrong">✘ Incorreto</td>
+                <td>0/1</td>
+                <td>Exibe todas as fases em vez da fase atual</td>
+            </tr>
+            <tr>
+                <td>Objetos (3)</td>
+                <td>2</td>
+                <td class="correct">✔ Criados</td>
+                <td>2/2</td>
+                <td>3 fases testadas (incluindo dia inválido)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erros Principais:</h3>
+        <pre># Atribuição incorreta no construtor:
+nome_fase = nome_fase  # ❌ (deveria ser self.nome_fase)
+
+# Método identificar_fase() verifica atributo errado:
+if self.nome_fase >= 1 and self.nome_fase <= 7:  # ❌ (deveria verificar dia_ciclo)</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Corrigir atribuição no construtor:
+                <pre>def __init__(self, dia_inteiro, nome_fase):
+    self.dia_inteiro = dia_inteiro
+    self.nome_fase = nome_fase  # ✅</pre>
+            </li>
+            <li>Reimplementar identificar_fase() baseado em dia_ciclo</li>
+            <li>Validar dia_ciclo no construtor (1 a 29)</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Nota</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>7/20</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>8.5/10</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>6/10</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>21.5/40 (53.75%)</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Estrutura básica das classes correta<br>
+            - Criação de objetos conforme solicitado<br>
+            - Método exibir_show() implementado corretamente</p>
+        
+        <p><span class="critical">✘ Pontos críticos:</span> 
+            - Lógica de cálculo incorreta em FuncionarioLojaRoupas<br>
+            - Métodos que não retornam valores quando deveriam<br>
+            - Confusão entre atributos e métodos</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Danielly Rodrigues Moura Barreto</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática INFO 2M</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluna:</strong> Danielly Rodrigues Moura Barreto</div>
+        <div><strong>Nota Final:</strong> <strong>34.5/40</strong> (86.25%)</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaCalcados (18/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>2</td>
+                <td class="correct">✔ Implementada</td>
+                <td>2/2</td>
+                <td>Classe funcionariolojacalcados correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>2</td>
+                <td class="correct">✔ Declarados</td>
+                <td>2/2</td>
+                <td>nome, salario_base, valor_total_vendas</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>3</td>
+                <td class="correct">✔ Correto</td>
+                <td>3/3</td>
+                <td>Valida valores negativos</td>
+            </tr>
+            <tr>
+                <td>calcular_comissao()</td>
+                <td>3</td>
+                <td class="correct">✔ Correto (15%)</td>
+                <td>3/3</td>
+                <td>Cálculo preciso de 15% das vendas</td>
+            </tr>
+            <tr>
+                <td>calcular_desconto()</td>
+                <td>3</td>
+                <td class="correct">✔ Correto (11%)</td>
+                <td>3/3</td>
+                <td>Desconto de 11% do salário base</td>
+            </tr>
+            <tr>
+                <td>calcular_salario_final()</td>
+                <td>3</td>
+                <td class="correct">✔ Correto</td>
+                <td>3/3</td>
+                <td>Cálculo correto do salário final</td>
+            </tr>
+            <tr>
+                <td>resumo()</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Exibe todos os dados corretamente</td>
+            </tr>
+            <tr>
+                <td>Objetos (1)</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Criado apenas 1 objeto (deveriam ser 2)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Padronizar nome da classe para <code>FuncionarioLojaCalcados</code> (PascalCase)</li>
+            <li>Criar segundo objeto para teste completo</li>
+            <li>Considerar usar <code>input</code> apenas para testes (não é boa prática em classes)</li>
+        </ul>
+    </div>
+
+    <h2>Questão 2: Sessaocinema (8.5/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe Sessaocinema correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="correct">✔ Declarados</td>
+                <td>1/1</td>
+                <td>filme, horario, lugares_disponiveis</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>1</td>
+                <td class="correct">✔ Implementado</td>
+                <td>1/1</td>
+                <td>Inicializa atributos corretamente</td>
+            </tr>
+            <tr>
+                <td>exibir_detalhes()</td>
+                <td>2</td>
+                <td class="correct">✔ Completo</td>
+                <td>2/2</td>
+                <td>Exibe todos os detalhes corretamente</td>
+            </tr>
+            <tr>
+                <td>reservar_lugar()</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/3</td>
+                <td>Lógica funcional mas não atualiza atributo corretamente</td>
+            </tr>
+            <tr>
+                <td>sessao_lotada()</td>
+                <td>2</td>
+                <td class="correct">✔ Funcional</td>
+                <td>2/2</td>
+                <td>Retorna True quando lotado</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Erro:</h3>
+        <pre>def reservar_lugar(self):
+    if self.lugares_disponiveis == self.lugar_pessoa or self.lugar_pessoa < self.lugares_disponiveis:
+        self.reserva = self.lugares_disponiveis - 1  # ❌ (deveria atualizar self.lugares_disponiveis)</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Corrigir <code>reservar_lugar()</code> para atualizar <code>self.lugares_disponiveis</code></li>
+            <li>Padronizar nomes (ex: <code>lugar_pessoa</code> → <code>lugar_desejado</code>)</li>
+            <li>Melhorar lógica condicional na reserva</li>
+        </ul>
+    </div>
+
+    <h2>Questão 3: EstacaoAno (8/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Resposta do Aluno</th>
+                <th>Pontos</th>
+                <th>Comentários</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe correta</td>
+                <td>1</td>
+                <td class="correct">✔ Implementada</td>
+                <td>1/1</td>
+                <td>Classe estacaoano correta</td>
+            </tr>
+            <tr>
+                <td>Atributos</td>
+                <td>1</td>
+                <td class="correct">✔ Declarados</td>
+                <td>1/1</td>
+                <td>mes, nome_estacao</td>
+            </tr>
+            <tr>
+                <td>Construtor</td>
+                <td>2</td>
+                <td class="correct">✔ Valida 1-12</td>
+                <td>2/2</td>
+                <td>Verifica intervalo correto</td>
+            </tr>
+            <tr>
+                <td>imprimir_estacao()</td>
+                <td>4</td>
+                <td class="correct">✔ Lógica correta</td>
+                <td>4/4</td>
+                <td>Estações mapeadas corretamente</td>
+            </tr>
+            <tr>
+                <td>Objetos (1)</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Criado apenas 1 objeto (deveriam ser 3)</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="suggestions">
+        <h3>Sugestões:</h3>
+        <ul>
+            <li>Criar mais objetos para teste completo (3 conforme enunciado)</li>
+            <li>Padronizar nome da classe para <code>EstacaoAno</code> (PascalCase)</li>
+            <li>Considerar separar lógica de exibição da definição da estação</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Nota</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>18/20</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>8.5/10</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>8/10</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>34.5/40 (86.25%)</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Cálculos precisos de comissão/desconto (Q1)<br>
+            - Validações de entrada implementadas<br>
+            - Lógica condicional correta nas estações (Q3)</p>
+        
+        <p><span class="warning">⚠ Atenção:</span> 
+            - Padronização de nomes de classes<br>
+            - Número de objetos criados<br>
+            - Atualização de atributos em reservar_lugar()</p>
+    </div>
+</body>
+</html>

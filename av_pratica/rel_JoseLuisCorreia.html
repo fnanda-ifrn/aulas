@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Correção - José Luis Correia de Oliveira</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .correct { color: #27ae60; font-weight: bold; }
+        .partial { color: #f39c12; font-weight: bold; }
+        .wrong { color: #e74c3c; font-weight: bold; }
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .summary-table { width: 50%; margin: 20px auto; }
+        .highlights { background-color: #f0f7fc; padding: 15px; border-radius: 5px; }
+        .checkmark { color: #27ae60; }
+        .warning { color: #f39c12; }
+        .critical { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> José Luis Correia de Oliveira</div>
+        <div><strong>Nota Final:</strong> <strong>8/40</strong> (20%)</div>
+    </div>
+
+    <!-- Questão 1 -->
+    <h2>Questão 1: FuncionarioLojaRoupas (3/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/5</td>
+                <td>Atributos corretos mas métodos com problemas</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="wrong">❌ Incorretos</td>
+                <td>0/8</td>
+                <td>Fórmulas erradas (1.0 e 0.8 em vez de 0.1 e 0.08)</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="wrong">❌ Ausentes</td>
+                <td>0/3</td>
+                <td>Não valida valores negativos</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/4</td>
+                <td>Objeto criado com parâmetros incorretos</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Métodos com parâmetros não utilizados:
+def calcular_comissao(self, valor):  # Parâmetro 'valor' não usado
+
+# Cálculos incorretos:
+self.salario_base * 1.0  # Deveria ser valor_total_vendas * 0.1
+self.salario_base * 0.8  # Deveria ser salario_base * 0.08
+
+# Objeto criado incorretamente:
+v1 = FuncionarioLojaRoupas("jose", 10)  # Faltou valor_total_vendas</pre>
+    </div>
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Usar fórmulas corretas (10% das vendas e 8% do salário)</li>
+            <li>Remover parâmetros não utilizados</li>
+            <li>Criar objetos com todos os parâmetros necessários</li>
+            <li>Implementar validação para valores negativos</li>
+        </ul>
+    </div>
+
+    <!-- Questão 2 -->
+    <h2>Questão 2: Show (2/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Atributos corretos mas métodos com erros graves</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>5</td>
+                <td class="wrong">❌ Não funcional</td>
+                <td>0/5</td>
+                <td>Métodos vender_ingressos() e eh_sucesso() não funcionam</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/2</td>
+                <td>Objeto criado mas com parâmetros incorretos</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Método vender_ingressos() não atualiza atributo:
+calc <= self.ingressos_vendidos  # Não faz nada útil
+
+# Método eh_sucesso() loop infinito:
+while True == self.ingressos_vendidos >= 1000:  # Condição estranha
+
+# Objeto criado incorretamente:
+Show("jose", "sitio novo", 30/11/2025)  # Data como operação matemática</pre>
+    </div>
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Atualizar ingressos_vendidos em vender_ingressos()</li>
+            <li>Simplificar eh_sucesso() para retornar booleano</li>
+            <li>Usar data como string no formato "DD/MM/AAAA"</li>
+            <li>Incluir todos os parâmetros obrigatórios</li>
+        </ul>
+    </div>
+
+    <!-- Questão 3 -->
+    <h2>Questão 3: FaseDaLua (3/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V1</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Atributos corretos mas método identificar_fase() não funciona</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>5</td>
+                <td class="wrong">❌ Incorreta</td>
+                <td>0/5</td>
+                <td>Condicionais mal formuladas (usando 'and' incorretamente)</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>2</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/2</td>
+                <td>Não foram criados objetos para teste</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Condicionais incorretas:
+if 1 and 2 and 3...  # Sempre avalia como True
+
+# Input dentro do método:
+int(input(...))  # Não armazena o valor
+
+# Faltou criar objetos e chamar métodos</pre>
+    </div>
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Corrigir condicionais (usar comparações com self.dia_ciclo)</li>
+            <li>Mover input para fora da classe</li>
+            <li>Criar objetos e chamar métodos para testar</li>
+        </ul>
+    </div>
+
+    <!-- Resumo Final -->
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Pontuação</th>
+                <th>Desempenho</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>3/20</td>
+                <td class="wrong">❌ Insuficiente</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>2/10</td>
+                <td class="wrong">❌ Insuficiente</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>3/10</td>
+                <td class="wrong">❌ Insuficiente</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>8/40</th>
+                <th>20%</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos fortes:</span> 
+            - Estrutura básica das classes reconhecível<br>
+            - Tentativa de implementar os métodos solicitados</p>
+        <p><span class="critical">✘ Para melhorar urgentemente:</span> 
+            - Lógica condicional e operações matemáticas<br>
+            - Implementação correta dos métodos<br>
+            - Criação e teste de objetos</p>
+    </div>
+</body>
+</html>

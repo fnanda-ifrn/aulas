@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório - Almira</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .partial {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .suggestions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .error-code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .summary {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .summary-table {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .highlights {
+            background-color: #f0f7fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .checkmark {
+            color: #27ae60;
+            margin-right: 5px;
+        }
+
+        .warning {
+            color: #f39c12;
+            margin-right: 5px;
+        }
+
+        .critical {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Relatório de Correção - AV1 Prática POO</h1>
+    </div>
+    
+    <div class="student-info">
+        <div><strong>Aluno:</strong> Almira</div>
+        <div><strong>Nota Final:</strong> <strong>15/40</strong> (37.5%)</div>
+    </div>
+
+    <h2>Questão 1: FuncionarioLojaCalcados (4/20 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Implementação da Classe</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/5</td>
+                <td>Atributos corretos mas métodos incompletos</td>
+            </tr>
+            <tr>
+                <td>Cálculos</td>
+                <td>8</td>
+                <td class="wrong">✘ Incompleto</td>
+                <td>1/8</td>
+                <td>Métodos não implementados</td>
+            </tr>
+            <tr>
+                <td>Validações</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Método verificar_valores() básico</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>4</td>
+                <td class="wrong">✘ Ausente</td>
+                <td>0/4</td>
+                <td>Nenhum objeto criado</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Métodos incompletos:
+def calcular_comissao(self, comissao):
+    self.saldo  # ❌ Incompleto
+
+def calcular_desconto():  # ❌ Sem implementação
+
+def calcular_salario_final(self,):  # ❌ Condicional sem corpo
+    if salario_base + valor_total_vendas + comissao - descontos</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Implementar completamente os métodos de cálculo</li>
+            <li>Criar objetos para teste conforme enunciado</li>
+            <li>Usar self para acessar atributos nos métodos</li>
+        </ul>
+    </div>
+
+    <h2>Questão 2: SessaoCinema (6/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe</td>
+                <td>2</td>
+                <td class="correct">✔ Correta</td>
+                <td>2/2</td>
+                <td>Atributos e construtor OK</td>
+            </tr>
+            <tr>
+                <td>Funcionalidade</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/5</td>
+                <td>Métodos incompletos ou com erros</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/3</td>
+                <td>Objetos criados mas com parâmetros incorretos</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Método com indentação errada:
+def sessao_lotada(self,lugares_disponiveis):  # ❌ Dentro de reservar_lugar()
+
+# F-strings não funcionais:
+print(" o nome do filme é {self.filme}...")  # ❌ Faltou f antes da string
+
+# Parâmetros incorretos:
+SessaoCinema ("voce e eu", 14:00, 3, 4, 5)  # ❌ Muitos argumentos</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Corrigir indentação de métodos</li>
+            <li>Usar f-strings corretamente</li>
+            <li>Implementar completamente reservar_lugar()</li>
+            <li>Passar apenas 3 parâmetros para o construtor</li>
+        </ul>
+    </div>
+
+    <h2>Questão 3: EstacaoAno (5/10 pontos)</h2>
+    <p><strong>Versão Identificada:</strong> <strong>V2</strong></p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Critério</th>
+                <th>Valor</th>
+                <th>Avaliação</th>
+                <th>Pontos</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Classe</td>
+                <td>2</td>
+                <td class="correct">✔ Correta</td>
+                <td>2/2</td>
+                <td>Estrutura básica OK</td>
+            </tr>
+            <tr>
+                <td>Lógica</td>
+                <td>5</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>2/5</td>
+                <td>Estações com erros ("primaveira") e lógica redundante</td>
+            </tr>
+            <tr>
+                <td>Testes</td>
+                <td>3</td>
+                <td class="partial">⚠ Parcial</td>
+                <td>1/3</td>
+                <td>Objetos criados mas com variáveis indefinidas</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="error-code">
+        <h3>Problemas Identificados:</h3>
+        <pre># Erro de ortografia:
+print("A estacao é primaveira")  # ❌ "primavera"
+
+# Método não chamado:
+def mostrar_estacao(self,):  # ❌ Nunca executado
+    print("o mes é {self.mes}, a estacao é {self.nome_estacao}")
+
+# Variáveis indefinidas:
+EstacaoAno ("12", verao)  # ❌ 'verao' não definido</pre>
+    </div>
+    
+    <div class="suggestions">
+        <h3>Recomendações:</h3>
+        <ul>
+            <li>Corrigir nome das estações</li>
+            <li>Chamar mostrar_estacao()</li>
+            <li>Passar strings como nomes de estações: EstacaoAno(12, "verao")</li>
+            <li>Remover lógica redundante no else</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Resumo Geral</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Questão</th>
+                <th>Pontuação</th>
+                <th>Desempenho</th>
+            </tr>
+            <tr>
+                <td>Questão 1</td>
+                <td>4/20</td>
+                <td class="wrong">✘ Insuficiente</td>
+            </tr>
+            <tr>
+                <td>Questão 2</td>
+                <td>6/10</td>
+                <td class="partial">⚠ Parcial</td>
+            </tr>
+            <tr>
+                <td>Questão 3</td>
+                <td>5/10</td>
+                <td class="partial">⚠ Parcial</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <th>15/40</th>
+                <th>37.5%</th>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="highlights">
+        <h3>Destaques:</h3>
+        <p><span class="checkmark">✔ Pontos positivos:</span> 
+            - Estrutura básica das classes reconhecível<br>
+            - Tentativa de implementar métodos</p>
+        
+        <p><span class="warning">⚠ Principais problemas:</span> 
+            - Métodos incompletos ou não funcionais<br>
+            - Erros de sintaxe e lógica<br>
+            - Testes inadequados</p>
+        
+        <p><span class="critical">✘ Críticos:</span> 
+            - Q1 com cálculos não implementados<br>
+            - Variáveis indefinidas nos testes</p>
+    </div>
+</body>
+</html>
