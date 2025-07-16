@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Google Docs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            overflow: hidden; /* Evita barras de rolagem */
+        }
+
+        #presentation-container {
+            width: 1200px; /* Largura fixa da apresentação */
+            height: 650px; /* Altura fixa da apresentação */
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Garante que os slides não transbordem */
+            position: relative;
+        }
+
+        #slides-container {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden; /* Esconde slides não ativos */
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow-y: auto; /* Permite rolagem interna se o conteúdo for muito longo */
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slide h1 {
+            color: #4285F4; /* Azul Google */
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .slide h2 {
+            color: #34A853; /* Verde Google */
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .slide h3 {
+            color: #EA4335; /* Vermelho Google */
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .slide p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .slide ol, .slide ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .slide ol li, .slide ul li {
+            margin-bottom: 8px;
+        }
+
+        .image-placeholder {
+            width: 80%; /* Ajuste a largura do contêiner da imagem */
+            max-width: 550px; /* Largura máxima para o contêiner da imagem */
+            margin: 20px auto; /* Centraliza o contêiner da imagem */
+            display: block; /* Garante que o contêiner seja um bloco para margin auto */
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 5px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .image-placeholder img {
+            max-width: 100%; /* Garante que a imagem não transborde o contêiner */
+            height: auto; /* Mantém a proporção da imagem */
+            display: block; /* Remove espaço extra abaixo da imagem */
+            margin: 0 auto; /* Centraliza a imagem dentro do placeholder */
+        }
+
+        #controls {
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: #f9f9f9;
+        }
+
+        #controls button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        #controls button:hover {
+            background-color: #3367D6; /* Azul mais escuro no hover */
+        }
+
+        #controls button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="presentation-container">
+        <div id="slides-container">
+            
+            <div class="slide active">
+                <h1>Ferramenta de Edição de Texto: Google Docs</h1>
+                <p>O Google Docs é um processador de texto <strong>online gratuito</strong> que permite criar, editar e colaborar em documentos em tempo real. 
+                    É parte integrante do Google Workspace.</p>
+                <br>Principais Características:
+                <ul>
+                    <li><strong>Acessibilidade:</strong> Edite de qualquer lugar, a qualquer momento.</li>
+                    <li><strong>Colaboração em Tempo Real:</strong> Trabalhe com outras pessoas simultaneamente.</li>
+                    <li><strong>Salvamento Automático:</strong> Ao passo que o trabalho é realizado, ele é salvo na nuvem.</li>
+                    <li><strong>Histórico de Versões:</strong> Revise e restaure versões anteriores.</li>
+                    <li><strong>Integração:</strong> Conecta-se com outros serviços Google.</li>
+                </ul>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig1.png" alt="Interface principal do Google Docs com ferramentas destacadas">
+                </div>
+                
+            </div>
+
+            <div class="slide">
+                <h1>Formatação de Textos: Estilos, Fontes, Tamanhos, Alinhamento e Espaçamento</h1>
+                <p>A formatação adequada é crucial para a legibilidade e organização do seu documento. 
+                    Veja a seguir várias ferramentas para controlar a aparência do seu texto.</p>
+
+                <h2>Estilos de Parágrafo:</h2>
+                <p>Os estilos de parágrafo permitem aplicar um conjunto predefinido de formatações (fonte, tamanho, cor, espaçamento) a títulos, subtítulos e texto normal, garantindo consistência em todo o documento e facilitando a criação de um sumário automático.</p>
+                <ol>
+                    <li>Selecione o texto que deseja formatar.</li>
+                    <li>Na barra de ferramentas, clique no menu suspenso <strong>"Estilos"</strong> (geralmente exibe "Texto normal" por padrão).</li>
+                    <li>Escolha o estilo desejado (ex: Título 1, Título 2, Texto normal).</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig2.png" alt="Menu de estilos de parágrafo no Google Docs">
+                </div>
+
+                <h2>Fontes, Tamanhos e Atributos de Texto:</h2>
+                <p>Personalize a aparência do seu texto com diversas opções de fonte, tamanho e atributos como negrito, itálico e sublinhado.</p>
+                <ol>
+                    <li>Selecione o texto que deseja alterar.</li>
+                    <li>Na barra de ferramentas, utilize os menus:
+                        <ul>
+                            <li><strong>Fonte:</strong> Escolha entre centenas de fontes disponíveis.</li>
+                            <li><strong>Tamanho da Fonte:</strong> Ajuste o tamanho do texto.</li>
+                            <li><strong>Negrito (B), Itálico (I), Sublinhado (U):</strong> Aplique esses atributos para destacar o texto.</li>
+                            <li><strong>Cor do Texto (A com barra colorida):</strong> Mude a cor da fonte.</li>
+                            <li><strong>Cor de Destaque (Marcador):</strong> Adicione um realce ao texto.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig3.png" alt="Barra de ferramentas do Google Docs com opções de fonte, tamanho e estilo de texto">
+                </div>
+
+                <h2>Alinhamento de Texto:</h2>
+                    <p>O alinhamento de texto define como o conteúdo se posiciona em relação às margens, impactando diretamente a legibilidade 
+                        e a estética do seu documento.</p>
+                <p>Opções de Alinhamento:</p>
+                <ul>
+                    <li><strong>Alinhar à Esquerda:</strong> O texto se alinha à margem esquerda, deixando a direita irregular. Padrão para a maioria dos textos.</li>
+                    <li><strong>Centralizar:</strong> O texto fica no centro da página. Ideal para títulos e cabeçalhos.</li>
+                    <li><strong>Alinhar à Direita:</strong> O texto se alinha à margem direita. Usado para datas ou assinaturas.</li>
+                    <li><strong>Justificar:</strong> O texto se estende por toda a largura entre as margens, criando bordas retas. Ideal para blocos de texto longos, como artigos.</li>
+                </ul>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig17.png" alt="Ícones de alinhamento de texto no Google Docs">
+                </div>
+
+                <h2>Espaçamento de Linha e Parágrafo:</h2>
+                <p>O espaçamento controla a distância entre as linhas e os parágrafos, impactando diretamente a legibilidade.</p>
+                <ol>
+                    <li>Selecione o(s) parágrafo(s) que deseja ajustar.</li>
+                    <li>Na barra de ferramentas, clique no ícone de <strong>"Espaçamento de linha e parágrafo"</strong> (geralmente duas setas verticais com linhas).</li>
+                    <li>Escolha uma opção predefinida (Simples, 1.15, 1.5, Duplo) ou clique em <strong>"Espaçamento personalizado..."</strong> para ajustes finos.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig4.png" alt="Menu de espaçamento de linha e parágrafo no Google Docs">
+                </div>
+            </div>
+
+            <div class="slide">
+                <h1>Marcadores e Numeração</h1>
+                <p>Marcadores e numeração são ferramentas poderosas para estruturar seu conteúdo, tornando listas e sequências de informações mais claras e fáceis de ler.</p>
+                <h2>Inserir Listas de Marcadores:</h2>
+                <p>Use marcadores para listar itens que não precisam de uma ordem específica, como uma lista de compras ou características de um produto.</p>
+                <ol>
+                    <li>Posicione o cursor onde deseja iniciar a lista.</li>
+                    <li>Vá em **Formatar** no menu superior.</li>
+                    <li>Selecione **Marcadores e numeração**.</li>
+                    <li>Escolha **Lista de marcadores**.</li>
+                    <li>Clique no ícone de marcadores (geralmente uma bolinha) na barra de ferramentas e comece a digitar seus itens.</li>
+                    <li>Pressione `Enter` para adicionar um novo item e `Enter` novamente em uma linha vazia para finalizar a lista.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig18.png" alt="Menu Formatar com opções de marcadores e numeração">
+                </div>
+                <p><strong>Dica:</strong> Você pode alterar o estilo do marcador clicando na seta ao lado do ícone de marcadores na barra de ferramentas.</p>
+
+                <h2>Inserir Listas Numeradas:</h2>
+                <p>Use a numeração para itens que seguem uma sequência, como instruções passo a passo, etapas de um processo ou um ranking.</p>
+                <ol>
+                    <li>Posicione o cursor onde deseja iniciar a lista.</li>
+                    <li>Vá em **Formatar** no menu superior.</li>
+                    <li>Selecione **Marcadores e numeração**.</li>
+                    <li>Escolha **Lista numerada**.</li>
+                    <li>Clique no ícone de numeração (geralmente 1., 2., 3.) na barra de ferramentas e comece a digitar seus itens.</li>
+                    <li>Pressione `Enter` para adicionar um novo item e `Enter` novamente em uma linha vazia para finalizar a lista.</li>
+                </ol>
+                <p><strong>Dica:</strong> Para criar subníveis (listas aninhadas), use a tecla `Tab` antes de digitar o item e `Shift + Tab` para retornar ao nível anterior.</p>
+            </div>
+
+            <div class="slide">
+                <h1>Estrutura do Documento: Cabeçalhos, Rodapés e Números de Página</h1>
+                <p>Cabeçalhos, rodapés e números de página são elementos essenciais para organizar e identificar documentos, especialmente os mais longos.</p>
+                <h2>Inserir Cabeçalhos e Rodapés:</h2>
+                <p>Cabeçalhos aparecem na parte superior de cada página, e rodapés na parte inferior. São ideais para incluir títulos de seção, nome do autor ou data.</p>
+                <ol>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Cabeçalhos e rodapés</strong>.</li>
+                    <li>Escolha <strong>Cabeçalho</strong> ou <strong>Rodapé</strong>.</li>
+                    <li>Uma área editável aparecerá na parte superior ou inferior da página. Digite o texto desejado.</li>
+                    <li>Para fechar, clique fora da área do cabeçalho/rodapé ou pressione Esc.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig5.png" alt="Menu Inserir com opções de cabeçalhos e rodapés e números de página">
+                </div>
+                <p><strong>Dica:</strong> Para ter um cabeçalho/rodapé diferente na primeira página (por exemplo, sem número de página ou com um título específico), clique na área do cabeçalho/rodapé, depois em <strong>Opções</strong> e marque <strong>"Primeira página diferente"</strong>.</p>
+
+                <h2>Inserir Números de Página:</h2>
+                <p>Os números de página ajudam na navegação e referência do documento.</p>
+                <ol>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Números de página</strong>.</li>
+                    <li>Escolha a posição (ex: superior direito, inferior central) e se deseja iniciar na primeira página ou pular a primeira.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig6.png" alt="Menu Inserir com opções de cabeçalhos e rodapés e números de página">
+                </div>
+                <p>O Google Docs inserirá automaticamente os números de página em todas as páginas (ou a partir da página selecionada).</p>
+
+                <h2>Estilos de Parágrafos (Revisão e Importância):</h2>
+                <p>Embora já tenhamos abordado, é crucial reforçar que o uso de estilos de parágrafos (Título 1, Título 2, Texto normal, etc.) não só padroniza a aparência, mas também é a base para a criação de um <strong>Sumário Automático</strong>, que veremos em um próximo slide. Eles definem a hierarquia do seu conteúdo.</p>
+                <ol>
+                    <li>Selecione o texto (ex: um título de seção).</li>
+                    <li>Na barra de ferramentas, clique no menu de <strong>Estilos</strong> e escolha o estilo apropriado (ex: Título 1 para um capítulo principal).</li>
+                </ol>
+            </div>
+
+            <div class="slide">
+                <h1>Elementos Visuais: Imagens, Tabelas e Gráficos</h1>
+                <p>Enriqueça seus documentos com elementos visuais que ajudam a ilustrar informações e torná-las mais compreensíveis. O Google Docs permite a inserção e manipulação de imagens, tabelas e gráficos.</p>
+
+                <h2>Inserir Imagens:</h2>
+                <p>Imagens podem ser adicionadas de diversas fontes e são essenciais para complementar o texto.</p>
+                <ol>
+                    <li>Posicione o cursor onde deseja inserir a imagem.</li>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Imagem</strong> e escolha a fonte (Fazer upload do computador, Pesquisar na web, Drive, Fotos, Por URL, Câmera).</li>
+                    <li>Após inserir, clique na imagem para redimensionar (arrastando os cantos) ou movê-la.</li>
+                    <li>Uma barra de ferramentas flutuante aparecerá abaixo da imagem, permitindo ajustar o <strong>ajuste do texto</strong> (Em linha, Quebra de texto, Atrás do texto, Na frente do texto) e outras opções de formatação.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig7.png" alt="Menu Inserir com opções de Imagem, Tabela e Gráfico">
+                </div>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig8.png" alt="Menu Inserir com opções de Imagem, Tabela e Gráfico">
+                </div>
+
+                <h2>Inserir Tabelas:</h2>
+                <p>Tabelas são ideais para organizar dados em linhas e colunas, facilitando a visualização e comparação de informações.</p>
+                <ol>
+                    <li>Posicione o cursor onde deseja inserir a tabela.</li>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Tabela</strong> e arraste o mouse sobre a grade para definir o número de linhas e colunas.</li>
+                    <li>Após inserir, clique dentro da tabela para digitar. Para formatar, clique com o botão direito na tabela ou vá em <strong>Formatar > Tabela</strong>.</li>
+                    <li>A barra lateral <strong>"Opções de tabela"</strong> (que aparece ao clicar com o botão direito e selecionar "Opções de tabela" ou ao selecionar a tabela) permite ajustar propriedades como bordas, cores, dimensões de linha/coluna e alinhamento do texto dentro das células.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig9.png" alt="Opções de tabela no Google Docs">
+                </div>
+
+                <h2>Inserir Gráficos:</h2>
+                <p>Gráficos transformam dados complexos em representações visuais fáceis de entender, como barras, linhas ou pizza.</p>
+                <ol>
+                    <li>Posicione o cursor onde deseja inserir o gráfico.</li>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Gráfico</strong> e escolha o tipo (Barras, Colunas, Linhas, Pizza). Você pode importar dados do Google Sheets ou criar um novo.</li>
+                    <li>Após inserir, clique no gráfico e depois em <strong>"Abrir origem"</strong> (ícone de planilha) para editar os dados no Google Sheets.</li>
+                    <li>Para formatar o gráfico, clique nele e depois em <strong>"Opções de gráfico"</strong> (ícone de três pontos verticais ou barra lateral que aparece). A barra lateral permite personalizar cores, títulos, legendas e muito mais.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig10.png" alt="Opções de gráfico no Google Docs">
+                </div>
+            </div>
+
+            <div class="slide">
+                <h1>Automatização: Sumário, Legendas</h1>
+                <p>Para documentos longos e complexos, as ferramentas de automatização do Google Docs são um diferencial, economizando tempo e garantindo precisão.</p>
+
+                <h2>Sumário Automático:</h2>
+                <p>Um sumário (ou índice) automático é gerado com base nos estilos de título aplicados ao seu documento (Título 1, Título 2, etc.).</p>
+                <ol>
+                    <li>Certifique-se de que seus títulos estão formatados com os estilos de parágrafo corretos (ex: Título 1, Título 2).</li>
+                    <li>Posicione o cursor onde deseja inserir o sumário (geralmente no início do documento).</li>
+                    <li>Vá em <strong>Inserir</strong> no menu superior.</li>
+                    <li>Selecione <strong>Sumário</strong>.</li>
+                    <li>Escolha o estilo de sumário desejado (com ou sem números de página, com links).</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig11.png" alt="Menu Inserir com opções de Sumário">
+                </div>
+
+                <h2>Legendas para Imagens, Tabelas e Gráficos:</h2>
+                <p>Adicionar legendas ajuda a contextualizar seus elementos visuais, tornando o documento mais informativo.</p>
+                <ol>
+                    <li>Insira a imagem, tabela ou gráfico no seu documento.</li>
+                    <li>Posicione o cursor logo abaixo ou acima do elemento.</li>
+                    <li>Digite a legenda desejada. Embora o Google Docs não tenha uma função de "Inserir Legenda" automática como alguns outros processadores de texto, você pode formatar o texto da legenda para que se destaque e fique associado ao elemento (ex: usar um estilo de texto menor, itálico).</li>
+                </ol>
+            </div>
+
+            <div class="slide">
+                <h1>Colaboração e Revisão</h1>
+                <p>O Google Docs possui ferramentas de colaboração que permitem que equipes trabalhem juntas, revisem documentos e gerenciem permissões de acesso.</p>
+
+                <h2>Compartilhamento de Documentos e Controle de Acesso:</h2>
+                <p>Compartilhar é o primeiro passo para a colaboração. Você pode controlar quem vê e edita seu documento.</p>
+                <ol>
+                    <li>Clique no botão <strong>Compartilhar</strong> no canto superior direito da tela.</li>
+                    <li>Na caixa de diálogo, você pode:
+                        <ul>
+                            <li><strong>Adicionar pessoas e grupos:</strong> Digite e-mails e defina a permissão (Leitor, Comentador, Editor).</li>
+                            <li><strong>Obter link:</strong> Crie um link compartilhável e defina a permissão para qualquer pessoa com o link (Restrito, Qualquer pessoa com o link).</li>
+                        </ul>
+                    </li>
+                    <li>Clique em <strong>Concluído</strong> ou <strong>Enviar</strong>.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig12.png" alt="Caixa de diálogo de compartilhamento do Google Docs com opções de permissão">
+                </div>
+
+                <h2>Comentários e Sugestões Colaborativas:</h2>
+                <p>Facilite a revisão e o feedback com comentários e o modo de sugestões.</p>
+                <h3>Comentários:</h3>
+                <ol>
+                    <li>Selecione o texto sobre o qual deseja comentar.</li>
+                    <li>Clique no ícone de <strong>Adicionar comentário</strong> (um balão de fala com um sinal de mais) na barra de ferramentas ou no menu lateral que aparece.</li>
+                    <li>Digite seu comentário na caixa e clique em <strong>Comentar</strong>.</li>
+                    <li>Outros colaboradores podem responder aos comentários ou marcá-los como resolvidos.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig14.png" alt="Documento no Google Docs com sugestão e opções de aceitar/rejeitar">
+                </div>
+
+                <h3>Modo de Sugestões:</h3>
+                <p>Em vez de editar diretamente, você pode sugerir alterações que o proprietário do documento pode aceitar ou rejeitar.</p>
+                <ol>
+                    <li>No canto superior direito, ao lado do botão "Compartilhar", clique no menu suspenso que geralmente diz "Edição".</li>
+                    <li>Selecione <strong>Sugestão</strong>.</li>
+                    <li>Qualquer alteração que você fizer agora aparecerá como uma sugestão, destacada em uma cor diferente, com um comentário lateral.</li>
+                    <li>O proprietário ou outros editores podem clicar na sugestão para <strong>Aceitar</strong> ou <strong>Rejeitar</strong>.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig15.png" alt="Documento no Google Docs com sugestão e opções de aceitar/rejeitar">
+                </div>
+
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig16.png" alt="Documento no Google Docs com sugestão e opções de aceitar/rejeitar">
+                </div>
+
+                <h2>Ferramentas de Revisão Essenciais:</h2>
+                <p>Antes de finalizar, use as ferramentas integradas para garantir a qualidade do seu texto.</p>
+                <h3>Verificação Ortográfica e Gramatical:</h3>
+                <ol>
+                    <li>Vá em <strong>Ferramentas</strong> no menu superior.</li>
+                    <li>Selecione <strong>Ortografia e gramática</strong> e, em seguida, <strong>Verificação ortográfica e gramatical</strong>.</li>
+                    <li>O Docs passará pelo seu documento, destacando possíveis erros e oferecendo sugestões de correção.</li>
+                </ol>
+                <h3>Contagem de Palavras:</h3>
+                <p>Útil para requisitos de comprimento de texto.</p>
+                <ol>
+                    <li>Vá em <strong>Ferramentas</strong> no menu superior.</li>
+                    <li>Selecione <strong>Contagem de palavras</strong>.</li>
+                    <li>Uma pequena janela mostrará o número de palavras, caracteres (sem e com espaços) e páginas do documento. Você pode marcar a opção "Exibir contagem de palavras ao digitar" para vê-la em tempo real.</li>
+                </ol>
+                <div class="image-placeholder">
+                    <img src="imgs_docs/fig13.png" alt="Menu Ferramentas do Google Docs">
+                    <p style="font-size: 0.8em; text-align: center; margin-top: 5px;"><em>Menu "Ferramentas" onde se encontram as opções de revisão.</em></p>
+                </div>
+            </div> 
+        </div>
+        <div id="controls">
+            <button id="prevBtn">Anterior</button>
+            <button id="nextBtn">Próximo</button>
+        </div>
+    </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlideIndex = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    if (i === index) {
+                        slide.classList.add('active');
+                    }
+                });
+                updateButtons();
+            }
+
+            function updateButtons() {
+                prevBtn.disabled = currentSlideIndex === 0;
+                nextBtn.disabled = currentSlideIndex === slides.length - 1;
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlideIndex > 0) {
+                    currentSlideIndex--;
+                    showSlide(currentSlideIndex);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlideIndex < slides.length - 1) {
+                    currentSlideIndex++;
+                    showSlide(currentSlideIndex);
+                }
+            });
+
+            // Initialize presentation
+            showSlide(currentSlideIndex);
+        });
+    </script>
+</body>
+</html>
