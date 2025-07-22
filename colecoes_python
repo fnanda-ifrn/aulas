@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula sobre Coleções em Python</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff; /* Azul claro para o fundo */
+            color: #333;
+        }
+        .slide {
+            width: 800px; /* Largura fixa */
+            height: 600px; /* Altura fixa */
+            margin: 20px auto;
+            padding: 30px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            display: none;
+            overflow-y: auto; /* Adiciona scroll se o conteúdo for muito longo */
+        }
+        .active {
+            display: block;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #5dade2; /* Azul mais claro */
+            padding-bottom: 10px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #3498db; /* Azul mais claro */
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            border-left: 4px solid #5dade2; /* Azul mais claro */
+        }
+        .example {
+            background-color: #eaf2f8; /* Azul bem claro */
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+        .nav {
+            text-align: center;
+            margin: 20px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .tip {
+            background-color: #fffde7;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #ffd600;
+            margin: 10px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #5dade2; /* Azul mais claro */
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .comparison-box {
+            width: 48%;
+            background-color: #eaf2f8; /* Azul bem claro */
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #d1e7dd;
+        }
+        .exercise {
+            background-color: #e6f7e6;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #2ecc71;
+        }
+        .cover {
+            text-align: center;
+            background: linear-gradient(135deg, #5dade2, #3498db); /* Azul mais claro */
+            color: white;
+            padding: 50px 30px;
+            border-radius: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .cover h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            border: none;
+            color: white;
+        }
+        .cover h2 {
+            font-size: 1.8em;
+            color: #ecf0f1;
+        }
+        .cover p {
+            font-size: 1.2em;
+            margin-top: 30px;
+        }
+        .python-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="%23FFD43B" d="M15.885,2.1c-7.1,0-6.651,3.07-6.651,3.07V8.36h6.752v1H5.545S2,7.8,2,15.99s3.013,7.9,3.013,7.9h2.707V19.66c0-3.812,3.58-3.495,3.58-3.495h6.633c1.765,0,1.72-.93,1.72-1.61V5.6S23.137,2.1,15.885,2.1Zm-4.7,2.24a1.28,1.28,0,1,1-1.258,1.28A1.269,1.269,0,0,1,11.183,4.34Z"/><path fill="%232D5D8F" d="M16.049,29.91c7.1,0,6.651-3.07,6.651-3.07V23.65H15.948v-1h9.441S29,24.22,29,16.03s-3.013-7.9-3.013-7.9H23.28V12.34c0,3.812-3.58,3.495-3.58,3.495H13.067c-1.765,0-1.72.93-1.72,1.61v8.95S8.863,29.91,16.049,29.91Zm4.7-2.24a1.28,1.28,0,1,1,1.258-1.28A1.269,1.269,0,0,1,20.749,27.67Z"/><path fill="%23FFD43B" d="M12.283,12.21a.79.79,0,0,1-.785.79.79.79,0,0,1-.785-.79.79.79,0,0,1,.785-.79A.79.79,0,0,1,12.283,12.21Z"/><path fill="%232D5D8F" d="M20.717,19.79a.79.79,0,0,1,.785-.79.79.79,0,0,1,.785.79.79.79,0,0,1-.785.79A.79.79,0,0,1,20.717,19.79Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="slide active">
+    <div class="cover">
+        <div class="python-logo"></div>
+        <h1>Coleções em Python</h1>
+        <h2>Listas, Tuplas, Dicionários e Conjuntos</h2>
+        <p>INFO2M - Programação Orientada a Objetos</p>
+        <p>Profa. Fernanda Lígia</p>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Introdução às Coleções em Python</h1>
+    <p>Bem-vindos à aula sobre coleções em Python! Hoje vamos aprender sobre estruturas de dados fundamentais para organizar e manipular informações.</p>
+    
+    <div class="example">
+        <h3>O que são coleções?</h3>
+        <p>Coleções são estruturas de dados que nos permitem armazenar múltiplos valores em uma única variável.</p>
+        <p>Imagine uma caixa onde você pode guardar vários itens - é isso que uma coleção faz no Python!</p>
+    </div>
+    
+    <div class="tip">
+        <p><strong>Por que usar coleções?</strong> Elas nos ajudam a organizar dados, facilitam operações repetitivas e tornam nosso código mais eficiente.</p>
+    </div>
+    
+    <h2>Tipos de Coleções que veremos hoje:</h2>
+    <ul>
+        <li>Listas</li>
+        <li>Tuplas</li>
+        <li>Dicionários</li>
+        <li>Conjuntos</li>
+    </ul>
+</div>
+
+<div class="slide">
+    <h1>Listas em Python</h1>
+    
+    <p>Listas são coleções ordenadas e mutáveis (podemos alterar seus elementos após a criação).</p>
+    
+    <div class="code">
+        # Criando uma lista<br>
+        frutas = ["maçã", "banana", "laranja", "uva"]<br>
+        numeros = [1, 2, 3, 4, 5]<br>
+        misturado = [10, "texto", True, 3.14]
+    </div>
+    
+    <div class="example">
+        <h3>Características das Listas:</h3>
+        <ul>
+            <li>São ordenadas (mantêm a ordem dos elementos)</li>
+            <li>Podem conter itens de tipos diferentes</li>
+            <li>Podem ser alteradas após a criação (mutáveis)</li>
+            <li>Permitem itens duplicados</li>
+        </ul>
+    </div>
+    
+    <div class="code">
+        # Acessando elementos (o primeiro item tem índice 0)<br>
+        print(frutas[0])  # maçã<br>
+        print(frutas[2])  # laranja<br><br>
+        
+        # Alterando um elemento<br>
+        frutas[1] = "morango"<br>
+        print(frutas)  # ["maçã", "morango", "laranja", "uva"]
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Operações com Listas</h1>
+    
+    <div class="code">
+        # Adicionando elementos<br>
+        frutas.append("abacaxi")  # Adiciona no final<br>
+        frutas.insert(1, "kiwi")  # Insere na posição 1<br><br>
+        
+        # Removendo elementos<br>
+        frutas.remove("laranja")  # Remove pelo valor<br>
+        frutas.pop(2)  # Remove pelo índice<br><br>
+        
+        # Tamanho da lista<br>
+        print(len(frutas))  # Mostra quantos itens tem<br><br>
+        
+        # Verificando existência<br>
+        if "banana" in frutas:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;print("Tem banana!")
+    </div>
+    
+    <div class="exercise">
+        <h3>Exercício Prático:</h3>
+        <p>Crie uma lista com os nomes de 5 amigos. Depois:</p>
+        <ol>
+            <li>Adicione um novo amigo</li>
+            <li>Remova o segundo amigo da lista</li>
+            <li>Verifique se seu melhor amigo está na lista</li>
+            <li>Mostre quantos amigos há na lista agora</li>
+        </ol>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Tuplas em Python</h1>
+    
+    <p>Tuplas são semelhantes às listas, mas são imutáveis (não podem ser alteradas após a criação).</p>
+    
+    <div class="code">
+        # Criando uma tupla<br>
+        coordenadas = (10, 20)<br>
+        cores = ("vermelho", "verde", "azul")<br>
+        misturado = (1, "texto", True)<br><br>
+        
+        # Acessando elementos<br>
+        print(cores[1])  # verde<br><br>
+        
+        # Tentativa de alteração (gera erro)<br>
+        # cores[1] = "amarelo"  # TypeError
+    </div>
+    
+    <div class="example">
+        <h3>Quando usar tuplas?</h3>
+        <ul>
+            <li>Quando os dados não devem ser alterados</li>
+            <li>Para garantir que os dados permaneçam consistentes</li>
+            <li>Quando precisamos de coleções mais eficientes (tuplas são mais rápidas que listas)</li>
+        </ul>
+    </div>
+    
+    <div class="tip">
+        <p><strong>Curiosidade:</strong> Tuplas com um único elemento precisam de uma vírgula no final: <code>tupla = (1,)</code></p>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Dicionários em Python</h1>
+    
+    <p>Dicionários armazenam pares de chave-valor e são muito úteis para dados organizados.</p>
+    
+    <div class="code">
+        # Criando um dicionário<br>
+        aluno = {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;"nome": "João Silva",<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;"idade": 16,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;"turma": "2ºA",<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;"notas": [7.5, 8.0, 6.5]<br>
+        }<br><br>
+        
+        # Acessando valores<br>
+        print(aluno["nome"])  # João Silva<br>
+        print(aluno.get("idade"))  # 16<br><br>
+        
+        # Adicionando/alterando valores<br>
+        aluno["escola"] = "Escola Técnica"<br>
+        aluno["idade"] = 17
+    </div>
+    
+    <div class="example">
+        <h3>Características dos Dicionários:</h3>
+        <ul>
+            <li>Não ordenados (antes do Python 3.7)</li>
+            <li>Mutáveis (podemos alterar, adicionar ou remover itens)</li>
+            <li>Não permitem chaves duplicadas</li>
+            <li>Chaves devem ser imutáveis (strings, números ou tuplas)</li>
+        </ul>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Operações com Dicionários</h1>
+    
+    <div class="code">
+        # Removendo itens<br>
+        aluno.pop("turma")  # Remove pelo nome da chave<br>
+        del aluno["idade"]  # Outra forma de remover<br><br>
+        
+        # Verificando existência de chave<br>
+        if "notas" in aluno:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;print("Tem informações de notas")<br><br>
+        
+        # Percorrendo o dicionário<br>
+        for chave, valor in aluno.items():<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;print(f"{chave}: {valor}")<br><br>
+        
+        # Listando todas as chaves<br>
+        print(aluno.keys())<br><br>
+        
+        # Listando todos os valores<br>
+        print(aluno.values())
+    </div>
+    
+    <div class="exercise">
+        <h3>Exercício Prático:</h3>
+        <p>Crie um dicionário representando um celular com:</p>
+        <ul>
+            <li>Marca</li>
+            <li>Modelo</li>
+            <li>Ano de fabricação</li>
+            <li>Preço</li>
+            <li>Acessórios (lista com pelo menos 3 itens)</li>
+        </ul>
+        <p>Depois:</p>
+        <ol>
+            <li>Adicione uma nova chave "cor"</li>
+            <li>Remova a chave "preço"</li>
+            <li>Verifique se "bateria" está nos acessórios</li>
+        </ol>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Conjuntos em Python</h1>
+    
+    <p>Conjuntos (sets) são coleções não ordenadas de itens únicos (não permitem duplicatas).</p>
+    
+    <div class="code">
+        # Criando um conjunto<br>
+        numeros = {1, 2, 3, 4, 5}<br>
+        letras = set(["a", "b", "c", "a"])  # {'a', 'b', 'c'}<br><br>
+        
+        # Adicionando elementos<br>
+        numeros.add(6)<br>
+        numeros.update([7, 8, 9])<br><br>
+        
+        # Removendo elementos<br>
+        numeros.remove(3)  # Gera erro se o elemento não existir<br>
+        numeros.discard(10)  # Não gera erro<br><br>
+        
+        # Operações matemáticas<br>
+        a = {1, 2, 3}<br>
+        b = {3, 4, 5}<br>
+        print(a.union(b))  # {1, 2, 3, 4, 5}<br>
+        print(a.intersection(b))  # {3}
+    </div>
+    
+    <div class="example">
+        <h3>Quando usar conjuntos?</h3>
+        <ul>
+            <li>Para remover duplicatas de uma lista</li>
+            <li>Para testar pertinência de forma eficiente</li>
+            <li>Para operações matemáticas de conjuntos (união, interseção, etc.)</li>
+        </ul>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Comparando as Coleções</h1>
+    
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3>Listas</h3>
+            <ul>
+                <li>Ordenadas</li>
+                <li>Mutáveis</li>
+                <li>Permite duplicatas</li>
+                <li>Sintaxe: [ ]</li>
+                <li>Uso: Quando a ordem e a mutabilidade são importantes</li>
+            </ul>
+        </div>
+        
+        <div class="comparison-box">
+            <h3>Tuplas</h3>
+            <ul>
+                <li>Ordenadas</li>
+                <li>Imutáveis</li>
+                <li>Permite duplicatas</li>
+                <li>Sintaxe: ( )</li>
+                <li>Uso: Quando os dados não devem mudar</li>
+            </ul>
+        </div>
+        
+        <div class="comparison-box">
+            <h3>Dicionários</h3>
+            <ul>
+                <li>Não ordenados (antes do Python 3.7)</li>
+                <li>Mutáveis</li>
+                <li>Chaves únicas</li>
+                <li>Sintaxe: { }</li>
+                <li>Uso: Para dados nomeados/identificados</li>
+            </ul>
+        </div>
+        
+        <div class="comparison-box">
+            <h3>Conjuntos</h3>
+            <ul>
+                <li>Não ordenados</li>
+                <li>Mutáveis</li>
+                <li>Elementos únicos</li>
+                <li>Sintaxe: { }</li>
+                <li>Uso: Para operações matemáticas ou eliminar duplicatas</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Exercícios de Fixação</h1>
+    
+    <div class="exercise">
+        <h3>Exercício 1: Lista de Compras</h3>
+        <p>Crie um programa que:</p>
+        <ol>
+            <li>Pergunte ao usuário 5 itens para comprar no mercado</li>
+            <li>Armazene esses itens em uma lista</li>
+            <li>Mostre a lista completa</li>
+            <li>Pergunte se quer remover algum item e faça isso</li>
+            <li>Mostre a lista final</li>
+        </ol>
+    </div>
+    
+    <div class="exercise">
+        <h3>Exercício 2: Cadastro de Alunos</h3>
+        <p>Crie um programa que:</p>
+        <ol>
+            <li>Armazene informações de 3 alunos em uma lista de dicionários</li>
+            <li>Cada aluno deve ter nome, idade e notas (lista com 3 notas)</li>
+            <li>Calcule a média de cada aluno e adicione ao dicionário</li>
+            <li>Mostre todos os dados dos alunos</li>
+        </ol>
+    </div>
+    
+    <div class="exercise">
+        <h3>Exercício 3: Análise de Texto</h3>
+        <p>Crie um programa que:</p>
+        <ol>
+            <li>Pergunte ao usuário para digitar uma frase</li>
+            <li>Conte quantas palavras diferentes existem na frase (dica: use conjunto)</li>
+            <li>Mostre quais palavras foram repetidas</li>
+        </ol>
+    </div>
+</div>
+
+<div class="slide">
+    <h1>Resumo e Conclusão</h1>
+    
+    <h2>O que aprendemos hoje?</h2>
+    <ul>
+        <li>Listas: coleções ordenadas e mutáveis [ ]</li>
+        <li>Tuplas: coleções ordenadas e imutáveis ( )</li>
+        <li>Dicionários: pares chave-valor { }</li>
+        <li>Conjuntos: coleções de itens únicos { }</li>
+    </ul>
+    
+    <div class="tip">
+        <p><strong>Dica:</strong> Escolha a coleção certa para cada situação:</p>
+        <ul>
+            <li>Precisa de ordem e poder mudar? → Lista</li>
+            <li>Dados fixos que não mudam? → Tupla</li>
+            <li>Dados com identificadores? → Dicionário</li>
+            <li>Precisa garantir unicidade? → Conjunto</li>
+        </ul>
+    </div>
+    
+    <h2>Próximos passos:</h2>
+    <p>Pratique criando pequenos programas usando cada tipo de coleção. A prática é essencial para fixar o conhecimento!</p>
+</div>
+
+<div class="nav">
+    <button onclick="previousSlide()">Anterior</button>
+    <button onclick="nextSlide()">Próximo</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    
+    function showSlide(n) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        currentSlide = (n + slides.length) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }
+    
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+    
+    function previousSlide() {
+        showSlide(currentSlide - 1);
+    }
+    
+    // Navegação por teclado
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            previousSlide();
+        }
+    });
+</script>
+
+</body>
+</html>
