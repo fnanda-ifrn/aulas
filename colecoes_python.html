@@ -402,7 +402,7 @@
 </div>
 
 <div class="slide">
-    <h1>Operações com Dicionários</h1>
+    <h1>Exemplos de Operações com Dicionários</h1>
     
     <div class="code">
         # Removendo itens<br>
@@ -440,6 +440,264 @@
             <li>Remova a chave "preço"</li>
             <li>Verifique se "bateria" está nos acessórios</li>
         </ol>
+    </div>
+</div>
+<!-- Slide 1: Introdução aos Dicionários -->
+<div class="slide">
+    <h1>Mais detalhes sobre Dicionários em Python</h1>
+    <div class="example">
+        <h3>Características Principais:</h3>
+        <ul>
+            <li>Coleções <strong>não ordenadas</strong> (antes do Python 3.7)</li>
+            <li>Armazenam pares <code>chave: valor</code></li>
+            <li>Chaves devem ser <strong>imutáveis</strong> (strings, números ou tuplas)</li>
+            <li>Sintaxe: <code>{}</code> ou <code>dict()</code></li>
+        </ul>
+    </div>
+    <div class="code">
+        # Criação básica
+        aluno = {
+            "nome": "Maria",
+            "idade": 17,
+            "notas": [8.5, 9.0, 7.5]
+        }
+    </div>
+</div>
+
+<!-- Slide 2: Acesso a Valores -->
+<div class="slide">
+    <h1>Acessando Valores</h1>
+    <table>
+        <tr><th>Método</th><th>Descrição</th><th>Exemplo</th><th>Quando Usar</th></tr>
+        <tr>
+            <td><code>dict[chave]</code></td>
+            <td>Acesso direto</td>
+            <td><code>aluno["nome"]</code></td>
+            <td>Quando a chave existe</td>
+        </tr>
+        <tr>
+            <td><code>get()</code></td>
+            <td>Acesso seguro</td>
+            <td><code>aluno.get("turma", "2ºA")</code></td>
+            <td>Chaves opcionais (retorna <code>None</code> ou valor padrão)</td>
+        </tr>
+    </table>
+    <div class="tip">
+        <strong>Cuidado:</strong> <code>aluno["turma"]</code> gera <code>KeyError</code> se a chave não existir!
+    </div>
+</div>
+
+<!-- Slide 3: Modificação -->
+<div class="slide">
+    <h1>Adição e Atualização</h1>
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3>Atribuição Direta</h3>
+            <div class="code">
+                aluno["idade"] = 18  # Atualiza
+                aluno["turma"] = "3ºB"  # Adiciona nova chave
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>update()</code></h3>
+            <p>Atualiza múltiplos valores de uma vez:</p>
+            <div class="code">
+                aluno.update({
+                    "idade": 18,
+                    "escola": "Colégio Python"
+                })
+            </div>
+        </div>
+    </div>
+    <div class="exercise">
+        <p>Dado <code>produto = {"nome": "Tablet", "preco": 1200}</code>:</p>
+        <ol>
+            <li>Adicione a chave "marca" com valor "XPTO"</li>
+            <li>Atualize o preço para 1150</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Slide 4: Remoção -->
+<div class="slide">
+    <h1>Removendo Itens</h1>
+    <table>
+        <tr><th>Método</th><th>Descrição</th><th>Exemplo</th><th>Diferença</th></tr>
+        <tr>
+            <td><code>pop()</code></td>
+            <td>Remove e retorna o valor</td>
+            <td><code>idade = aluno.pop("idade")</code></td>
+            <td>Exige chave existente</td>
+        </tr>
+        <tr>
+            <td><code>popitem()</code></td>
+            <td>Remove último item (Python 3.7+)</td>
+            <td><code>chave, valor = aluno.popitem()</code></td>
+            <td>Útil em loops</td>
+        </tr>
+        <tr>
+            <td><code>del</code></td>
+            <td>Remove por chave</td>
+            <td><code>del aluno["notas"]</code></td>
+            <td>Não retorna o valor</td>
+        </tr>
+        <tr>
+            <td><code>clear()</code></td>
+            <td>Esvazia o dicionário</td>
+            <td><code>aluno.clear()</code></td>
+            <td>Resultado: {}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Slide 5: Iteração -->
+<div class="slide">
+    <h1>Percorrendo Dicionários</h1>
+    <div class="code">
+        cadastro = {
+            "001": "Ana",
+            "002": "Carlos",
+            "003": "Maria"
+        }
+    </div>
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3><code>keys()</code></h3>
+            <p>Somente chaves:</p>
+            <div class="code">
+                for matricula in cadastro.keys():
+                    print(matricula)  # "001", "002", "003"
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>values()</code></h3>
+            <p>Somente valores:</p>
+            <div class="code">
+                for nome in cadastro.values():
+                    print(nome)  # "Ana", "Carlos", "Maria"
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>items()</code></h3>
+            <p>Pares completos:</p>
+            <div class="code">
+                for matricula, nome in cadastro.items():
+                    print(f"{matricula}: {nome}")
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6: Verificações -->
+<div class="slide">
+    <h1>Verificações Importantes</h1>
+    <div class="code">
+        estoque = {"notebook": 5, "tablet": 3, "celular": 0}
+    </div>
+    <table>
+        <tr><th>Operação</th><th>Exemplo</th><th>Uso</th></tr>
+        <tr>
+            <td>Existência de chave</td>
+            <td><code>"tablet" in estoque</code></td>
+            <td>Verificação rápida</td>
+        </tr>
+        <tr>
+            <td>Existência de valor</td>
+            <td><code>0 in estoque.values()</code></td>
+            <td>Busca em valores</td>
+        </tr>
+        <tr>
+            <td>Tamanho</td>
+            <td><code>len(estoque)</code></td>
+            <td>Conta pares chave-valor</td>
+        </tr>
+    </table>
+    <div class="tip">
+        <strong>Dica:</strong> <code>not estoque</code> verifica se o dicionário está vazio!
+    </div>
+</div>
+
+<!-- Slide 7: Cópia e Fusão -->
+<div class="slide">
+    <h1>Cópia e Fusão (Python 3.9+)</h1>
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3><code>copy()</code></h3>
+            <p>Cópia superficial:</p>
+            <div class="code">
+                novo_estoque = estoque.copy()
+                novo_estoque["mouse"] = 10
+                # estoque original não é alterado
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3>Operador <code>|</code></h3>
+            <p>Fusão (Python 3.9+):</p>
+            <div class="code">
+                defaults = {"cor": "preto", "garantia": 12}
+                produto = {"nome": "Tablet", "cor": "prata"}
+                completo = defaults | produto  # {"cor": "prata", "garantia": 12, "nome": "Tablet"}
+            </div>
+        </div>
+    </div>
+    <div class="example">
+        <p><strong>Observação:</strong> Em versões anteriores, use <code>{**dict1, **dict2}</code></p>
+    </div>
+</div>
+
+<!-- Slide 8: Métodos Úteis -->
+<div class="slide">
+    <h1>Métodos Especiais</h1>
+    <table>
+        <tr><th>Método</th><th>Descrição</th><th>Exemplo</th></tr>
+        <tr>
+            <td><code>setdefault()</code></td>
+            <td>Retorna valor se chave existe, caso contrário insere com valor padrão</td>
+            <td><code>aluno.setdefault("turma", "1ºA")</code></td>
+        </tr>
+        <tr>
+            <td><code>fromkeys()</code></td>
+            <td>Cria novo dicionário com chaves e valor padrão</td>
+            <td><code>dict.fromkeys(["a", "b"], 0)</code> → <code>{"a": 0, "b": 0}</code></td>
+        </tr>
+    </table>
+    <div class="code">
+        # Exemplo prático de setdefault()
+        contatos = {}
+        contatos.setdefault("Ana", []).append("(11) 9999-8888")
+        # Se "Ana" não existir, cria com lista vazia antes de append
+    </div>
+</div>
+
+<!-- Slide 9: Aplicação Prática -->
+<div class="slide">
+    <h1>Exercício: Sistema de Notas</h1>
+    <div class="exercise">
+        <p>Dado:</p>
+        <div class="code">
+            alunos = {
+                "101": {"nome": "Ana", "notas": [7.5, 8.0]},
+                "102": {"nome": "Carlos", "notas": [6.0, 5.5]}
+            }
+        </div>
+        <ol>
+            <li>Adicione uma nova nota 9.0 para a aluna "Ana"</li>
+            <li>Crie um novo aluno "103" chamado "Maria" com notas [8.5, 7.0]</li>
+            <li>Remova o aluno "102" armazenando seus dados em uma variável</li>
+            <li>Calcule a média de cada aluno e adicione como nova chave "media"</li>
+        </ol>
+    </div>
+    <div class="tip">
+        <strong>Solução parcial:</strong>
+        <div class="code">
+            # Item 1
+            alunos["101"]["notas"].append(9.0)
+            
+            # Item 4 (Dica)
+            for matricula, dados in alunos.items():
+                media = sum(dados["notas"]) / len(dados["notas"])
+                dados["media"] = round(media, 1)
+        </div>
     </div>
 </div>
 
