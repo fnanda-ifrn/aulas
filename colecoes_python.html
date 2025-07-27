@@ -723,6 +723,198 @@
         </ul>
     </div>
 </div>
+    <!-- Slide 1: Introdução aos Conjuntos -->
+<div class="slide">
+    <h1>Operações com Conjuntos em Python</h1>
+    <div class="example">
+        <h3>Características dos Conjuntos:</h3>
+        <ul>
+            <li>Coleções <strong>não ordenadas</strong> de elementos <strong>únicos</strong></li>
+            <li>Implementam operações matemáticas de conjuntos</li>
+            <li>Sintaxe: <code>{}</code> ou <code>set()</code></li>
+        </ul>
+    </div>
+    <div class="code">
+        # Criação básica
+        frutas = {"maçã", "banana", "laranja"}
+        numeros = set([1, 2, 3, 2])  # {1, 2, 3} (remove duplicatas)
+    </div>
+</div>
+
+<!-- Slide 2: add() e update() -->
+<div class="slide">
+    <h1>Adição de Elementos</h1>
+    <table>
+        <tr><th>Função</th><th>Descrição</th><th>Exemplo</th></tr>
+        <tr>
+            <td><code>add()</code></td>
+            <td>Adiciona um único elemento</td>
+            <td><code>frutas.add("uva")</code></td>
+        </tr>
+        <tr>
+            <td><code>update()</code></td>
+            <td>Adiciona múltiplos elementos</td>
+            <td><code>frutas.update(["morango", "abacaxi"])</code></td>
+        </tr>
+    </table>
+    <div class="code">
+        antes = {"maçã", "banana"}
+        antes.add("kiwi")       # {"maçã", "banana", "kiwi"}
+        antes.update([1, 2])   # {"maçã", "banana", "kiwi", 1, 2}
+    </div>
+</div>
+
+<!-- Slide 3: remove() e discard() -->
+<div class="slide">
+    <h1>Remoção de Elementos</h1>
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3><code>remove()</code></h3>
+            <ul>
+                <li>Remove elemento se existir</li>
+                <li><strong>Erro</strong> se o elemento não existir</li>
+            </ul>
+            <div class="code">
+                conj = {1, 2, 3}
+                conj.remove(2)  # {1, 3}
+                conj.remove(5)  # KeyError
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>discard()</code></h3>
+            <ul>
+                <li>Remove elemento se existir</li>
+                <li><strong>Não causa erro</strong> se não existir</li>
+            </ul>
+            <div class="code">
+                conj = {1, 2, 3}
+                conj.discard(2)  # {1, 3}
+                conj.discard(5)  # Nada acontece
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: Operações Matemáticas -->
+<div class="slide">
+    <h1>Operações Entre Conjuntos</h1>
+    <div class="code">
+        A = {1, 2, 3}
+        B = {3, 4, 5}
+    </div>
+    <table>
+        <tr><th>Operação</th><th>Símbolo</th><th>Método</th><th>Resultado</th></tr>
+        <tr>
+            <td>União</td>
+            <td><code>|</code></td>
+            <td><code>union()</code></td>
+            <td><code>{1, 2, 3, 4, 5}</code></td>
+        </tr>
+        <tr>
+            <td>Interseção</td>
+            <td><code>&</code></td>
+            <td><code>intersection()</code></td>
+            <td><code>{3}</code></td>
+        </tr>
+        <tr>
+            <td>Diferença</td>
+            <td><code>-</code></td>
+            <td><code>difference()</code></td>
+            <td><code>A-B → {1, 2}</code></td>
+        </tr>
+        <tr>
+            <td>Dif. Simétrica</td>
+            <td><code>^</code></td>
+            <td><code>symmetric_difference()</code></td>
+            <td><code>{1, 2, 4, 5}</code></td>
+        </tr>
+    </table>
+</div>
+
+<!-- Slide 5: Funções de Verificação -->
+<div class="slide">
+    <h1>Verificações em Conjuntos</h1>
+    <div class="code">
+        alunos = {"Ana", "Carlos", "Maria"}
+        grupo = {"Maria", "Pedro"}
+    </div>
+    <table>
+        <tr><th>Função</th><th>Descrição</th><th>Exemplo</th><th>Retorno</th></tr>
+        <tr>
+            <td><code>issubset()</code></td>
+            <td>Todos os elementos estão no outro?</td>
+            <td><code>grupo.issubset(alunos)</code></td>
+            <td><code>False</code></td>
+        </tr>
+        <tr>
+            <td><code>issuperset()</code></td>
+            <td>Contém todos os elementos do outro?</td>
+            <td><code>alunos.issuperset(grupo)</code></td>
+            <td><code>False</code></td>
+        </tr>
+        <tr>
+            <td><code>isdisjoint()</code></td>
+            <td>Não há elementos em comum?</td>
+            <td><code>alunos.isdisjoint(grupo)</code></td>
+            <td><code>False</code></td>
+        </tr>
+    </table>
+</div>
+
+<!-- Slide 6: Outras Funções Úteis -->
+<div class="slide">
+    <h1>Outras Operações com Conjuntos</h1>
+    <div class="code">
+        cores = {"azul", "verde", "vermelho"}
+    </div>
+    <div class="comparison">
+        <div class="comparison-box">
+            <h3><code>len()</code></h3>
+            <p>Conta elementos</p>
+            <div class="code">
+                len(cores)  # Retorna 3
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>copy()</code></h3>
+            <p>Cria cópia superficial</p>
+            <div class="code">
+                novas_cores = cores.copy()
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>clear()</code></h3>
+            <p>Esvazia o conjunto</p>
+            <div class="code">
+                cores.clear()  # set()
+            </div>
+        </div>
+        <div class="comparison-box">
+            <h3><code>in</code></h3>
+            <p>Verifica existência</p>
+            <div class="code">
+                "azul" in cores  # True
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7: Aplicação Prática -->
+<div class="slide">
+    <h1>Exercício: Filtragem de Dados</h1>
+    <div class="exercise">
+        <p>Dados:</p>
+        <div class="code">
+            usuarios_total = {"Ana", "Carlos", "Maria", "Pedro", "Luiza"}
+            usuarios_ativos = {"Carlos", "Luiza", "Marcos"}
+        </div>
+        <ol>
+            <li>Encontre os usuários inativos (presentes em <code>usuarios_total</code> mas não em <code>usuarios_ativos</code>)</li>
+            <li>Verifique se há usuários novos (presentes em <code>usuarios_ativos</code> mas não no cadastro total)</li>
+            <li>Crie um conjunto com todos os usuários únicos</li>
+        </ol>
+    </div>
+</div>
 
 <div class="slide">
     <h1>Comparando as Coleções</h1>
