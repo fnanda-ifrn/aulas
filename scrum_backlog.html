@@ -556,143 +556,113 @@
         </div>           
     </div>
 
-    <!-- Slide 6: Sprint Planning -->
+   <!-- Slide 6: Sprint Planning -->
     <div class="slide" id="slide6">
-        <div class="slide-number">6/9</div>
         <h1>Sprint Planning</h1>
-        <h2>Planejamento para resultados</h2>
+        <h2>Como planejar uma sprint de 2 semanas</h2>
         
-        <div style="display: flex; gap: 20px; margin-top: 30px;">
-            <div style="flex: 1; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                <h3 style="margin-top: 0; color: var(--primary);">Objetivo da Sprint</h3>
-                <p>"Implementar autenticação básica e cadastro de livros"</p>
-                
-                <div style="margin-top: 20px;">
-                    <h4 style="color: var(--dark);">User Stories</h4>
-                    <ul>
-                        <li>US01 - Login (5pts)</li>
-                        <li>US02 - Cadastro (8pts)</li>
-                    </ul>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <h4 style="color: var(--dark);">Capacidade</h4>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div style="flex: 1; background: rgba(0,0,0,0.05); height: 10px; border-radius: 5px;">
-                            <div style="width: 65%; height: 100%; background: linear-gradient(to right, var(--primary), var(--accent)); border-radius: 5px;"></div>
-                        </div>
-                        <span>13/20 pontos</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="flex: 1;">
-                <h3 style="margin-top: 0; color: var(--primary);">Sprint Backlog</h3>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tarefa</th>
-                                <th>Responsável</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Tabela usuários</td>
-                                <td><span class="tag tag-backend">João</span></td>
-                                <td class="status-done">Concluído</td>
-                            </tr>
-                            <tr>
-                                <td>API Autenticação</td>
-                                <td><span class="tag tag-backend">João</span></td>
-                                <td class="status-done">Concluído</td>
-                            </tr>
-                            <tr>
-                                <td>Página login</td>
-                                <td><span class="tag tag-frontend">Maria</span></td>
-                                <td class="status-progress">Em andamento</td>
-                            </tr>
-                            <tr>
-                                <td>Modelo Livro</td>
-                                <td><span class="tag tag-backend">Carlos</span></td>
-                                <td class="status-done">Concluído</td>
-                            </tr>
-                            <tr>
-                                <td>Formulário cadastro</td>
-                                <td><span class="tag tag-frontend">Ana</span></td>
-                                <td class="status-progress">Em andamento</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="example">
+            <h3>Passos:</h3>
+            <ol>
+                <li><strong>Definir objetivo:</strong> "Implementar autenticação básica"</li>
+                <li><strong>Selecionar itens:</strong> US01 (5pts) + US02 (8pts)</li>
+                <li><strong>Quebrar em tarefas:</strong></li>
+            </ol>
+        </div>
+        
+        <h3>Exemplo: Sprint Backlog</h3>
+        <table>
+            <tr>
+                <th>User Story</th>
+                <th>Tarefas</th>
+                <th>Responsável</th>
+                <th>Estimativa</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td rowspan="3" class="status-done">US01 (Login)</td>
+                <td>Criar tabela `usuarios`</td>
+                <td>João (Backend)</td>
+                <td>4h</td>
+                <td class="status-done">✔️ Concluído</td>
+            </tr>
+            <tr>
+                <td>Desenvolver API de autenticação</td>
+                <td>João (Backend)</td>
+                <td>3h</td>
+                <td class="status-done">✔️ Concluído</td>
+            </tr>
+            <tr>
+                <td>Criar página de login</td>
+                <td>Maria (Frontend)</td>
+                <td>5h</td>
+                <td class="status-progress">⏳ Em andamento</td>
+            </tr>
+            <tr>
+                <td rowspan="4">US02 (Cadastro Livros)</td>
+                <td>Modelar entidade `Livro`</td>
+                <td>Carlos (Backend)</td>
+                <td>3h</td>
+                <td class="status-done">✔️ Concluído</td>
+            </tr>
+            <tr>
+                <td>Criar formulário de cadastro</td>
+                <td>Ana (Frontend)</td>
+                <td>6h</td>
+                <td class="status-progress">⏳ Em andamento</td>
+            </tr>
+        </table>
+        
+        <div class="example">
+            <p><strong>Progresso da Sprint:</strong> 18/30 horas completadas (60%)</p>
+            <p><strong>Pontos comprometidos:</strong> 13/20 (capacidade do time)</p>
         </div>
     </div>
 
     <!-- Slide 7: Quadro Kanban -->
     <div class="slide" id="slide7">
-        <div class="slide-number">7/9</div>
-        <h1>Quadro Kanban</h1>
-        <h2>Visualização do fluxo de trabalho</h2>
+        <h1>Quadro Kanban - Sprint 1</h1>
+        <h2>Status atual (Dia 5 da Sprint)</h2>
         
         <div class="kanban-board">
-            <div class="kanban-column" id="todo">
+            <div class="kanban-column">
                 <h4>A Fazer</h4>
                 <div class="kanban-item">
-                    <strong>US02-03:</strong> Validação ISBN
-                    <div><small class="tag tag-backend">Carlos (Backend)</small></div>
+                    <strong>US02-03:</strong> Validação ISBN<br>
+                    <small>Responsável: Carlos</small>
                 </div>
                 <div class="kanban-item">
-                    <strong>US02-04:</strong> Testes automatizados
-                    <div><small class="tag tag-qa">Pedro (QA)</small></div>
+                    <strong>US02-04:</strong> Testes automatizados<br>
+                    <small>Responsável: Pedro</small>
                 </div>
             </div>
-            <div class="kanban-column" id="doing">
+            <div class="kanban-column">
                 <h4>Em Progresso</h4>
                 <div class="kanban-item">
-                    <strong>US01-03:</strong> Página de login
-                    <div><small class="tag tag-frontend">Maria (Frontend)</small></div>
+                    <strong>US01-03:</strong> Página de login<br>
+                    <small>Responsável: Maria</small>
                 </div>
                 <div class="kanban-item">
-                    <strong>US02-02:</strong> Formulário cadastro
-                    <div><small class="tag tag-frontend">Ana (Frontend)</small></div>
+                    <strong>US02-02:</strong> Formulário cadastro<br>
+                    <small>Responsável: Ana</small>
                 </div>
             </div>
-            <div class="kanban-column" id="review">
+            <div class="kanban-column">
                 <h4>Revisão</h4>
                 <div class="kanban-item">
-                    <strong>US01-02:</strong> API Autenticação
-                    <div><small class="tag tag-backend">João (Backend)</small></div>
+                    <strong>US01-02:</strong> API Autenticação<br>
+                    <small>Responsável: João</small>
                 </div>
             </div>
-            <div class="kanban-column" id="done">
+            <div class="kanban-column">
                 <h4>Concluído</h4>
                 <div class="kanban-item">
-                    <strong>US01-01:</strong> Tabela usuários
-                    <div><small class="tag tag-backend">João (Backend)</small></div>
+                    <strong>US01-01:</strong> Tabela usuários<br>
+                    <small>Responsável: João</small>
                 </div>
                 <div class="kanban-item">
-                    <strong>US02-01:</strong> Modelo Livro
-                    <div><small class="tag tag-backend">Carlos (Backend)</small></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="example" style="margin-top: 30px;">
-            <h3>Progresso da Sprint</h3>
-            <div style="display: flex; gap: 15px; margin-top: 15px;">
-                <div style="flex: 1; text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">60%</div>
-                    <div>Horas completadas</div>
-                </div>
-                <div style="flex: 1; text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">5/8</div>
-                    <div>Tarefas concluídas</div>
-                </div>
-                <div style="flex: 1; text-align: center;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">2</div>
-                    <div>Bloqueios resolvidos</div>
+                    <strong>US02-01:</strong> Modelo Livro<br>
+                    <small>Responsável: Carlos</small>
                 </div>
             </div>
         </div>
@@ -701,7 +671,7 @@
     <!-- Slide 8: Ferramentas e Práticas -->
     <div class="slide" id="slide8">
         <div class="slide-number">8/9</div>
-        <h1>Ferramentas Premium</h1>
+        <h1>Alguns Exemplos de Ferramentas</h1>
         <h2>O ecossistema ágil profissional</h2>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
@@ -761,48 +731,24 @@
 
     <!-- Slide 9: Conclusão -->
     <div class="slide" id="slide9">
-        <div class="slide-number">9/9</div>
-        <h1>Jornada Ágil</h1>
-        <h2>Próximos passos para excelência</h2>
+        <h1>Conclusão e Próximos Passos</h1>
         
-        <div style="display: flex; gap: 30px; margin-top: 30px;">
-            <div style="flex: 1; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                <h3 style="margin-top: 0; color: var(--primary);">Checklist de Implementação</h3>
-                <ul>
-                    <li>Defina seu primeiro Product Backlog</li>
-                    <li>Realize um Sprint Planning real</li>
-                    <li>Monitore com um quadro Kanban</li>
-                    <li>Conduza uma retrospectiva</li>
-                </ul>
-                
-                <div style="margin-top: 30px;">
-                    <h4 style="color: var(--dark);">Recursos Recomendados</h4>
-                    <ul>
-                        <li>Scrum Guide (scrumguides.org)</li>
-                        <li>Livro: "Scrum - A Arte de Fazer o Dobro na Metade do Tempo"</li>
-                        <li>Cursos: Scrum.org, Udemy, Coursera</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div style="flex: 1; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 30px; border-radius: 12px; color: white;">
-                <h3 style="margin-top: 0;">Transformação Ágil</h3>
-                <p>Comece pequeno, pense grande:</p>
-                
-                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                    <h4 style="margin-top: 0;">1ª Sprint</h4>
-                    <ul>
-                        <li>Time-box de 1-2 semanas</li>
-                        <li>3-5 User Stories</li>
-                        <li>Foco no MVP</li>
-                    </ul>
-                </div>
-                
-                <div style="margin-top: 20px; text-align: center;">
-                    <button style="background: white; color: var(--primary); border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;">Baixar Templates</button>
-                </div>
-            </div>
+        <div class="example">
+            <h3>Princípios para implementar com sucesso:</h3>
+            <ol>
+                <li>Mantenha <strong>Sprints curtas</strong> (1-4 semanas)</li>
+                <li>Garanta <strong>transparência</strong> nos artefatos</li>
+                <li>Foque em <strong>entregar valor</strong>, não apenas tarefas</li>
+                <li>Melhore continuamente com <strong>retrospectivas</strong></li>
+            </ol>
         </div>
+        
+        <h3>Próximos passos:</h3>
+        <ul>
+            <li>Escolha uma ferramenta para gerenciar seu backlog</li>
+            <li>Planeje sua primeira sprint com User Stories bem definidas</li>
+            <li>Adapte o framework à realidade do seu time</li>
+        </ul>
     </div>
 
     <!-- Navigation -->
