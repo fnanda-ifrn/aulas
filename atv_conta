@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade de Revisão - Sistema Bancário com POO</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .page {
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 20mm;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+        .objective {
+            background-color: #f0f7f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .structure {
+            background-color: #eaf7ea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+        }
+        .folder {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .file {
+            color: #2980b9;
+        }
+        .task {
+            background-color: #f0f7f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .requirements {
+            background-color: #f0f7f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .note {
+            background-color: #fffaf0;
+            padding: 10px 15px;
+            border-left: 4px solid #f39c12;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px 12px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: left;
+            margin-top: 40px;
+            font-style: italic;
+            color: #7f8c8d;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <p>InfoWeb 2M | Programação Orientada a Objetos | Profa Fernanda Lígia | IFRN SPP</p>
+        <h1>Atividade Prática de Revisão<br> Sistema Bancário com POO</h1>
+
+        
+        <div class="objective">
+            <h2>Objetivo</h2>
+            <p>Desenvolver um sistema bancário simplificado aplicando os conceitos fundamentais de POO visto até agora na disciplina.</p>
+        </div>
+        
+        <h2>Descrição</h2>
+        <p>Você foi contratado(a) para desenvolver o módulo principal de um sistema bancário que deve gerenciar clientes, contas bancárias e operações financeiras básicas. O sistema deve ser desenvolvido seguindo boas práticas de POO e organização de código.</p>
+        
+        <div class="requirements">
+            <h2>Requisitos Técnicos</h2>
+            
+            <h3>1. Estrutura do Projeto</h3>
+            <p>Organize seu projeto na seguinte estrutura de pacotes e módulos:</p>
+            <div class="structure">
+<span class="folder">banco/</span><br>
+├── <span class="file">__init__.py</span><br>
+├── <span class="file">clientes.py</span>       # Módulo para a classe Cliente<br>
+├── <span class="file">contas.py</span>         # Módulo para classes de Conta<br>
+└── <span class="file">main.py</span>           # Programa principal
+            </div>
+            
+            <h3>2. Implementação das Classes</h3>
+            
+            <h4>Classe Cliente</h4>
+            <p>Desenvolva no módulo <span class="file">clientes.py</span> uma classe para representar clientes do banco com:</p>
+            <ul>
+                <li>Atributos básicos: nome, CPF e data de nascimento</li>
+                <li>Método para representação textual do cliente (vai exibir informações do cliente textualmente)</li>
+                <li>Encapsulamento adequado dos atributos</li>
+            </ul>
+            
+            <h4>Classe Conta (Superclasse)</h4>
+            <p>Implemente no módulo <span class="file">contas.py</span> uma classe base para contas bancárias com:</p>
+            <ul>
+                <li>Atributos: número da conta, cliente associado (objeto Cliente), saldo e histórico de transações (lista de strings)</li>
+                <li>Métodos básicos: depositar, sacar e exibir_extrato</li>
+                <li>Encapsulamento adequado (proteja-os com valores permitidos)</li>
+                <li>Armazenamento das transações em uma lista</li>
+            </ul>
+            
+            <h4>Classes Especializadas</h4>
+            <p>Derive da classe Conta as seguintes especializações:</p>
+            <ul>
+                <li><strong>ContaCorrente</strong>: Com limite de cheque especial e regras específicas para saque levando em conta o cheque especial</li>
+                <li><strong>ContaPoupanca</strong>: Com taxa de rendimento e cada saque desconta 0.2% do saldo da conta</li>
+            </ul>
+            
+            <div class="note">
+                <strong>Dica:</strong> Utilize herança e polimorfismo para implementar comportamentos específicos em cada tipo de conta.
+            </div>
+            
+        </div>
+        
+        <div class="task">
+            <h2>Passo a Passo</h2>
+            
+            <h3>Implementação das Classes</h3>
+            <ol>
+                <li>Crie a classe Cliente com todos os atributos e métodos necessários</li>
+                <li>Implemente a classe base Conta com os métodos básicos de operação bancária</li>
+                <li>Desenvolva as classes especializadas ContaCorrente e ContaPoupanca</li>
+                <li>Garanta o uso adequado de encapsulamento em todas as classes</li>
+            </ol>
+            
+                       
+            <h3>Programa Principal</h3>
+            <ol>
+                <li>Desenvolva um menu interativo no módulo principal (main.py)</li>
+                <li>Permita cadastrar clientes e contas</li>
+                <li>Implemente as operações bancárias através do menu</li>
+                <li>Exiba extratos completos das contas</li>
+            </ol>
+        </div>
+        
+        
+        <div class="footer">
+            <p><strong>Entrega:</strong> Através de atividade no GSA da turma.</p>
+            <p><strong>Formato:</strong> Arquivo ZIP contendo todo o projeto. Titulo do arquivo ZIP é seu nome completo.</p>
+            <p><strong>Dica:</strong> Teste cada classe separadamente antes de integrar ao sistema!</p>
+        </div>
+    </div>
+</body>
+</html>
