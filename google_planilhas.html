@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula de Google Planilhas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .slide-container {
+            width: 95vw;
+            height: 90vh;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .slide {
+            padding: 40px;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        h1 {
+            color: #4285F4;
+            margin-top: 0;
+            font-size: 32px;
+        }
+        
+        h2 {
+            color: #34A853;
+            border-bottom: 2px solid #EA4335;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        
+        .step {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4285F4;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background-color: #4285F4;
+            color: white;
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .example {
+            background-color: #e8f0fe;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .image-placeholder {
+            background-color: #f1f3f4;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #5f6368;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+        }
+        
+        button:disabled {
+            background-color: #bdc1c6;
+            cursor: not-allowed;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #34A853;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .slide-indicator {
+            text-align: center;
+            margin-top: 10px;
+            color: #5f6368;
+        }
+        
+        .highlight {
+            background-color: #FFF9C4;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .tip {
+            background-color: #E6F4EA;
+            border-left: 4px solid #34A853;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .activity {
+            background-color: #bdd2fa;
+            border-left: 4px solid #a7c2f3;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+    
+        .slide-container.hidden {
+            display: none;
+        }
+    
+        @media (max-width: 768px) {
+            .slide { padding: 20px; }
+            h1 { font-size: 24px; }
+            h2 { font-size: 18px; }
+            button { font-size: 14px; padding: 8px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1 - Introdução -->
+<div class="slide-container" id="slide1">
+    <div class="slide">
+        <h1>Google Planilhas</h1>
+        <p>Bem-vindos à nossa aula sobre Google Planilhas! Vamos aprender a organizar dados, fazer cálculos e criar gráficos.</p>
+        
+        <div class="image-placeholder" style="background-color: #ffff;">
+            <img src="google-sheets.svg" alt="" style="width: 60%; height: 60%;background-color: #ffff;">
+        </div>
+        
+        <h2>O que vamos aprender?</h2>
+        <ul>
+            <li>Interface e ferramentas básicas</li>
+            <li>Criação e formatação de tabelas</li>
+            <li>Fórmulas e funções essenciais</li>
+            <li>Filtros e formatação condicional</li>
+            <li>Criação de gráficos</li>
+            <li>Trabalho colaborativo</li>
+        </ul>
+        
+        <div class="tip">
+            <strong>Dica:</strong> O Google Planilhas é gratuito e pode ser acessado de qualquer dispositivo com internet!
+        </div>
+        
+        <div class="nav-buttons">
+            <button disabled>Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 5%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 1 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 2 - Acessando e Interface -->
+<div class="slide-container hidden" id="slide2">
+    <div class="slide">
+        <h1>Acessando e Conhecendo a Interface</h1>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Acessando o Google Planilhas</strong>
+            <p>Vá para <a href="https://drive.google.com" target="_blank">drive.google.com</a>, clique em "Novo" > "Google Planilhas" > "Planilha em branco".</p>
+        </div>
+    
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Partes principais da interface:</strong>
+            <ul>
+                <li><span class="highlight">Barra de menus</span> - Arquivo, Editar, Visualizar, etc.</li>
+                <li><span class="highlight">Barra de ferramentas</span> - Formatação, fórmulas, etc.</li>
+                <li><span class="highlight">Colunas (A, B, C...)</span> e <span class="highlight">Linhas (1, 2, 3...)</span></li>
+                <li><span class="highlight">Células</span> - Interseção de coluna e linha (ex: A1)</li>
+                <li><span class="highlight">Abas de planilhas</span> - Pode ter várias em um arquivo</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Abra uma nova planilha e vamos identificar cada um desses elementos.
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 15%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 2 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 3 - Criando uma Tabela -->
+<div class="slide-container hidden" id="slide3">
+    <div class="slide">
+        <h1>Criando sua Primeira Tabela</h1>
+        <p>Vamos criar uma tabela de gastos mensais para praticar.</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Inserindo dados básicos</strong>
+            <p>Na célula A1 digite "Item", na célula B1 digite "Valor (R$)", na célula C1 digite "Data"</p>
+            <p>Preencha algumas linhas com exemplos:</p>
+            <div class="example">
+                A2: Cinema<br>
+                B2: 15<br>
+                C2: 12/07/2025<br>
+                A3: Lanche<br>
+                B3: 10<br>
+                C3: 14/07/2023
+            </div>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Formatando a tabela</strong>
+            <ul>
+                <li>Selecione as células A1:C1 e clique em <span class="highlight">Negrito</span></li>
+                <li>Selecione toda a tabela e adicione bordas</li>
+                <li>Ajuste a largura das colunas arrastando a linha entre os cabeçalhos</li>
+            </ul>
+        </div>
+        
+        <div class="image-placeholder" style="background-color: #ffff;">
+            <img src="tabela_ex_gastos.png" style="width: 50%; height: 100%;">
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Crie sua própria tabela com 5 itens de gastos.
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 25%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 3 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 4 - Fórmulas Básicas -->
+<div class="slide-container hidden" id="slide4">
+    <div class="slide">
+        <h1>Fórmulas e Funções Básicas</h1>
+        <p>Vamos aprender a fazer cálculos automáticos!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Todas as fórmulas começam com =</strong>
+            <p>Experimente na célula B6 digitar: <span class="example">=B2+B3</span></p>
+            <p>Isso somará os valores das células B2 e B3</p>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Funções úteis:</strong>
+            <ul>
+                <li><span class="highlight">=SOMA(B2:B5)</span> - Soma todos os valores de B2 até B5</li>
+                <li><span class="highlight">=MÉDIA(B2:B5)</span> - Calcula a média dos valores</li>
+                <li><span class="highlight">=MÁXIMO(B2:B5)</span> - Mostra o maior valor</li>
+                <li><span class="highlight">=MÍNIMO(B2:B5)</span> - Mostra o menor valor</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Na sua tabela, calcule:
+            <ol>
+                <li>O total gasto usando =SOMA</li>
+                <li>A média de gastos usando =MÉDIA</li>
+                <li>O gasto mais alto usando =MÁXIMO</li>
+            </ol>
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 35%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 4 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 5 - Filtros -->
+<div class="slide-container hidden" id="slide5">
+    <div class="slide">
+        <h1>Filtros e Classificação</h1>
+        <p>Organize seus dados facilmente!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Criando um filtro:</strong>
+            <ol>
+                <li>Selecione suas células de cabeçalho (A1:C1)</li>
+                <li>Clique no ícone "Criar filtro" (parece um funil)</li>
+                <li>Setinhas aparecerão nos cabeçalhos</li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Usando filtros:</strong>
+            <ul>
+                <li>Clique na setinha do cabeçalho "Valor"</li>
+                <li>Escolha "Ordenar do maior para o menor"</li>
+                <li>Ou filtre para mostrar apenas valores acima de R$20</li>
+            </ul>
+        </div>
+        
+        <div>
+            <img src="filtro_plan.png" alt="" style="width: 60%; height: 60%;background-color: #ffff;">
+        </div>
+        
+        <div class="tip">
+            <strong>Dica:</strong> Filtros são ótimos para encontrar rapidamente as informações mais importantes em grandes conjuntos de dados.
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Na sua tabela:
+            <ol>
+                <li>Adicione filtros</li>
+                <li>Ordene por nome (ordem alfabética)</li>
+                <li>Filtre para mostrar apenas gastos acima de R$15</li>
+            </ol>
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 45%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 5 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 6 - Formatação Condicional -->
+<div class="slide-container hidden" id="slide6">
+    <div class="slide">
+        <h1>Formatação Condicional</h1>
+        <p>Destaque automaticamente informações importantes!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Aplicando formatação condicional:</strong>
+            <ol>
+                <li>Selecione os valores na coluna B (B2:B5)</li>
+                <li>Clique em "Formatar" > "Formatação condicional"</li>
+                <li>No painel à direita, escolha "É menor que"</li>
+                <li>Digite "20" e escolha a cor vermelha</li>
+                <li>Adicione outra regra para valores acima de 30 com cor verde</li>
+            </ol>
+        </div>
+        
+        <div >
+            <img src="formatacao_cond.png" style="width: 100%; height: 100%;background-color: #ffff;">
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Outros exemplos úteis:</strong>
+            <ul>
+                <li>Destacar datas passadas</li>
+                <li>Colorir células que contêm palavras específicas</li>
+                <li>Escalas de cores para valores (de vermelho a verde)</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Na sua tabela:
+            <ol>
+                <li>Destaque em vermelho valores abaixo de R$20</li>
+                <li>Destaque em verde valores acima de R$30</li>
+                <li>Experimente outras regras de formatação</li>
+            </ol>
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 55%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 6 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 7 - Gráficos Parte 1 -->
+<div class="slide-container hidden" id="slide7">
+    <div class="slide">
+        <h1>Criando Gráficos - Parte 1</h1>
+        <p>Transforme seus dados em visualizações claras!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Criando um gráfico básico:</strong>
+            <ol>
+                <li>Selecione seus dados (A1:B5)</li>
+                <li>Clique em "Inserir" > "Gráfico"</li>
+                <li>O Google Planilhas sugerirá um gráfico automaticamente</li>
+            </ol>
+        </div>
+        
+        <div>
+            <img src="grafico_plan.png" style="width: 70%; height: 100%;">
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Tipos de gráficos comuns:</strong>
+            <ul>
+                <li><span class="highlight">Barras</span> - Comparar valores</li>
+                <li><span class="highlight">Pizza</span> - Mostrar proporções</li>
+                <li><span class="highlight">Linhas</span> - Mostrar tendências ao longo do tempo</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Crie um gráfico de barras com seus gastos mensais.
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 65%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 7 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 8 - Gráficos Parte 2 -->
+<div class="slide-container hidden" id="slide8">
+    <div class="slide">
+        <h1>Criando Gráficos - Parte 2</h1>
+        <p>Personalizando seus gráficos</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Editando o gráfico:</strong>
+            <ol>
+                <li>Clique no gráfico criado</li>
+                <li>Clique nos 3 pontos > "Editar gráfico"</li>
+                <li>No painel à direita, explore as opções:</li>
+                <ul>
+                    <li><span class="highlight">Personalizar</span> - Mude cores, fontes</li>
+                    <li><span class="highlight">Configurações</span> - Altere tipo de gráfico</li>
+                    <li><span class="highlight">Eixo</span> - Ajuste títulos e escalas</li>
+                </ul>
+            </ol>
+        </div>
+        
+        <div>
+            <img src="grafico_plan.png" style="width: 70%; height: 100%;">
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Dicas para bons gráficos:</strong>
+            <ul>
+                <li>Use títulos claros</li>
+                <li>Escolha cores contrastantes</li>
+                <li>Não exagere em efeitos 3D</li>
+                <li>Mantenha simples e legível</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Personalize seu gráfico:
+            <ol>
+                <li>Adicione um título descritivo</li>
+                <li>Mude as cores das barras</li>
+                <li>Experimente outros tipos de gráfico</li>
+            </ol>
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 75%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 8 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 9 - Compartilhamento -->
+<div class="slide-container hidden" id="slide9">
+    <div class="slide">
+        <h1>Compartilhando e Trabalhando em Equipe</h1>
+        <p>Colabore em tempo real com seus amigos!</p>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Compartilhando sua planilha:</strong>
+            <ol>
+                <li>Clique no botão "Compartilhar" no canto superior direito</li>
+                <li>Adicione e-mails ou gere um link compartilhável</li>
+                <li>Escolha as permissões:</li>
+                <ul>
+                    <li><span class="highlight">Editor</span> - Pode editar tudo</li>
+                    <li><span class="highlight">Comentador</span> - Pode comentar</li>
+                    <li><span class="highlight">Visualizador</span> - Só pode ver</li>
+                </ul>
+            </ol>
+        </div>
+        
+                
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Colaboração em tempo real:</strong>
+            <ul>
+                <li>Vários usuários podem editar simultaneamente</li>
+                <li>Cada pessoa aparece com uma cor diferente</li>
+                <li>Use o chat para se comunicar</li>
+                <li>Veja o histórico de alterações em "Arquivo" > "Histórico de versões"</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <strong>Dica de segurança:</strong> Só compartilhe com pessoas confiáveis e cuidado com links públicos!
+        </div>
+        
+        <div class="tip">
+            <strong>Praticando:</strong> Em duplas:
+            <ol>
+                <li>Compartilhe sua planilha com um colega</li>
+                <li>Peça para ele adicionar um item na tabela</li>
+                <li>Editem juntos e vejam as alterações em tempo real</li>
+            </ol>
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 85%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 9 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 10 - Dicas Extras -->
+<div class="slide-container hidden" id="slide10">
+    <div class="slide">
+        <h1>Dicas Extras e Boas Práticas</h1>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Atalhos úteis:</strong>
+            <ul>
+                <li><span class="highlight">Ctrl+C / Ctrl+V</span> - Copiar e colar</li>
+                <li><span class="highlight">Ctrl+Z</span> - Desfazer</li>
+                <li><span class="highlight">Ctrl+F</span> - Localizar</li>
+                <li><span class="highlight">Ctrl+S</span> - Salvar automaticamente</li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Boas práticas:</strong>
+            <ul>
+                <li>Use cabeçalhos claros</li>
+                <li>Mantenha dados relacionados na mesma planilha</li>
+                <li>Nomeie suas abas de forma descritiva</li>
+                <li>Use formatação consistente</li>
+            </ul>
+        </div>
+                   
+      
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 92%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 10 de 12</div>
+    </div>
+</div>
+
+<!-- Slide 11 - Projeto Final -->
+<div class="slide-container hidden" id="slide11">
+    <div class="slide">
+        <h1>Atividade de Revisão</h1>
+        <p>Vamos colocar em prática tudo o que aprendemos!</p>
+        
+        <div class="activity" style="background-color: #E8F0FE;">
+            <strong>Crie uma planilha completa com:</strong>
+            <ol>
+                <li>Uma tabela com pelo menos 10 itens (pode ser sobre gastos, notas, hobbies, esportes)</li>
+                <li>Formatação profissional (cabeçalhos, bordas, cores)</li>
+                <li>Pelo menos 3 fórmulas diferentes (SOMA, MÉDIA, etc.)</li>
+                <li>Filtros aplicados</li>
+                <li>Formatação condicional destacando itens importantes</li>
+                <li>Um gráfico bem formatado</li>
+                <li>Compartilhado com um colega para colaboração</li>
+            </ol>
+        </div>
+               
+        <div class="tip">
+            <strong>Sugestão de temas:</strong> Controle de gastos mensais, Notas escolares, Estatísticas de jogadores de futebol, Lista de filmes/séries assistidos.
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button onclick="nextSlide()">Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 98%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 11 de 12</div>
+    </div>
+</div>
+<!-- Slide 12 - Encerramento -->
+<div class="slide-container hidden" id="slide12">
+    <div class="slide">
+        <h1>Conclusão</h1>
+
+        
+        <p><b>Resumo do que aprendemos:</b><p>
+        <ul>
+            <li>Criar e formatar tabelas profissionais</li>
+            <li>Usar fórmulas para cálculos automáticos</li>
+            <li>Organizar dados com filtros</li>
+            <li>Destacar informações com formatação condicional</li>
+            <li>Criar gráficos impactantes</li>
+            <li>Trabalhar em equipe com compartilhamento</li>
+        </ul>
+        
+        <div class="tip">
+            <strong>Continue praticando!</strong> Quanto mais você usar, mais habilidades vai desenvolver.
+        </div>
+        
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">Anterior</button>
+            <button disabled>Próximo</button>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" style="width: 100%;"></div>
+        </div>
+        <div class="slide-indicator">Slide 12 de 12</div>
+    </div>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 12;
+    
+    function showSlide(n) {
+        document.querySelectorAll('.slide-container').forEach(slide => {
+            slide.classList.add('hidden');
+        });
+        document.getElementById('slide' + n).classList.remove('hidden');
+        currentSlide = n;
+        
+        // Atualizar indicador de progresso
+        const progressPercentage = (n / totalSlides) * 100;
+        document.querySelectorAll('.progress').forEach(progress => {
+            progress.style.width = progressPercentage + '%';
+        });
+    }
+    
+    function nextSlide() {
+        if (currentSlide < totalSlides) {
+            showSlide(currentSlide + 1);
+        }
+    }
+    
+    function prevSlide() {
+        if (currentSlide > 1) {
+            showSlide(currentSlide - 1);
+        }
+    }
+    
+    // Navegação por teclado
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+</script>
+
+</body>
+</html>
