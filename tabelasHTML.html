@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Dominando Tabelas em HTML</title>
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Contêiner principal */
+        .main-container {
+            width: 100%;
+            max-width: 1280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Contêiner da Apresentação */
+        .presentation-container {
+            width: 100%;
+            height: 720px;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        /* Slides wrapper */
+        .slides-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* Estilo para cada slide */
+        .slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Alterado para alinhar no topo */
+            align-items: flex-start;
+            text-align: left;
+            background-color: #ffffff;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar */
+        .slide::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Estilo para o slide de título */
+        .title-slide {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .title-slide h1 {
+            font-size: 4em;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.5em;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .title-slide .author {
+            font-size: 1.2em;
+            margin-top: 40px;
+            color: #c0c0c0;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 20px;
+            display: inline-block;
+        }
+
+        /* Títulos dos slides */
+        .slide h1, .slide h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: 600;
+            border-bottom: 3px solid #4ca1af;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .slide h1 { font-size: 2.8em; }
+        .slide h2 { font-size: 2.2em; }
+
+        /* Parágrafos e listas */
+        .slide p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .slide ul {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .slide ul li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .slide ul li:before {
+            content: "•";
+            color: #4ca1af;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Estilo para o destaque de notas */
+        .note {
+            font-style: italic;
+            color: #6c757d;
+            font-size: 1.1em;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-left: 4px solid #4ca1af;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Layout de duas colunas para alguns slides */
+        .two-columns {
+            display: flex;
+            width: 100%;
+            height: calc(100% - 100px);
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        .two-columns > div {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estilo para as pré-visualizações de tabela dentro dos slides */
+        .example-table-preview h3, .table-result h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #34495e;
+            text-align: center;
+            background-color: #e6f3ff;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .example-table-preview table, .table-result table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9em;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .example-table-preview th, .example-table-preview td,
+        .table-result th, .table-result td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .example-table-preview th, .table-result th {
+            background-color: #4ca1af;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .example-table-preview tr:nth-child(even), .table-result tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Estilo para blocos de código */
+        .code-example {
+            width: 100%;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            height: auto;
+            max-height: 100%;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-header {
+            background-color: #1e1e1e;
+            color: #ccc;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .code-example pre {
+            margin: 0;
+            padding: 20px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-example code {
+            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.95em;
+            color: #f8f8f2;
+            display: block;
+            line-height: 1.4;
+        }
+
+        /* Estilização para tags HTML dentro do código */
+        .tag { color: #569cd6; }
+        .attr { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .doctype { color: #808080; }
+        .punctuation { color: #d4d4d4; }
+        .entity { color: #4ec9b0; }
+
+        /* Navegação entre slides - POSIÇÃO CORRIGIDA */
+        .slide-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            gap: 15px;
+            width: 100%;
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+        }
+
+        .nav-btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:hover {
+            background-color: #4ca1af;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .slide-indicators {
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .indicator.active {
+            background-color: #2c3e50;
+            transform: scale(1.2);
+        }
+
+        /* Elementos destacados */
+        .code-highlight {
+            background-color: rgba(78, 201, 176, 0.15);
+            border-radius: 3px;
+            padding: 0 4px;
+            border: 1px dashed #4ec9b0;
+        }
+
+        .visual-link {
+            position: relative;
+        }
+
+        .visual-link::after {
+            content: "↗";
+            position: absolute;
+            right: -20px;
+            top: 0;
+            color: #4ca1af;
+            font-weight: bold;
+        }
+
+        /* Animações suaves */
+        .slide {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0.7; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 1350px) {
+            .presentation-container {
+                height: 600px;
+            }
+            
+            .slide {
+                padding: 30px 40px;
+            }
+            
+            .slide h1 { font-size: 2.5em; }
+            .slide h2 { font-size: 2em; }
+        }
+
+        @media (max-width: 1100px) {
+            .two-columns {
+                flex-direction: column;
+                height: auto;
+                gap: 25px;
+            }
+            
+            .two-columns > div {
+                max-height: 300px;
+            }
+            
+            .presentation-container {
+                height: 800px;
+            }
+            
+            .slide-nav {
+                position: relative;
+                bottom: 0;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="presentation-container">
+            <div class="slides-wrapper">
+                <!-- Slide 1: Título -->
+                <section class="slide title-slide">
+                    <h1>Tabelas em HTML</h1>
+                    <p class="subtitle">Revisão e Continuação</p>
+                    <p class="author">Curso de Informática para Internet</p>
+                </section>
+
+                <!-- Slide 2: Introdução -->
+                <section class="slide">
+                    <h2>Por Que Usamos Tabelas em HTML?</h2>
+                    <p>Tabelas são usadas para organizar and exibir <strong>dados tabulares</strong>, ou seja, informações que naturalmente se encaixam em <strong>linhas e colunas</strong>.</p>
+                    <ul>
+                        <li>Horários de aulas</li>
+                        <li>Resultados esportivos</li>
+                        <li>Listas de produtos</li>
+                        <li>Informações financeiras</li>
+                    </ul>
+                    <p class="note"><strong>Importante:</strong> Não use tabelas para o <em>layout</em> visual da página! Use-as apenas para dados tabulares.</p>
+                </section>
+
+                <!-- Slide 3: Elementos Básicos -->
+                <section class="slide">
+                    <h2>Elementos Básicos de uma Tabela</h2>
+                    <div class="two-columns">
+                        <div>
+                            <ul>
+                                <li><code class="tag">&lt;table&gt;</code>: O contêiner principal da tabela.</li>
+                                <li><code class="tag">&lt;tr&gt;</code> (Table Row): Define uma <strong>linha</strong> na tabela.</li>
+                                <li><code class="tag">&lt;th&gt;</code> (Table Header): Define uma célula de <strong>cabeçalho</strong>. (Texto em negrito e centralizado por padrão)</li>
+                                <li><code class="tag">&lt;td&gt;</code> (Table Data): Define uma célula de <strong>dados</strong> comum.</li>
+                            </ul>
+                            <p class="note">Cada elemento tem uma função específica na construção da tabela.</p>
+                        </div>
+                        <div class="example-table-preview">
+                            <h3>Visualização Simples</h3>
+                            <table>
+                                <tr><th>Nome</th><th>Idade</th></tr>
+                                <tr><td>Ana</td><td>16</td></tr>
+                                <tr><td>Bruno</td><td>17</td></tr>
+                            </table>
+                            <div class="visual-links">
+                                <p><span class="code-highlight">&lt;th&gt;</span> → <span style="background-color: #4ca1af; color: white; padding: 2px 5px;">Cabeçalho</span></p>
+                                <p><span class="code-highlight">&lt;td&gt;</span> → <span style="background-color: #f9f9f9; padding: 2px 5px;">Dados</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 4: Exemplo 1 - Tabela Simples (Código e Resultado) -->
+                <section class="slide">
+                    <h2>Exemplo 1: Nossa Primeira Tabela Simples</h2>
+                    <div class="two-columns">
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>código.html</span>
+                                <span>HTML</span>
+                            </div>
+                            <pre><code class="language-html">
+&lt;!DOCTYPE <span class="doctype">html</span>&gt;
+&lt;<span class="tag">html</span> <span class="attr">lang</span>=<span class="string">"pt-br"</span>&gt;
+&lt;<span class="tag">head</span>&gt;
+    &lt;<span class="tag">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;
+    &lt;<span class="tag">title</span>&gt;Minha Primeira Tabela&lt;/<span class="tag">title</span>&gt;
+&lt;/<span class="tag">head</span>&gt;
+&lt;<span class="tag">body</span>&gt;
+
+    &lt;<span class="tag">h1</span>&gt;Lista de Alunos&lt;/<span class="tag">h1</span>&gt;
+
+    &lt;<span class="tag">table</span>&gt;
+        <span class="comment">&lt;!-- Primeira linha: cabeçalhos --&gt;</span>
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Nome&lt;/<span class="tag">th</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Idade&lt;/<span class="tag">th</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+        <span class="comment">&lt;!-- Segunda linha: dados do aluno 1 --&gt;</span>
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span>&gt;Ana Silva&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;16&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+        <span class="comment">&lt;!-- Terceira linha: dados do aluno 2 --&gt;</span>
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span>&gt;Bruno Costa&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;17&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">table</span>&gt;
+
+&lt;/<span class="tag">body</span>&gt;
+&lt;/<span class="tag">html</span>&gt;
+                            </code></pre>
+                        </div>
+                        <div class="table-result">
+                            <h3>Resultado no Navegador</h3>
+                            <div style="padding: 15px; background: white; border-radius: 6px; height: 100%;">
+                                <h1 style="margin-top: 0;">Lista de Alunos</h1>
+                                <table>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Idade</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Ana Silva</td>
+                                        <td>16</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bruno Costa</td>
+                                        <td>17</td>
+                                    </tr>
+                                </table>
+                                <div class="note" style="margin-top: 15px;">
+                                    <strong>Observe:</strong> Esta é a aparência de uma tabela HTML com estilização CSS.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 5: Tags Semânticas -->
+                <section class="slide">
+                    <h2>A Magia das Tags Semânticas</h2>
+                    <p>Melhoram a <strong>acessibilidade</strong>, a <strong>organização</strong> do código e facilitam a <strong>estilização</strong> futura.</p>
+                    <div class="two-columns">
+                        <div>
+                            <ul>
+                                <li><code class="tag">&lt;thead&gt;</code>: Agrupa o <strong>cabeçalho</strong> da tabela (linhas com <code>&lt;th&gt;</code>).</li>
+                                <li><code class="tag">&lt;tbody&gt;</code>: Agrupa o <strong>corpo</strong> da tabela (linhas com <code>&lt;td&gt;</code>). Pode haver múltiplos.</li>
+                                <li><code class="tag">&lt;tfoot&gt;</code>: Agrupa o <strong>rodapé</strong> da tabela (resumos, totais).</li>
+                            </ul>
+                            <p class="note">Essas tags não alteram a aparência visual, mas dão significado estrutural aos dados.</p>
+                        </div>
+                        <div class="example-table-preview">
+                            <h3>Estrutura Semântica</h3>
+                            <table>
+                                <thead style="background-color: #4ca1af; color: white;">
+                                    <tr><th>Disc.</th><th>Nota 1</th><th>Nota 2</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Mat</td><td>8.5</td><td>9.0</td></tr>
+                                </tbody>
+                                <tfoot style="background-color: #e6f3ff;">
+                                    <tr><td colspan="3">Médias</td></tr>
+                                </tfoot>
+                            </table>
+                            <div class="visual-links" style="margin-top: 15px;">
+                                <p><span class="code-highlight">&lt;thead&gt;</span> → <span style="background-color: #4ca1af; color: white; padding: 2px 5px;">Cabeçalho</span></p>
+                                <p><span class="code-highlight">&lt;tbody&gt;</span> → <span style="background-color: #f9f9f9; padding: 2px 5px;">Corpo</span></p>
+                                <p><span class="code-highlight">&lt;tfoot&gt;</span> → <span style="background-color: #e6f3ff; padding: 2px 5px;">Rodapé</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 6: Exemplo 2 - Tabela Semântica (Código e Resultado) -->
+                <section class="slide">
+                    <h2>Exemplo 2: Tabela com Estrutura Semântica</h2>
+                    <div class="two-columns">
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>tabela-semantica.html</span>
+                                <span>HTML</span>
+                            </div>
+                            <pre><code class="language-html">
+&lt;<span class="tag">table</span>&gt;
+    <span class="comment">&lt;!-- Cabeçalho da tabela --&gt;</span>
+    &lt;<span class="tag">thead</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Disciplina&lt;/<span class="tag">th</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Nota 1º Bimestre&lt;/<span class="tag">th</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Nota 2º Bimestre&lt;/<span class="tag">th</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">thead</span>&gt;
+    
+    <span class="comment">&lt;!-- Corpo da tabela --&gt;</span>
+    &lt;<span class="tag">tbody</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span>&gt;Matemática&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;8.5&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;9.0&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span>&gt;Português&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;7.0&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;7.5&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">tbody</span>&gt;
+    
+    <span class="comment">&lt;!-- Rodapé da tabela --&gt;</span>
+    &lt;<span class="tag">tfoot</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span> <span class="attr">colspan</span>=<span class="string">"3"</span>&gt;Médias calculadas com base nas notas.&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">tfoot</span>&gt;
+&lt;/<span class="tag">table</span>&gt;
+                            </code></pre>
+                        </div>
+                        <div class="table-result">
+                            <h3>Resultado no Navegador</h3>
+                            <div style="padding: 15px; background: white; border-radius: 6px; height: 100%;">
+                                <h1 style="margin-top: 0;">Boletim Simples</h1>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Disciplina</th>
+                                            <th>Nota 1º Bimestre</th>
+                                            <th>Nota 2º Bimestre</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Matemática</td>
+                                            <td>8.5</td>
+                                            <td>9.0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Português</td>
+                                            <td>7.0</td>
+                                            <td>7.5</td>
+                                        </tr>
+                                        <tr>
+                                            <td>História</td>
+                                            <td>9.5</td>
+                                            <td>8.0</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3">Médias calculadas com base nas notas.</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 7: Atributos colspan e rowspan -->
+                <section class="slide">
+                    <h2>Atributos Importantes: <code>colspan</code> e <code>rowspan</code></h2>
+                    <p>Permitem que uma célula ocupe o espaço de várias colunas ou linhas, respectivamente.</p>
+                    <div class="two-columns">
+                        <div>
+                            <ul>
+                                <li><code>colspan="N"</code>: A célula se estende por <strong>N colunas</strong>.</li>
+                                <li><code>rowspan="N"</code>: A célula se estende por <strong>N linhas</strong>.</li>
+                            </ul>
+                            <p class="note"><strong>Dica:</strong> Ao usar, lembre-se de ajustar o número total de células na linha/coluna!</p>
+                            <div class="code-example" style="margin-top: 15px;">
+                                <div class="code-header">
+                                    <span>Exemplo de código</span>
+                                </div>
+                                <pre><code class="language-html">
+&lt;<span class="tag">td</span> <span class="attr">colspan</span>=<span class="string">"2"</span>&gt;Ocupa duas colunas&lt;/<span class="tag">td</span>&gt;
+&lt;<span class="tag">td</span> <span class="attr">rowspan</span>=<span class="string">"3"</span>&gt;Ocupa três linhas&lt;/<span class="tag">td</span>&gt;
+                                </code></pre>
+                            </div>
+                        </div>
+                        <div class="example-table-preview">
+                            <h3>Exemplo Visual</h3>
+                            <table>
+                                <thead>
+                                    <tr><th colspan="2" style="background-color: #4ca1af;">Contato</th><th rowspan="2" style="background-color: #2c3e50; vertical-align: middle;">Email</th></tr>
+                                    <tr><th>Nome</th><th>Tel</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Carlos</td><td>9876</td><td>c@email.com</td></tr>
+                                    <tr><td colspan="3" style="background-color: #f8f9fa; text-align: center;">Obs: Atualizado.</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="visual-links" style="margin-top: 15px;">
+                                <p><span class="code-highlight">colspan="2"</span> → <span style="border: 2px solid #4ca1af; padding: 2px 5px;">Une colunas</span></p>
+                                <p><span class="code-highlight">rowspan="2"</span> → <span style="border: 2px solid #2c3e50; padding: 2px 5px;">Une linhas</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 8: Exemplo 3 - Colspan e Rowspan (Código e Resultado) -->
+                <section class="slide">
+                    <h2>Exemplo 3: Tabela com <code>colspan</code> e <code>rowspan</code></h2>
+                    <div class="two-columns">
+                        <div class="code-example">
+                            <div class="code-header">
+                                <span>tabela-avancada.html</span>
+                                <span>HTML</span>
+                            </div>
+                            <pre><code class="language-html">
+&lt;<span class="tag">table</span>&gt;
+    &lt;<span class="tag">thead</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">th</span> <span class="attr">colspan</span>=<span class="string">"2"</span>&gt;Contato&lt;/<span class="tag">th</span>&gt;
+            &lt;<span class="tag">th</span> <span class="attr">rowspan</span>=<span class="string">"2"</span>&gt;Email&lt;/<span class="tag">th</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Nome&lt;/<span class="tag">th</span>&gt;
+            &lt;<span class="tag">th</span>&gt;Telefone&lt;/<span class="tag">th</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">thead</span>&gt;
+    &lt;<span class="tag">tbody</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span>&gt;Carlos Pereira&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;(11) 9876-5432&lt;/<span class="tag">td</span>&gt;
+            &lt;<span class="tag">td</span>&gt;carlos.p@email.com&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+        &lt;<span class="tag">tr</span>&gt;
+            &lt;<span class="tag">td</span> <span class="attr">colspan</span>=<span class="string">"3"</span>&gt;Agenda atualizada em Setembro de 2025.&lt;/<span class="tag">td</span>&gt;
+        &lt;/<span class="tag">tr</span>&gt;
+    &lt;/<span class="tag">tbody</span>&gt;
+&lt;/<span class="tag">table</span>&gt;
+                            </code></pre>
+                        </div>
+                        <div class="table-result">
+                            <h3>Resultado no Navegador</h3>
+                            <div style="padding: 15px; background: white; border-radius: 6px; height: 100%;">
+                                <h1 style="margin-top: 0;">Agenda de Contatos</h1>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="background-color: #4ca1af;">Contato</th>
+                                            <th rowspan="2" style="background-color: #2c3e50; vertical-align: middle;">Email</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Carlos Pereira</td>
+                                            <td>(11) 9876-5432</td>
+                                            <td>carlos.p@email.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mariana Lima</td>
+                                            <td>(21) 9987-6543</td>
+                                            <td>mariana.l@email.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" style="text-align: center; background-color: #f8f9fa;">Agenda atualizada em Setembro de 2025.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Slide 9: Resumo -->
+                <section class="slide">
+                    <h2>Resumo da Aula</h2>
+                    <ul>
+                        <li><strong>Estrutura Básica</strong>: <code class="tag">&lt;table&gt;</code>, <code class="tag">&lt;tr&gt;</code>, <code class="tag">&lt;th&gt;</code>, <code class="tag">&lt;td&gt;</code>.</li>
+                        <li><strong>Tags Semânticas</strong>: <code class="tag">&lt;thead&gt;</code>, <code class="tag">&lt;tbody&gt;</code>, <code class="tag">&lt;tfoot&gt;</code> para organização.</li>
+                        <li><strong>Atributos Avançados</strong>: <code>colspan</code> e <code>rowspan</code> para flexibilidade no layout das células.</li>
+                    </ul>
+                    <p>O objetivo principal das tabelas is <strong>organizar dados</strong> de forma clara e acessível.</p>
+                    <div class="note">
+                        <strong>Próximos passos:</strong> Em aulas futuras, veremos como CSS e JavaScript podem deixar suas tabelas ainda mais incríveis!
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Navegação entre slides - POSIÇÃO CORRIGIDA -->
+        <div class="slide-nav">
+            <button class="nav-btn" id="prev-btn">Anterior</button>
+            <div class="slide-indicators" id="slide-indicators">
+                <!-- Os indicadores serão gerados via JavaScript -->
+            </div>
+            <button class="nav-btn" id="next-btn">Próximo</button>
+        </div>
+    </div>
+
+    <script>
+        // Script para navegação entre slides
+        document.addEventListener('DOMContentLoaded', function() {
+            const slidesWrapper = document.querySelector('.slides-wrapper');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            
+            let currentSlide = 0;
+            
+            // Criar indicadores
+            slides.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('indicator');
+                if (index === 0) indicator.classList.add('active');
+                indicator.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+            
+            // Função para ir para um slide específico
+            function goToSlide(index) {
+                if (index < 0) index = 0;
+                if (index >= slides.length) index = slides.length - 1;
+                
+                slidesWrapper.scrollTo({
+                    left: slidesWrapper.clientWidth * index,
+                    behavior: 'smooth'
+                });
+                
+                currentSlide = index;
+                updateIndicators();
+            }
+            
+            // Atualizar indicadores ativos
+            function updateIndicators() {
+                document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                    if (index === currentSlide) {
+                        indicator.classList.add('active');
+                    } else {
+                        indicator.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Event listeners para os botões
+            prevBtn.addEventListener('click', () => {
+                goToSlide(currentSlide - 1);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                goToSlide(currentSlide + 1);
+            });
+            
+            // Detectar mudanças de slide pelo scroll
+            let scrollTimeout;
+            slidesWrapper.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    const scrollPosition = slidesWrapper.scrollLeft;
+                    const slideWidth = slidesWrapper.clientWidth;
+                    currentSlide = Math.round(scrollPosition / slideWidth);
+                    updateIndicators();
+                }, 100);
+            });
+            
+            // Suporte para teclado
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    goToSlide(currentSlide - 1);
+                } else if (e.key === 'ArrowRight') {
+                    goToSlide(currentSlide + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

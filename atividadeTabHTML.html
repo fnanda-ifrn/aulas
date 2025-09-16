@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividade: Construa sua Primeira Tabela HTML</title>
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #4ca1af;
+        }
+        
+        .instructions {
+            background-color: #e6f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .instructions ol {
+            padding-left: 25px;
+        }
+        
+        .instructions li {
+            margin-bottom: 15px;
+        }
+        
+        .requirements {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4ca1af;
+        }
+        
+        .requirements ul {
+            padding-left: 25px;
+        }
+        
+        .requirements li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .requirements li:before {
+            content: "•";
+            color: #4ca1af;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .code-editor {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        
+        .code-editor .line-numbers {
+            float: left;
+            text-align: right;
+            padding-right: 10px;
+            color: #6a9955;
+            user-select: none;
+        }
+        
+        .code-editor code {
+            white-space: pre;
+            display: block;
+            overflow-x: auto;
+        }
+        
+        .tag { color: #569cd6; }
+        .attr { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        
+        .hint {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #4ca1af;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .example-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .example-table th, .example-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .example-table th {
+            background-color: #e6f3ff;
+        }
+        
+        .next-steps {
+            background-color: #d1ecf1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Atividade Prática: Construa sua Primeira Tabela HTML</h1>
+        
+        <div class="instructions">
+            <h2>Instruções Passo a Passo</h2>
+            <ol>
+                <li>Leia atentamente os requisitos da tabela que você deve criar</li>
+                <li>Use o código base fornecido abaixo como ponto de partida</li>
+                <li>Implemente a tabela seguindo todos os requisitos listados</li>
+                <li>Teste sua implementação em um editor de código real</li>
+            </ol>
+        </div>
+        
+        <div class="requirements">
+            <h2>Requisitos da Tabela</h2>
+            <p>Sua missão é criar uma tabela HTML que represente o <strong>Horário de Aulas</strong> de uma turma do ensino médio. A tabela deve incluir:</p>
+            <ul>
+                <li>Estrutura semântica completa com <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code> e <code>&lt;tfoot&gt;</code></li>
+                <li>Cabeçalhos para os dias da semana (Segunda a Sexta) e períodos (Manhã e Tarde)</li>
+                <li>Dados de disciplinas para cada período de cada dia</li>
+                <li>Uso de <code>colspan</code> para mesclar células horizontalmente</li>
+                <li>Uso de <code>rowspan</code> para mesclar células verticalmente</li>
+                <li>Rodapé com informações sobre a turma</li>
+            </ul>
+        </div>
+        
+        <h2>Seu Código</h2>
+        <div class="code-editor">
+            <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16</div>
+            <code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Horário de Aulas&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Horário de Aulas - 2º Ano Ensino Médio&lt;/h1&gt;
+    
+    &lt;!-- INÍCIO DA SUA TABELA --&gt;
+    &lt;table&gt;
+        &lt;!-- Adicione a estrutura semântica da tabela aqui --&gt;
+        &lt;!-- Use thead, tbody e tfoot --&gt;
+        &lt;!-- Aplicar colspan e rowspan onde necessário --&gt;
+    &lt;/table&gt;
+    &lt;!-- FIM DA SUA TABELA --&gt;
+    
+&lt;/body&gt;
+&lt;/html&gt;
+            </code>
+        </div>
+        
+        <div class="hint">
+            <h3>💡 Dicas Importantes</h3>
+            <p>1. Comece pela estrutura semântica: thead para cabeçalho, tbody para o conteúdo principal e tfoot para o rodapé.</p>
+            <p>2. Use rowspan para mesclar células verticalmente (ex: períodos que ocupam várias linhas).</p>
+            <p>3. Use colspan para mesclar células horizontalmente (ex: dias da semana no cabeçalho).</p>
+            <p>4. Lembre-se que ao usar rowspan ou colspan, você precisa ajustar o número de células nas linhas seguintes.</p>
+        </div>
+        
+        <div class="next-steps">
+            <h3>Próximos Passos</h3>
+            <p>Copie o código base para um editor de código de sua preferência (VS Code, Notepad++, Sublime Text, etc.) e implemente a tabela conforme os requisitos.</p>
+            <p>Abra o arquivo HTML em seu navegador para visualizar o resultado da sua implementação.</p>
+        </div>
+    </div>
+</body>
+</html>
