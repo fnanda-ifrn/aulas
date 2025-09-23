@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Formulários HTML</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .slide {
+            display: none;
+            padding: 60px;
+            min-height: 600px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            margin-top: 30px;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            margin-top: 25px;
+        }
+        
+        p, li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .slide-counter {
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .code-example {
+            background: #f4f4f4;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .example-form {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .example-form input,
+        .example-form select,
+        .example-form textarea {
+            margin: 10px 0;
+            padding: 8px;
+            font-size: 1em;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .important {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #0c5460;
+            margin: 20px 0;
+        }
+        
+        ul {
+            margin-left: 30px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide {
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1 style="text-align: center; font-size: 3em;">Formulários HTML</h1>
+            <div style="margin-top: 80px; text-align: center;">
+                <svg width="200" height="200" viewBox="0 0 200 200">
+                    <rect x="20" y="20" width="160" height="160" fill="#f0f0f0" stroke="#667eea" stroke-width="3" rx="10"/>
+                    <rect x="40" y="50" width="120" height="15" fill="#667eea" rx="3"/>
+                    <rect x="40" y="80" width="120" height="15" fill="#667eea" rx="3"/>
+                    <rect x="40" y="110" width="120" height="15" fill="#667eea" rx="3"/>
+                    <rect x="60" y="145" width="80" height="25" fill="#764ba2" rx="5"/>
+                </svg>
+            </div>
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="font-size: 1.5em; color: #667eea;">Disciplina: Autoria Web</p>
+                <p style="font-size: 1.2em; margin-top: 30px;">Profa: Fernanda Lígia</p>
+            </div>
+            
+        </div>
+
+        <!-- Slide 2: O que são Formulários? -->
+        <div class="slide">
+            <h1>O que são Formulários HTML?</h1>
+            
+            <p style="font-size: 1.3em; color: #667eea; margin-bottom: 30px;">
+                Formulários são elementos fundamentais da web que permitem aos usuários enviar dados para um servidor.
+            </p>
+            
+            <h3>Principais Usos:</h3>
+            <ul>
+                <li>Formulários de contato</li>
+                <li>Cadastro de usuários</li>
+                <li>Login em sistemas</li>
+                <li>Pesquisas e enquetes</li>
+                <li>Comentários em blogs</li>
+                <li>Compras online</li>
+            </ul>
+            
+            <div class="highlight">
+                <strong>Importante:</strong> Formulários HTML coletam dados do usuário, mas o processamento desses dados é feito no servidor (backend) usando linguagens como PHP, Python, JavaScript (Node.js), etc.
+            </div>
+        </div>
+
+        <!-- Slide 3: Estrutura Básica -->
+        <div class="slide">
+            <h1>Estrutura Básica de um Formulário</h1>
+            
+            <h2>A tag &lt;form&gt;</h2>
+            <p>Todo formulário HTML começa com a tag <strong>&lt;form&gt;</strong> que define onde o formulário começa e termina.</p>
+            
+            <div class="code-example">
+                &lt;form action="processar.php" method="POST"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Campos do formulário aqui --&gt;<br>
+                &lt;/form&gt;
+            </div>
+            
+            <h3>Atributos Principais:</h3>
+            <ul>
+                <li><strong>action:</strong> Define para onde os dados serão enviados</li>
+                <li><strong>method:</strong> Define como os dados serão enviados (GET ou POST)</li>
+            </ul>
+            
+            <div class="important">
+                <strong>GET vs POST:</strong><br>
+                • GET: Dados visíveis na URL, limite de tamanho, usado para buscas<br>
+                • POST: Dados ocultos, sem limite de tamanho, usado para envio de informações sensíveis
+            </div>
+        </div>
+
+        <!-- Slide 4: Tag Input -->
+        <div class="slide">
+            <h1>A Tag &lt;input&gt;</h1>
+            
+            <p>O elemento mais versátil dos formulários. Pode assumir diferentes tipos através do atributo <strong>type</strong>.</p>
+            
+            <h2>Estrutura Básica:</h2>
+            <div class="code-example">
+                &lt;input type="text" name="nome" id="nome" placeholder="Digite seu nome"&gt;
+            </div>
+            
+            <h3>Atributos Importantes:</h3>
+            <ul>
+                <li><strong>type:</strong> Define o tipo de entrada</li>
+                <li><strong>name:</strong> Nome do campo (usado no servidor)</li>
+                <li><strong>id:</strong> Identificador único</li>
+                <li><strong>placeholder:</strong> Texto de dica</li>
+                <li><strong>value:</strong> Valor padrão</li>
+                <li><strong>required:</strong> Campo obrigatório</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: Tipos de Input - Texto -->
+        <div class="slide">
+            <h1>Tipos de Input - Texto</h1>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>1. Text (Texto simples)</h3>
+                    <div class="code-example">
+                        &lt;input type="text" name="nome"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="text" placeholder="Digite seu nome">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>2. Password (Senha)</h3>
+                    <div class="code-example">
+                        &lt;input type="password" name="senha"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="password" placeholder="Digite sua senha">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>3. Email</h3>
+                    <div class="code-example">
+                        &lt;input type="email" name="email"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="email" placeholder="seu@email.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>4. Tel (Telefone)</h3>
+                    <div class="code-example">
+                        &lt;input type="tel" name="telefone"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="tel" placeholder="(11) 98765-4321">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slide 6: Tipos de Input - Números e Datas -->
+        <div class="slide">
+            <h1>Tipos de Input - Números e Datas</h1>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>1. Number (Número)</h3>
+                    <div class="code-example">
+                        &lt;input type="number" name="idade" min="0" max="120"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="number" min="0" max="120" placeholder="Idade">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>2. Date (Data)</h3>
+                    <div class="code-example">
+                        &lt;input type="date" name="nascimento"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="date">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>3. Time (Hora)</h3>
+                    <div class="code-example">
+                        &lt;input type="time" name="horario"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="time">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>4. Range (Intervalo)</h3>
+                    <div class="code-example">
+                        &lt;input type="range" name="volume" min="0" max="100"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="range" min="0" max="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Tipos de Input - Seleção -->
+        <div class="slide">
+            <h1>Tipos de Input - Seleção</h1>
+            
+            <h2>1. Checkbox (Caixa de Seleção)</h2>
+            <p>Permite múltiplas seleções</p>
+            <div class="code-example">
+                &lt;input type="checkbox" name="interesses" value="esportes" id="esportes"&gt;<br>
+                &lt;label for="esportes"&gt;Esportes&lt;/label&gt;<br><br>
+                &lt;input type="checkbox" name="interesses" value="musica" id="musica"&gt;<br>
+                &lt;label for="musica"&gt;Música&lt;/label&gt;
+            </div>
+            <div class="example-form">
+                <input type="checkbox" id="cb1"><label for="cb1"> Esportes</label><br>
+                <input type="checkbox" id="cb2"><label for="cb2"> Música</label><br>
+                <input type="checkbox" id="cb3"><label for="cb3"> Tecnologia</label>
+            </div>
+            
+            <h2>2. Radio (Botão de Opção)</h2>
+            <p>Permite apenas uma seleção por grupo</p>
+            <div class="code-example">
+                &lt;input type="radio" name="genero" value="M" id="masc"&gt;<br>
+                &lt;label for="masc"&gt;Masculino&lt;/label&gt;<br><br>
+                &lt;input type="radio" name="genero" value="F" id="fem"&gt;<br>
+                &lt;label for="fem"&gt;Feminino&lt;/label&gt;
+            </div>
+            <div class="example-form">
+                <input type="radio" name="gen" id="r1"><label for="r1"> Masculino</label><br>
+                <input type="radio" name="gen" id="r2"><label for="r2"> Feminino</label><br>
+                <input type="radio" name="gen" id="r3"><label for="r3"> Outro</label>
+            </div>
+        </div>
+
+        <!-- Slide 8: Outros Tipos de Input -->
+        <div class="slide">
+            <h1>Outros Tipos de Input Úteis</h1>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>1. Color (Cor)</h3>
+                    <div class="code-example">
+                        &lt;input type="color" name="cor"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="color" value="#667eea">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>2. File (Arquivo)</h3>
+                    <div class="code-example">
+                        &lt;input type="file" name="arquivo"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="file">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>3. URL</h3>
+                    <div class="code-example">
+                        &lt;input type="url" name="site"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="url" placeholder="https://exemplo.com">
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>4. Search (Busca)</h3>
+                    <div class="code-example">
+                        &lt;input type="search" name="buscar"&gt;
+                    </div>
+                    <div class="example-form">
+                        <input type="search" placeholder="Pesquisar...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Select e Textarea -->
+        <div class="slide">
+            <h1>Select e Textarea</h1>
+            
+            <h2>1. Select (Lista de Seleção)</h2>
+            <div class="code-example">
+                &lt;select name="estado" id="estado"&gt;<br>
+                &nbsp;&nbsp;&lt;option value=""&gt;Selecione um estado&lt;/option&gt;<br>
+                &nbsp;&nbsp;&lt;option value="SP"&gt;São Paulo&lt;/option&gt;<br>
+                &nbsp;&nbsp;&lt;option value="RJ"&gt;Rio de Janeiro&lt;/option&gt;<br>
+                &nbsp;&nbsp;&lt;option value="MG"&gt;Minas Gerais&lt;/option&gt;<br>
+                &lt;/select&gt;
+            </div>
+            <div class="example-form">
+                <select style="width: 200px; padding: 8px;">
+                    <option>Selecione um estado</option>
+                    <option>São Paulo</option>
+                    <option>Rio de Janeiro</option>
+                    <option>Minas Gerais</option>
+                    <option>Bahia</option>
+                </select>
+            </div>
+            
+            <h2>2. Textarea (Área de Texto)</h2>
+            <div class="code-example">
+                &lt;textarea name="mensagem" id="mensagem" rows="5" cols="40"&gt;<br>
+                &nbsp;&nbsp;Digite sua mensagem aqui...<br>
+                &lt;/textarea&gt;
+            </div>
+            <div class="example-form">
+                <textarea rows="5" cols="40" placeholder="Digite sua mensagem aqui..."></textarea>
+            </div>
+        </div>
+
+        <!-- Slide 10: Labels -->
+        <div class="slide">
+            <h1>A Importância das Labels</h1>
+            
+            <p>Labels (rótulos) são fundamentais para a acessibilidade e usabilidade dos formulários.</p>
+            
+            <h2>Duas formas de usar:</h2>
+            
+            <h3>1. Com atributo 'for':</h3>
+            <div class="code-example">
+                &lt;label for="nome"&gt;Nome Completo:&lt;/label&gt;<br>
+                &lt;input type="text" id="nome" name="nome"&gt;
+            </div>
+            
+            <h3>2. Envolvendo o input:</h3>
+            <div class="code-example">
+                &lt;label&gt;<br>
+                &nbsp;&nbsp;Nome Completo:<br>
+                &nbsp;&nbsp;&lt;input type="text" name="nome"&gt;<br>
+                &lt;/label&gt;
+            </div>
+            
+            <div class="highlight">
+                <strong>Benefícios das Labels:</strong><br>
+                • Melhora a acessibilidade para leitores de tela<br>
+                • Aumenta a área clicável (clicar no texto ativa o campo)<br>
+                • Melhora a experiência do usuário<br>
+                • É uma boa prática de desenvolvimento
+            </div>
+        </div>
+        <!-- Slide 11: Fieldset e Legend -->
+        <div class="slide">
+            <h1>Organizando com Fieldset e Legend</h1>
+            
+            <p>Agrupe campos relacionados para melhor organização visual e semântica.</p>
+            
+            <div class="code-example">
+                &lt;fieldset&gt;<br>
+                &nbsp;&nbsp;&lt;legend&gt;Dados Pessoais&lt;/legend&gt;<br>
+                &nbsp;&nbsp;<br>
+                &nbsp;&nbsp;&lt;label for="nome"&gt;Nome:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&lt;input type="text" id="nome" name="nome"&gt;&lt;br&gt;&lt;br&gt;<br>
+                &nbsp;&nbsp;<br>
+                &nbsp;&nbsp;&lt;label for="email"&gt;Email:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&lt;input type="email" id="email" name="email"&gt;<br>
+                &lt;/fieldset&gt;
+            </div>
+            
+            <div class="example-form">
+                <fieldset style="border: 2px solid #667eea; border-radius: 8px; padding: 20px;">
+                    <legend style="color: #667eea; font-weight: bold; padding: 0 10px;">Dados Pessoais</legend>
+                    <label>Nome: <input type="text" style="margin-left: 10px;"></label><br><br>
+                    <label>Email: <input type="email" style="margin-left: 13px;"></label><br><br>
+                    <label>Telefone: <input type="tel"></label>
+                </fieldset>
+            </div>
+            
+            <div class="important">
+                <strong>Quando usar Fieldset:</strong><br>
+                • Agrupar informações pessoais<br>
+                • Separar endereço de entrega e cobrança<br>
+                • Organizar opções de pagamento<br>
+                • Agrupar preferências do usuário
+            </div>
+        </div>
+
+        <!-- Slide 12: Botões -->
+        <div class="slide">
+            <h1>Botões em Formulários</h1>
+            
+            <h2>Três formas de criar botões:</h2>
+            
+            <h3>1. Input type="submit" (Enviar)</h3>
+            <div class="code-example">
+                &lt;input type="submit" value="Enviar Formulário"&gt;
+            </div>
+            <div class="example-form">
+                <input type="submit" value="Enviar Formulário">
+            </div>
+            
+            <h3>2. Input type="reset" (Limpar)</h3>
+            <div class="code-example">
+                &lt;input type="reset" value="Limpar Campos"&gt;
+            </div>
+            <div class="example-form">
+                <input type="reset" value="Limpar Campos">
+            </div>
+            
+            <h3>3. Tag Button (Mais flexível)</h3>
+            <div class="code-example">
+                &lt;button type="submit"&gt;Enviar&lt;/button&gt;<br>
+                &lt;button type="reset"&gt;Limpar&lt;/button&gt;<br>
+                &lt;button type="button"&gt;Ação Personalizada&lt;/button&gt;
+            </div>
+            <div class="example-form">
+                <button type="button">Botão Personalizado</button>
+            </div>
+        </div>
+
+        <!-- Slide 13: Atributos de Validação -->
+        <div class="slide">
+            <h1>Validação HTML5</h1>
+            
+            <p>HTML5 oferece validação nativa sem necessidade de JavaScript:</p>
+            
+            <h3>Principais Atributos de Validação:</h3>
+            
+            <div class="two-columns">
+                <div>
+                    <h4>required</h4>
+                    <div class="code-example">
+                        &lt;input type="text" required&gt;
+                    </div>
+                    <p>Campo obrigatório</p>
+                </div>
+                
+                <div>
+                    <h4>minlength / maxlength</h4>
+                    <div class="code-example">
+                        &lt;input type="text" minlength="3" maxlength="50"&gt;
+                    </div>
+                    <p>Limite de caracteres</p>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div>
+                    <h4>min / max</h4>
+                    <div class="code-example">
+                        &lt;input type="number" min="18" max="100"&gt;
+                    </div>
+                    <p>Valores mínimo e máximo</p>
+                </div>
+                
+                <div>
+                    <h4>pattern</h4>
+                    <div class="code-example">
+                        &lt;input type="text" pattern="[0-9]{3}-[0-9]{3}"&gt;
+                    </div>
+                    <p>Expressão regular</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <strong>Nota:</strong> A validação HTML5 é executada automaticamente quando o formulário é enviado, mas pode ser complementada com JavaScript para melhor controle.
+            </div>
+        </div>
+
+        <!-- Slide 14: Exemplo Completo -->
+        <div class="slide">
+            <h1>Exemplo Completo - Formulário de Cadastro</h1>
+            
+            <div class="code-example" style="font-size: 0.9em;">
+                &lt;form action="cadastrar.php" method="POST"&gt;<br>
+                &nbsp;&nbsp;&lt;fieldset&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;legend&gt;Cadastro de Usuário&lt;/legend&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="nome"&gt;Nome Completo:*&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="nome" name="nome" required&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="email"&gt;Email:*&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="email" id="email" name="email" required&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="senha"&gt;Senha:*&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="password" id="senha" name="senha" minlength="6" required&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="nascimento"&gt;Data de Nascimento:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="date" id="nascimento" name="nascimento"&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label&gt;Gênero:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="radio" name="genero" value="M" id="masc"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="masc"&gt;Masculino&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="radio" name="genero" value="F" id="fem"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="fem"&gt;Feminino&lt;/label&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="checkbox" id="termos" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="termos"&gt;Aceito os termos de uso*&lt;/label&gt;&lt;br&gt;&lt;br&gt;<br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="submit"&gt;Cadastrar&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="reset"&gt;Limpar&lt;/button&gt;<br>
+                &nbsp;&nbsp;&lt;/fieldset&gt;<br>
+                &lt;/form&gt;
+            </div>
+        </div>
+
+        <!-- Slide 15: Boas Práticas -->
+        <div class="slide">
+            <h1>Boas Práticas para Formulários</h1>
+            
+            <h2>✅ Sempre faça:</h2>
+            <ul>
+                <li>Use labels para todos os campos</li>
+                <li>Marque campos obrigatórios com asterisco (*)</li>
+                <li>Use o tipo de input apropriado (email, tel, number, etc.)</li>
+                <li>Agrupe campos relacionados com fieldset</li>
+                <li>Forneça placeholders úteis</li>
+                <li>Use validação HTML5 nativa</li>
+                <li>Teste a acessibilidade do formulário</li>
+            </ul>
+            
+            <h2>❌ Evite:</h2>
+            <ul>
+                <li>Formulários muito longos sem divisão</li>
+                <li>Campos sem labels ou identificação clara</li>
+                <li>Não indicar campos obrigatórios</li>
+                <li>Usar apenas placeholders como labels</li>
+                <li>Ignorar a ordem lógica dos campos</li>
+                <li>Não testar em diferentes navegadores</li>
+            </ul>
+            
+            <div class="important">
+                <strong>Dica:</strong> Sempre pense na experiência do usuário. Um formulário bem estruturado aumenta significativamente as taxas de conversão e satisfação.
+            </div>
+        </div>
+        <!-- Slide 16: Acessibilidade -->
+        <div class="slide">
+            <h1>Acessibilidade em Formulários</h1>
+            
+            <h2>🔍 Por que é importante?</h2>
+            <p>Formulários acessíveis garantem que TODOS os usuários possam interagir com seu site, incluindo pessoas com deficiências visuais, motoras ou cognitivas.</p>
+            
+            <h3>Principais Técnicas:</h3>
+            
+            <div class="highlight">
+                <strong>1. Use Labels Corretamente</strong><br>
+                Sempre associe labels aos campos usando o atributo 'for'
+            </div>
+            
+            <div class="highlight">
+                <strong>2. Ordem de Tabulação</strong><br>
+                Garanta que a navegação por TAB siga uma ordem lógica
+            </div>
+            
+            <div class="highlight">
+                <strong>3. Mensagens de Erro Claras</strong><br>
+                Forneça feedback específico sobre o que precisa ser corrigido
+            </div>
+            
+            <div class="highlight">
+                <strong>4. Contraste e Tamanho</strong><br>
+                Garanta que textos e campos tenham contraste adequado e tamanho legível
+            </div>
+            
+            <div class="important">
+                <strong>Teste com leitores de tela:</strong> Use ferramentas como NVDA ou JAWS para verificar se seu formulário é navegável sem mouse.
+            </div>
+        </div>
+
+        <!-- Slide 17: Exercício Prático 1 -->
+        <div class="slide">
+            <h1>Exercício Prático 1</h1>
+            
+            <h2>Crie um Formulário de Login</h2>
+            
+            <p>Implemente um formulário de login com os seguintes requisitos:</p>
+            
+            <ul>
+                <li>Campo de email (obrigatório)</li>
+                <li>Campo de senha (obrigatório, mínimo 8 caracteres)</li>
+                <li>Checkbox "Lembrar-me"</li>
+                <li>Link "Esqueceu a senha?"</li>
+                <li>Botão de enviar</li>
+            </ul>
+        </div>
+
+        <!-- Slide 18: Exercício Prático 2 -->
+        <div class="slide">
+            <h1>Exercício Prático 2</h1>
+            
+            <h2>Crie um Formulário de Pesquisa</h2>
+            
+            <p>Crie um formulário de pesquisa de satisfação com:</p>
+            
+            <ul>
+                <li>Campo de nome (opcional)</li>
+                <li>Seleção de idade (select com faixas etárias)</li>
+                <li>Avaliação do serviço (radio buttons de 1 a 5)</li>
+                <li>Checkboxes para melhorias desejadas</li>
+                <li>Campo de comentários (textarea)</li>
+            </ul>
+            
+        </div>
+
+        <!-- Slide 19: Dicas Extras -->
+        <div class="slide">
+            <h1>Dicas Extras e Recursos</h1>
+            
+            <h2>Dicas:</h2>
+            
+            <div class="two-columns">
+                <div>
+                    <h3>Atributo autocomplete</h3>
+                    <div class="code-example">
+                        &lt;input type="email" autocomplete="email"&gt;<br>
+                        &lt;input type="tel" autocomplete="tel"&gt;
+                    </div>
+                    <p>Ajuda o navegador a preencher campos automaticamente</p>
+                </div>
+                
+                <div>
+                    <h3>Atributo autofocus</h3>
+                    <div class="code-example">
+                        &lt;input type="text" autofocus&gt;
+                    </div>
+                    <p>Define o foco inicial no campo quando a página carrega</p>
+                </div>
+            </div>
+            
+            <h2>Recursos para Estudo:</h2>
+            <ul>
+                <li><strong>MDN Web Docs:</strong> Documentação completa sobre formulários HTML</li>
+                <li><strong>W3C:</strong> Especificações oficiais e guias de acessibilidade</li>
+                <li><strong>Can I Use:</strong> Verificar compatibilidade entre navegadores</li>
+                <li><strong>A11y Project:</strong> Recursos sobre acessibilidade web</li>
+            </ul>
+            
+            <div class="highlight">
+                <strong>Próximos Passos:</strong><br>
+                • Aprenda CSS para estilizar seus formulários<br>
+                • Estude JavaScript para validação avançada<br>
+                • Explore frameworks como Bootstrap para formulários responsivos<br>
+                • Pratique criando diferentes tipos de formulários
+            </div>
+        </div>
+
+        <!-- Slide 20: Conclusão -->
+        <div class="slide">
+            <h1>Conclusão</h1>
+            
+            <h3>O que você aprendeu:</h3>
+            <ul>
+                <li>Estrutura básica de formulários com &lt;form&gt;</li>
+                <li>Diversos tipos de input e suas aplicações</li>
+                <li>Elementos select e textarea</li>
+                <li>Importância e uso correto de labels</li>
+                <li>Organização com fieldset e legend</li>
+                <li>Validação nativa do HTML5</li>
+                <li>Boas práticas e acessibilidade</li>
+                <li>Como criar formulários funcionais e semânticos</li>
+            </ul>
+            
+            <div class="important" style="margin-top: 40px;">
+                <strong>Lembre-se:</strong> Crie diferentes tipos de formulários, teste em vários navegadores e sempre pense na experiência do usuário.
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+            <span class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">20</span>
+            </span>
+            <button id="nextBtn" onclick="changeSlide(1)">Próximo →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 20;
+
+        function showSlide(n) {
+            const slides = document.getElementsByClassName('slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+            
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+            
+            slides[currentSlide - 1].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide;
+            
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            showSlide(currentSlide);
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Inicializar
+        showSlide(1);
+    </script>
+</body>
+</html>
