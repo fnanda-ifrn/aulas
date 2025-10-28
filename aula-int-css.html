@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução ao CSS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            padding: 50px 70px;
+            padding-bottom: 100px;
+            height: 700px;
+            overflow-y: auto;
+            animation: fadeIn 0.5s;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3.8em;
+            margin-top: 100px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.15em;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+            line-height: 2;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            padding-left: 60px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            line-height: 1.8;
+            counter-reset: line;
+            position: relative;
+        }
+
+        pre code {
+            display: block;
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        pre .line {
+            display: block;
+            position: relative;
+        }
+
+        pre .line::before {
+            counter-increment: line;
+            content: counter(line);
+            position: absolute;
+            left: -50px;
+            width: 40px;
+            text-align: right;
+            color: #6c6c6c;
+            user-select: none;
+            padding-right: 10px;
+            border-right: 1px solid #4a4a4a;
+        }
+
+        .code-example {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip::before {
+            content: "💡 Dica: ";
+            font-weight: bold;
+            color: #0c5460;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #856404;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning::before {
+            content: "⚠️ Importante: ";
+            font-weight: bold;
+            color: #856404;
+        }
+
+        .example-box {
+            border: 2px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            background: #f8f9ff;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .comparison-item h4 {
+            margin-top: 0;
+        }
+
+        .pros {
+            color: #28a745;
+        }
+
+        .cons {
+            color: #dc3545;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 15px 0;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .nav-btn-small {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        .slide-counter {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 16px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 2.2em;
+            margin-top: 20px;
+        }
+
+
+
+        .highlight {
+            background: #fff3cd;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .demo-result {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 25px;
+                padding-bottom: 100px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            .container {
+                max-width: 100%;
+                border-radius: 0;
+            }
+
+            .navigation {
+                bottom: 15px;
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <h1>Introdução ao CSS</h1>
+            <p class="subtitle">Cascading Style Sheets</p>
+            <p class="subtitle">Disciplina: Autoria Web</p>
+            <p class="subtitle">Profa: Fernanda Lígia</p>
+        </div>
+
+        
+<!-- Slide 2: O que é CSS? -->
+        <div class="slide">
+            <h2>O que é CSS?</h2>
+            <p><strong>CSS (Cascading Style Sheets)</strong> é uma linguagem de estilo utilizada para definir a apresentação visual de documentos HTML.</p>
+            
+            <h3>Por que usar CSS?</h3>
+            <ul>
+                <li><strong>Separação de conteúdo e apresentação:</strong> HTML cuida da estrutura, CSS cuida do visual</li>
+                <li><strong>Reutilização de código:</strong> Um único arquivo CSS pode estilizar múltiplas páginas</li>
+                <li><strong>Facilidade de manutenção:</strong> Alterações visuais centralizadas</li>
+                <li><strong>Melhor desempenho:</strong> Reduz repetição de código</li>
+                <li><strong>Design responsivo:</strong> Adapta o layout para diferentes dispositivos</li>
+            </ul>
+
+            <div class="tip">
+                Sem CSS, todas as páginas web teriam apenas a aparência padrão do navegador!
+            </div>
+        </div>
+
+        
+<!-- Slide 3: Visão Geral do CSS -->
+        <div class="slide">
+            <h2>Visão Geral do CSS</h2>
+            
+            <h3>Conceitos Fundamentais</h3>
+            
+            <p>CSS funciona através de <span class="highlight">regras</span> que definem como os elementos HTML devem ser exibidos.</p>
+
+            <h4>Estrutura Básica:</h4>
+            <pre><code><span class="line">seletor {</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">}</span></code></pre>
+
+            <h4>Exemplo Prático:</h4>
+            <pre><code><span class="line">p {</span>
+<span class="line">    color: blue;        <span style="color: #6c757d;">/* propriedade: color | valor: blue */</span></span>
+<span class="line">    font-size: 16px;    <span style="color: #6c757d;">/* propriedade: font-size | valor: 16px */</span></span>
+<span class="line">}</span></code></pre>
+
+            <div class="example-box">
+                <p><strong>Resultado:</strong> Todos os parágrafos <code>&lt;p&gt;</code> terão texto azul com tamanho de 16 pixels.</p>
+            </div>
+        </div>
+
+        
+<!-- Slide 4: Declaração CSS -->
+        <div class="slide">
+            <h2>Declaração CSS</h2>
+            
+            <p>Uma <strong>declaração CSS</strong> é composta por uma <span class="highlight">propriedade</span> e um <span class="highlight">valor</span>, separados por dois pontos e finalizados com ponto e vírgula.</p>
+
+            <h3>Anatomia de uma Declaração:</h3>
+            <pre><code><span class="line"><span style="color: #dc3545; font-weight: bold;">propriedade</span>: <span style="color: #007bff; font-weight: bold;">valor</span>;</span></code></pre>
+
+            <h3>Exemplos de Declarações:</h3>
+            <div class="code-example">
+                <pre><code><span class="line"><span style="color: #dc3545;">color</span>: <span style="color: #007bff;">red</span>;                    <span style="color: #6c757d;">/* propriedade: color | valor: red */</span></span>
+<span class="line"><span style="color: #dc3545;">font-size</span>: <span style="color: #007bff;">18px</span>;               <span style="color: #6c757d;">/* propriedade: font-size | valor: 18px */</span></span>
+<span class="line"><span style="color: #dc3545;">background-color</span>: <span style="color: #007bff;">yellow</span>;      <span style="color: #6c757d;">/* propriedade: background-color | valor: yellow */</span></span>
+<span class="line"><span style="color: #dc3545;">margin</span>: <span style="color: #007bff;">10px</span>;                 <span style="color: #6c757d;">/* propriedade: margin | valor: 10px */</span></span>
+<span class="line"><span style="color: #dc3545;">border</span>: <span style="color: #007bff;">1px solid black</span>;     <span style="color: #6c757d;">/* propriedade: border | valor: 1px solid black */</span></span></code></pre>
+            </div>
+
+            <div class="warning">
+                O ponto e vírgula (;) ao final de cada declaração é obrigatório quando há múltiplas declarações. É uma boa prática sempre utilizá-lo.
+            </div>
+        </div>
+
+        
+<!-- Slide 5: Regras CSS -->
+        <div class="slide">
+            <h2>Regras CSS</h2>
+            
+            <p>Uma <strong>regra CSS</strong> é formada por um <span class="highlight">seletor</span> seguido de um bloco de <span class="highlight">declarações</span> entre chaves.</p>
+
+            <h3>Estrutura Completa:</h3>
+            <pre><code><span class="line">seletor {</span>
+<span class="line">    declaração1;</span>
+<span class="line">    declaração2;</span>
+<span class="line">    declaração3;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>Exemplo Completo:</h3>
+            <pre><code><span class="line"><span style="color: #764ba2; font-weight: bold;">h1</span> {                            <span style="color: #6c757d;">/* SELETOR */</span></span>
+<span class="line">    color: #333;                <span style="color: #6c757d;">/* declaração */</span></span>
+<span class="line">    font-size: 32px;            <span style="color: #6c757d;">/* declaração */</span></span>
+<span class="line">    text-align: center;         <span style="color: #6c757d;">/* declaração */</span></span>
+<span class="line">    margin-bottom: 20px;        <span style="color: #6c757d;">/* declaração */</span></span>
+<span class="line">}</span></code></pre>
+
+            <p><strong>Neste exemplo:</strong></p>
+            <ul>
+                <li><code>h1</code> é o <strong>seletor</strong> (seleciona todos os elementos h1)</li>
+                <li>O bloco entre <code>{ }</code> contém as <strong>declarações</strong></li>
+                <li>Cada linha é uma <strong>declaração</strong> com propriedade e valor</li>
+            </ul>
+        </div>
+
+        
+<!-- Slide 6: CSS Inline -->
+        <div class="slide">
+            <h2>CSS Inline (Como Atributo)</h2>
+            
+            <p>CSS inline é aplicado diretamente no elemento HTML através do atributo <code>style</code>.</p>
+
+            <h3>Sintaxe:</h3>
+            <pre><code><span class="line">&lt;elemento <span style="background: #fff3cd; font-weight: bold; color: #856404;">style</span>="propriedade: valor; propriedade: valor;"&gt;</span></code></pre>
+
+            <h3>Exemplos:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">&lt;h1 <span style="background: #fff3cd; font-weight: bold; color: #856404;">style</span>="color: blue; font-size: 28px;"&gt;Título Azul&lt;/h1&gt;</span>
+<span class="line"></span>
+<span class="line">&lt;p <span style="background: #fff3cd; font-weight: bold; color: #856404;">style</span>="background-color: yellow; padding: 10px;"&gt;</span>
+<span class="line">    Parágrafo com fundo amarelo</span>
+<span class="line">&lt;/p&gt;</span>
+<span class="line"></span>
+<span class="line">&lt;div <span style="background: #fff3cd; font-weight: bold; color: #856404;">style</span>="border: 2px solid red; margin: 20px;"&gt;</span>
+<span class="line">    Div com borda vermelha</span>
+<span class="line">&lt;/div&gt;</span></code></pre>
+            </div>
+
+            <div class="warning">
+                CSS inline tem a maior prioridade (especificidade) de todas as formas de CSS!
+            </div>
+        </div>
+
+        
+<!-- Slide 7: Vantagens e Desvantagens - Inline -->
+        <div class="slide">
+            <h2>CSS Inline - Prós e Contras</h2>
+            
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4 class="pros">✅ Vantagens</h4>
+                    <ul>
+                        <li>Rápido para testes</li>
+                        <li>Útil para estilos únicos</li>
+                        <li>Maior especificidade</li>
+                        <li>Não requer arquivo externo</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-item">
+                    <h4 class="cons">❌ Desvantagens</h4>
+                    <ul>
+                        <li>Dificulta manutenção</li>
+                        <li>Não reutilizável</li>
+                        <li>Mistura HTML e CSS</li>
+                        <li>Código repetitivo</li>
+                        <li>Dificulta responsividade</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip">
+                Use CSS inline apenas para casos muito específicos ou testes rápidos. Não é recomendado para projetos reais.
+            </div>
+        </div>
+
+        
+<!-- Slide 8: CSS Interno -->
+        <div class="slide">
+            <h2>CSS Interno (No Documento HTML)</h2>
+            
+            <p>CSS interno é definido dentro da tag <code>&lt;style&gt;</code> na seção <code>&lt;head&gt;</code> do documento HTML.</p>
+
+            <h3>Estrutura:</h3>
+            <pre><code><span class="line">&lt;!DOCTYPE html&gt;</span>
+<span class="line">&lt;html&gt;</span>
+<span class="line">&lt;head&gt;</span>
+<span class="line">    &lt;title&gt;Minha Página&lt;/title&gt;</span>
+<span class="line">    <span style="background: #d1ecf1; font-weight: bold; color: #0c5460;">&lt;style&gt;</span></span>
+<span class="line">        body {</span>
+<span class="line">            background-color: #f0f0f0;</span>
+<span class="line">            font-family: Arial, sans-serif;</span>
+<span class="line">        }</span>
+<span class="line">        </span>
+<span class="line">        h1 {</span>
+<span class="line">            color: navy;</span>
+<span class="line">            text-align: center;</span>
+<span class="line">        }</span>
+<span class="line">        </span>
+<span class="line">        p {</span>
+<span class="line">            color: #333;</span>
+<span class="line">            line-height: 1.6;</span>
+<span class="line">        }</span>
+<span class="line">    <span style="background: #d1ecf1; font-weight: bold; color: #0c5460;">&lt;/style&gt;</span></span>
+<span class="line">&lt;/head&gt;</span>
+<span class="line">&lt;body&gt;</span>
+<span class="line">    &lt;h1&gt;Título&lt;/h1&gt;</span>
+<span class="line">    &lt;p&gt;Parágrafo&lt;/p&gt;</span>
+<span class="line">&lt;/body&gt;</span>
+<span class="line">&lt;/html&gt;</span></code></pre>
+        </div>
+
+        
+<!-- Slide 9: Vantagens e Desvantagens - Interno -->
+        <div class="slide">
+            <h2>CSS Interno - Prós e Contras</h2>
+            
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4 class="pros">✅ Vantagens</h4>
+                    <ul>
+                        <li>Estilos centralizados na página</li>
+                        <li>Não requer arquivo externo</li>
+                        <li>Útil para páginas únicas</li>
+                        <li>Boa para protótipos</li>
+                        <li>Facilita testes</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-item">
+                    <h4 class="cons">❌ Desvantagens</h4>
+                    <ul>
+                        <li>Não reutilizável entre páginas</li>
+                        <li>Aumenta tamanho do HTML</li>
+                        <li>Dificulta manutenção em sites grandes</li>
+                        <li>Não aproveita cache do navegador</li>
+                        <li>Código duplicado em múltiplas páginas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip">
+                CSS interno é ideal para páginas simples ou quando você tem estilos específicos para uma única página.
+            </div>
+        </div>
+
+        
+<!-- Slide 10: CSS Externo -->
+        <div class="slide">
+            <h2>CSS Externo (Arquivo Separado)</h2>
+            
+            <p>CSS externo é definido em um arquivo separado com extensão <code>.css</code> e vinculado ao HTML através da tag <code>&lt;link&gt;</code>.</p>
+
+            <h3>Arquivo: estilos.css</h3>
+            <pre><code><span class="line">/* Arquivo: estilos.css */</span>
+<span class="line">body {</span>
+<span class="line">    background-color: #f0f0f0;</span>
+<span class="line">    font-family: Arial, sans-serif;</span>
+<span class="line">    margin: 0;</span>
+<span class="line">    padding: 0;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">h1 {</span>
+<span class="line">    color: navy;</span>
+<span class="line">    text-align: center;</span>
+<span class="line">    padding: 20px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">p {</span>
+<span class="line">    color: #333;</span>
+<span class="line">    line-height: 1.6;</span>
+<span class="line">    margin: 15px;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>Arquivo: index.html</h3>
+            <pre><code><span class="line">&lt;!DOCTYPE html&gt;</span>
+<span class="line">&lt;html&gt;</span>
+<span class="line">&lt;head&gt;</span>
+<span class="line">    &lt;title&gt;Minha Página&lt;/title&gt;</span>
+<span class="line">    <span style="background: #d4edda; font-weight: bold; color: #155724;">&lt;link rel="stylesheet" href="estilos.css"&gt;</span></span>
+<span class="line">&lt;/head&gt;</span>
+<span class="line">&lt;body&gt;</span>
+<span class="line">    &lt;h1&gt;Título&lt;/h1&gt;</span>
+<span class="line">    &lt;p&gt;Parágrafo&lt;/p&gt;</span>
+<span class="line">&lt;/body&gt;</span>
+<span class="line">&lt;/html&gt;</span></code></pre>
+        </div>
+
+        
+<!-- Slide 11: Vantagens e Desvantagens - Externo -->
+        <div class="slide">
+            <h2>CSS Externo - Prós e Contras</h2>
+            
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h4 class="pros">✅ Vantagens (MAIS RECOMENDADO!)</h4>
+                    <ul>
+                        <li>Separação completa de conteúdo e estilo</li>
+                        <li>Reutilizável em múltiplas páginas</li>
+                        <li>Facilita manutenção</li>
+                        <li>Aproveita cache do navegador</li>
+                        <li>Organização do código</li>
+                        <li>Trabalho em equipe facilitado</li>
+                        <li>HTML mais limpo e leve</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-item">
+                    <h4 class="cons">❌ Desvantagens</h4>
+                    <ul>
+                        <li>Requer arquivo adicional</li>
+                        <li>Requisição HTTP extra</li>
+                        <li>Pode haver delay no carregamento</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip">
+                CSS externo é a forma MAIS RECOMENDADA para projetos reais! É o padrão da indústria.
+            </div>
+        </div>
+
+        
+<!-- Slide 12: Comparação dos Três Métodos -->
+        <div class="slide">
+            <h2>Comparação dos Três Métodos</h2>
+            
+            <table>
+                <tr>
+                    <th>Característica</th>
+                    <th>Inline</th>
+                    <th>Interno</th>
+                    <th>Externo</th>
+                </tr>
+                <tr>
+                    <td><strong>Localização</strong></td>
+                    <td>No atributo style</td>
+                    <td>Tag &lt;style&gt; no &lt;head&gt;</td>
+                    <td>Arquivo .css separado</td>
+                </tr>
+                <tr>
+                    <td><strong>Reutilização</strong></td>
+                    <td>❌ Não</td>
+                    <td>⚠️ Apenas na página</td>
+                    <td>✅ Múltiplas páginas</td>
+                </tr>
+                <tr>
+                    <td><strong>Manutenção</strong></td>
+                    <td>❌ Difícil</td>
+                    <td>⚠️ Moderada</td>
+                    <td>✅ Fácil</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>⚠️ Média</td>
+                    <td>⚠️ Média</td>
+                    <td>✅ Melhor (cache)</td>
+                </tr>
+                <tr>
+                    <td><strong>Especificidade</strong></td>
+                    <td>Mais alta</td>
+                    <td>Média</td>
+                    <td>Mais baixa</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso Recomendado</strong></td>
+                    <td>Testes rápidos</td>
+                    <td>Páginas únicas</td>
+                    <td>Projetos reais ✅</td>
+                </tr>
+            </table>
+        </div>
+
+        
+<!-- Slide 13: Ordem de Precedência -->
+        <div class="slide">
+            <h2>Ordem de Precedência (Cascata)</h2>
+            
+            <p>Quando múltiplos estilos são aplicados ao mesmo elemento, o CSS segue uma ordem de prioridade:</p>
+
+            <h3>Ordem de Prioridade (do maior para o menor):</h3>
+            <ol>
+                <li><strong>!important</strong> - Força máxima prioridade</li>
+                <li><strong>CSS Inline</strong> - style no elemento</li>
+                <li><strong>CSS Interno/Externo</strong> - Por especificidade do seletor</li>
+                <li><strong>Estilo padrão do navegador</strong></li>
+            </ol>
+
+            <h3>Exemplo de Conflito:</h3>
+            <pre><code><span class="line">&lt;!-- CSS Externo --&gt;</span>
+<span class="line">p { color: blue; }</span>
+<span class="line"></span>
+<span class="line">&lt;!-- CSS Interno --&gt;</span>
+<span class="line">&lt;style&gt;</span>
+<span class="line">    p { color: green; }</span>
+<span class="line">&lt;/style&gt;</span>
+<span class="line"></span>
+<span class="line">&lt;!-- CSS Inline --&gt;</span>
+<span class="line">&lt;p style="color: red;"&gt;Este texto será vermelho!&lt;/p&gt;</span></code></pre>
+
+            <div class="warning">
+                O CSS inline vence! Evite usar !important - isso dificulta muito a manutenção do código.
+            </div>
+        </div>
+
+        
+<!-- Slide 14: Seletores - Introdução -->
+        <div class="slide">
+            <h2>Seletores CSS</h2>
+            
+            <p>Os <strong>seletores</strong> são padrões usados para selecionar e estilizar elementos HTML.</p>
+
+            <h3>Por que são importantes?</h3>
+            <ul>
+                <li>Definem <strong>quais elementos</strong> receberão os estilos</li>
+                <li>Permitem aplicar estilos de forma específica ou ampla</li>
+                <li>Organizam e estruturam o CSS</li>
+                <li>Aumentam a reutilização de código</li>
+            </ul>
+
+            <h3>Principais Tipos de Seletores:</h3>
+            <ol>
+                <li><strong>Seletores de Elemento</strong> - Selecionam por tag HTML</li>
+                <li><strong>Seletores de Classe</strong> - Selecionam por atributo class</li>
+                <li><strong>Seletores de ID</strong> - Selecionam por atributo id</li>
+                <li><strong>Pseudoclasses</strong> - Selecionam estados especiais</li>
+            </ol>
+
+            <div class="tip">
+                Cada tipo de seletor tem seu uso específico. Vamos explorar cada um deles em detalhes!
+            </div>
+        </div>
+
+        
+<!-- Slide 15: Seletores de Elemento -->
+        <div class="slide">
+            <h2>Seletores de Elemento (Tag)</h2>
+            
+            <p>Selecionam <strong>todos os elementos</strong> de um determinado tipo (tag HTML).</p>
+
+            <h3>Sintaxe:</h3>
+            <pre><code><span class="line">nome-da-tag {</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>Exemplos:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Seleciona todos os parágrafos */</span>
+<span class="line">p {</span>
+<span class="line">    color: blue;</span>
+<span class="line">    font-size: 16px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Seleciona todos os títulos h1 */</span>
+<span class="line">h1 {</span>
+<span class="line">    color: navy;</span>
+<span class="line">    text-align: center;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Seleciona todas as imagens */</span>
+<span class="line">img {</span>
+<span class="line">    width: 100%;</span>
+<span class="line">    border-radius: 5px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Seleciona todos os links */</span>
+<span class="line">a {</span>
+<span class="line">    color: #007bff;</span>
+<span class="line">    text-decoration: none;</span>
+<span class="line">}</span></code></pre>
+            </div>
+
+            <div class="warning">
+                Seletores de elemento aplicam estilos a TODOS os elementos daquele tipo na página!
+            </div>
+        </div>
+
+        
+<!-- Slide 16: Seletores de Classe -->
+        <div class="slide">
+            <h2>Seletores de Classe</h2>
+            
+            <p>Selecionam elementos que possuem um atributo <code>class</code> específico. Classes são <strong>reutilizáveis</strong> e podem ser aplicadas a múltiplos elementos.</p>
+
+            <h3>Sintaxe:</h3>
+            <pre><code><span class="line">.nome-da-classe {</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>No HTML:</h3>
+            <pre><code><span class="line">&lt;p class="<span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">destaque</span>"&gt;Texto em destaque&lt;/p&gt;</span>
+<span class="line">&lt;div class="<span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">destaque</span>"&gt;Div também em destaque&lt;/div&gt;</span></code></pre>
+
+            <h3>No CSS:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Seleciona todos com class="destaque" */</span>
+<span class="line">.destaque {</span>
+<span class="line">    background-color: yellow;</span>
+<span class="line">    font-weight: bold;</span>
+<span class="line">    padding: 10px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">.botao-primario {</span>
+<span class="line">    background-color: #007bff;</span>
+<span class="line">    color: white;</span>
+<span class="line">    padding: 10px 20px;</span>
+<span class="line">    border-radius: 5px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">.texto-centralizado {</span>
+<span class="line">    text-align: center;</span>
+<span class="line">}</span></code></pre>
+            </div>
+
+            <div class="tip">
+                Classes são a forma MAIS RECOMENDADA para estilizar elementos! Use nomes descritivos e semânticos.
+            </div>
+        </div>
+
+        
+<!-- Slide 17: Múltiplas Classes -->
+        <div class="slide">
+            <h2>Múltiplas Classes</h2>
+            
+            <p>Um elemento HTML pode ter <strong>múltiplas classes</strong> separadas por espaço.</p>
+
+            <h3>HTML:</h3>
+            <pre><code><span class="line">&lt;button class="<span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">botao</span> <span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">botao-grande</span> <span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">botao-azul</span>"&gt;</span>
+<span class="line">    Clique Aqui</span>
+<span class="line">&lt;/button&gt;</span></code></pre>
+
+            <h3>CSS:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Estilo base do botão */</span>
+<span class="line">.botao {</span>
+<span class="line">    padding: 10px 20px;</span>
+<span class="line">    border: none;</span>
+<span class="line">    border-radius: 5px;</span>
+<span class="line">    cursor: pointer;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Modificador de tamanho */</span>
+<span class="line">.botao-grande {</span>
+<span class="line">    font-size: 18px;</span>
+<span class="line">    padding: 15px 30px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Modificador de cor */</span>
+<span class="line">.botao-azul {</span>
+<span class="line">    background-color: #007bff;</span>
+<span class="line">    color: white;</span>
+<span class="line">}</span></code></pre>
+            </div>
+
+            <h3>Vantagens:</h3>
+            <ul>
+                <li>Reutilização de estilos</li>
+                <li>Código mais organizado e modular</li>
+                <li>Facilita manutenção</li>
+                <li>Permite combinações flexíveis</li>
+            </ul>
+        </div>
+
+        
+<!-- Slide 18: Seletores de ID -->
+        <div class="slide">
+            <h2>Seletores de ID</h2>
+            
+            <p>Selecionam o elemento que possui um atributo <code>id</code> específico. IDs devem ser <strong>únicos</strong> na página.</p>
+
+            <h3>Sintaxe:</h3>
+            <pre><code><span class="line">#nome-do-id {</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>No HTML:</h3>
+            <pre><code><span class="line">&lt;header id="<span style="background: #dfe6e9; color: #2d3436; font-weight: bold; padding: 2px 5px; border-radius: 3px;">cabecalho-principal</span>"&gt;</span>
+<span class="line">    &lt;h1&gt;Meu Site&lt;/h1&gt;</span>
+<span class="line">&lt;/header&gt;</span></code></pre>
+
+            <h3>No CSS:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Seleciona o elemento com id="cabecalho-principal" */</span>
+<span class="line">#cabecalho-principal {</span>
+<span class="line">    background-color: #333;</span>
+<span class="line">    color: white;</span>
+<span class="line">    padding: 20px;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">#rodape {</span>
+<span class="line">    background-color: #f0f0f0;</span>
+<span class="line">    text-align: center;</span>
+<span class="line">    padding: 15px;</span>
+<span class="line">}</span></code></pre>
+            </div>
+
+            <div class="warning">
+                IMPORTANTE: Cada ID deve ser único na página! Para estilização, prefira usar classes. Use IDs principalmente para JavaScript ou âncoras.
+            </div>
+        </div>
+
+        
+<!-- Slide 19: Classe vs ID -->
+        <div class="slide">
+            <h2>Diferenças: Classe vs ID</h2>
+            
+            <table>
+                <tr>
+                    <th>Característica</th>
+                    <th>Classe (.classe)</th>
+                    <th>ID (#id)</th>
+                </tr>
+                <tr>
+                    <td><strong>Símbolo</strong></td>
+                    <td>. (ponto)</td>
+                    <td># (hashtag)</td>
+                </tr>
+                <tr>
+                    <td><strong>Unicidade</strong></td>
+                    <td>Reutilizável múltiplas vezes</td>
+                    <td>Único na página</td>
+                </tr>
+                <tr>
+                    <td><strong>Especificidade</strong></td>
+                    <td>Menor (10 pontos)</td>
+                    <td>Maior (100 pontos)</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso por elemento</strong></td>
+                    <td>Múltiplas classes por elemento</td>
+                    <td>Apenas um ID por elemento</td>
+                </tr>
+                <tr>
+                    <td><strong>Uso recomendado</strong></td>
+                    <td>Estilização CSS ✅</td>
+                    <td>JavaScript, âncoras</td>
+                </tr>
+            </table>
+
+            <h3>Exemplo Comparativo:</h3>
+            <pre><code><span class="line">&lt;!-- RECOMENDADO: Usar classes --&gt;</span>
+<span class="line">&lt;div class="<span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">card</span> <span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">card-destaque</span>"&gt;Conteúdo&lt;/div&gt;</span>
+<span class="line">&lt;div class="<span style="background: #ffeaa7; color: #856404; font-weight: bold; padding: 2px 5px; border-radius: 3px;">card</span>"&gt;Outro conteúdo&lt;/div&gt;</span>
+<span class="line"></span>
+<span class="line">&lt;!-- ID: Usar para identificação única --&gt;</span>
+<span class="line">&lt;header id="<span style="background: #dfe6e9; color: #2d3436; font-weight: bold; padding: 2px 5px; border-radius: 3px;">topo</span>"&gt;Cabeçalho&lt;/header&gt;</span></code></pre>
+
+            <div class="tip">
+                Para CSS, use classes! IDs são melhores para JavaScript e navegação por âncoras.
+            </div>
+        </div>
+
+        
+<!-- Slide 20: Pseudoclasses -->
+        <div class="slide">
+            <h2>Pseudoclasses</h2>
+            
+            <p>Pseudoclasses selecionam elementos em <strong>estados específicos</strong> ou posições especiais.</p>
+
+            <h3>Sintaxe:</h3>
+            <pre><code><span class="line">seletor:pseudoclasse {</span>
+<span class="line">    propriedade: valor;</span>
+<span class="line">}</span></code></pre>
+
+            <h3>Pseudoclasses de Interação:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Quando o mouse passa sobre o link */</span>
+<span class="line">a:hover {</span>
+<span class="line">    color: red;</span>
+<span class="line">    text-decoration: underline;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Quando o elemento está com foco */</span>
+<span class="line">input:focus {</span>
+<span class="line">    border-color: blue;</span>
+<span class="line">    outline: 2px solid lightblue;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Link já visitado */</span>
+<span class="line">a:visited {</span>
+<span class="line">    color: purple;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Enquanto o elemento está sendo clicado */</span>
+<span class="line">button:active {</span>
+<span class="line">    transform: scale(0.95);</span>
+<span class="line">}</span></code></pre>
+            </div>
+        </div>
+
+        
+<!-- Slide 21: Mais Pseudoclasses -->
+        <div class="slide">
+            <h2>Pseudoclasses Estruturais</h2>
+            
+            <h3>Selecionam elementos por sua posição:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Primeiro filho */</span>
+<span class="line">li:first-child {</span>
+<span class="line">    font-weight: bold;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Último filho */</span>
+<span class="line">li:last-child {</span>
+<span class="line">    border-bottom: none;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Enésimo filho (linhas pares) */</span>
+<span class="line">tr:nth-child(even) {</span>
+<span class="line">    background-color: #f2f2f2;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Enésimo filho (linhas ímpares) */</span>
+<span class="line">tr:nth-child(odd) {</span>
+<span class="line">    background-color: white;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Terceiro elemento */</span>
+<span class="line">li:nth-child(3) {</span>
+<span class="line">    color: red;</span>
+<span class="line">}</span></code></pre>
+            </div>
+
+            <h3>Outras Pseudoclasses Úteis:</h3>
+            <pre><code><span class="line">/* Campo desabilitado */</span>
+<span class="line">input:disabled {</span>
+<span class="line">    opacity: 0.5;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Campo obrigatório */</span>
+<span class="line">input:required {</span>
+<span class="line">    border-left: 3px solid orange;</span>
+<span class="line">}</span></code></pre>
+        </div>
+
+        
+<!-- Slide 22: Exemplo Prático de Pseudoclasses -->
+        <div class="slide">
+            <h2>Exemplo Prático com Pseudoclasses</h2>
+            
+            <h3>HTML:</h3>
+            <pre><code><span class="line">&lt;nav&gt;</span>
+<span class="line">    &lt;ul&gt;</span>
+<span class="line">        &lt;li&gt;&lt;a href="#home"&gt;Home&lt;/a&gt;&lt;/li&gt;</span>
+<span class="line">        &lt;li&gt;&lt;a href="#sobre"&gt;Sobre&lt;/a&gt;&lt;/li&gt;</span>
+<span class="line">        &lt;li&gt;&lt;a href="#contato"&gt;Contato&lt;/a&gt;&lt;/li&gt;</span>
+<span class="line">    &lt;/ul&gt;</span>
+<span class="line">&lt;/nav&gt;</span></code></pre>
+
+            <h3>CSS:</h3>
+            <div class="code-example">
+                <pre><code><span class="line">/* Estilo padrão dos links */</span>
+<span class="line">nav a {</span>
+<span class="line">    color: #333;</span>
+<span class="line">    text-decoration: none;</span>
+<span class="line">    padding: 10px 15px;</span>
+<span class="line">    display: inline-block;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Efeito hover - mouse sobre o link */</span>
+<span class="line">nav a:hover {</span>
+<span class="line">    background-color: #007bff;</span>
+<span class="line">    color: white;</span>
+<span class="line">    border-radius: 5px;</span>
+<span class="line">    transition: all 0.3s;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Link ativo/sendo clicado */</span>
+<span class="line">nav a:active {</span>
+<span class="line">    background-color: #0056b3;</span>
+<span class="line">}</span>
+<span class="line"></span>
+<span class="line">/* Primeiro item do menu */</span>
+<span class="line">nav li:first-child a {</span>
+<span class="line">    font-weight: bold;</span>
+<span class="line">}</span></code></pre>
+            </div>
+        </div>
+
+        
+<!-- Slide 23: Propriedades e Valores -->
+        <div class="slide">
+            <h2>Propriedades e Valores</h2>
+            
+            <h3>Propriedades Mais Comuns:</h3>
+
+            <table>
+                <tr>
+                    <th>Propriedade</th>
+                    <th>O que faz</th>
+                    <th>Exemplo</th>
+                </tr>
+                <tr>
+                    <td><code>color</code></td>
+                    <td>Cor do texto</td>
+                    <td><code>color: red;</code></td>
+                </tr>
+                <tr>
+                    <td><code>background-color</code></td>
+                    <td>Cor de fundo</td>
+                    <td><code>background-color: #f0f0f0;</code></td>
+                </tr>
+                <tr>
+                    <td><code>font-size</code></td>
+                    <td>Tamanho da fonte</td>
+                    <td><code>font-size: 16px;</code></td>
+                </tr>
+                <tr>
+                    <td><code>margin</code></td>
+                    <td>Espaçamento externo</td>
+                    <td><code>margin: 10px;</code></td>
+                </tr>
+                <tr>
+                    <td><code>padding</code></td>
+                    <td>Espaçamento interno</td>
+                    <td><code>padding: 15px;</code></td>
+                </tr>
+                <tr>
+                    <td><code>border</code></td>
+                    <td>Borda do elemento</td>
+                    <td><code>border: 1px solid black;</code></td>
+                </tr>
+            </table>
+        </div>
+
+        
+<!-- Slide 24: Boas Práticas -->
+        <div class="slide">
+            <h2>Boas Práticas CSS</h2>
+            
+            <h3>✅ Sempre Faça:</h3>
+            <ul>
+                <li>Use <strong>CSS externo</strong> em arquivos .css separados</li>
+                <li>Prefira <strong>classes</strong> para estilização</li>
+                <li>Use seletores de elemento para estilos globais</li>
+                <li>Organize o código com comentários</li>
+                <li>Use nomes de classes descritivos e semânticos</li>
+                <li>Mantenha a consistência na nomenclatura</li>
+                <li>Agrupe propriedades relacionadas</li>
+                <li>Use pseudoclasses para interatividade</li>
+                <li>Indente o código corretamente</li>
+            </ul>
+
+            <h3>❌ Evite:</h3>
+            <ul>
+                <li>CSS inline em projetos reais</li>
+                <li>Uso excessivo de !important</li>
+                <li>IDs para estilização (prefira classes)</li>
+                <li>Seletores muito específicos e complexos</li>
+                <li>Código duplicado</li>
+            </ul>
+        </div>
+
+        
+<!-- Slide 25: Exercício Prático 1 -->
+        <div class="slide">
+            <h2>Exercício Prático 1</h2>
+            
+            <h3>Criando uma Página com Seletores</h3>
+            
+            <p><strong>Crie uma página HTML e um arquivo CSS externo com:</strong></p>
+            
+            <h4>HTML deve conter:</h4>
+            <ul>
+                <li>Um título principal (h1)</li>
+                <li>Três parágrafos, sendo um com class="destaque"</li>
+                <li>Uma div com id="container"</li>
+                <li>Uma lista não ordenada (ul) com 4 itens (li)</li>
+            </ul>
+
+            <h4>CSS deve aplicar:</h4>
+            <ul>
+                <li>Estilo para todos os parágrafos (seletor de elemento)</li>
+                <li>Estilo especial para o parágrafo com class="destaque"</li>
+                <li>Estilo para a div com id="container"</li>
+                <li>Efeito hover nos itens da lista</li>
+                <li>Estilo diferenciado para o primeiro item da lista (:first-child)</li>
+            </ul>
+
+            <div class="tip">
+                Experimente diferentes cores, tamanhos e espaçamentos. Use o que aprendeu sobre seletores!
+            </div>
+        </div>
+
+        
+<!-- Slide 26: Exercício Prático 2 -->
+        <div class="slide">
+            <h2>Exercício Prático 2</h2>
+            
+            <h3>Praticando os Três Métodos de CSS</h3>
+            
+            <p><strong>Parte 1:</strong> Crie um parágrafo usando CSS inline com:</p>
+            <ul>
+                <li>Cor de texto vermelha</li>
+                <li>Tamanho de fonte 20px</li>
+                <li>Fundo amarelo</li>
+            </ul>
+
+            <p><strong>Parte 2:</strong> Na mesma página, adicione CSS interno com:</p>
+            <ul>
+                <li>Estilo para todos os h2 (cor azul, centralizado)</li>
+                <li>Uma classe .caixa (borda, padding, background)</li>
+            </ul>
+
+            <p><strong>Parte 3:</strong> Observe qual estilo prevalece quando:</p>
+            <ul>
+                <li>Você aplica CSS inline e classe ao mesmo elemento</li>
+                <li>Você define a mesma propriedade de formas diferentes</li>
+            </ul>
+
+            <p><strong>Reflexão:</strong> Qual método é mais prático? Por quê?</p>
+        </div>
+
+        
+<!-- Slide 27: Exercício Prático 3 -->
+        <div class="slide">
+            <h2>Exercício Prático 3</h2>
+            
+            <h3>Menu de Navegação com Pseudoclasses</h3>
+            
+            <p><strong>Crie um menu de navegação horizontal com:</strong></p>
+            
+            <h4>HTML:</h4>
+            <ul>
+                <li>Uma tag &lt;nav&gt; contendo uma lista &lt;ul&gt;</li>
+                <li>4 itens de menu (&lt;li&gt;) com links (&lt;a&gt;)</li>
+            </ul>
+
+            <h4>CSS (arquivo externo):</h4>
+            <ul>
+                <li>Remova os marcadores da lista</li>
+                <li>Deixe os itens alinhados horizontalmente (display: inline-block)</li>
+                <li>Estilize os links (cor, sem sublinhado, padding)</li>
+                <li>Use :hover para mudar cor de fundo ao passar o mouse</li>
+                <li>Use :active para efeito ao clicar</li>
+                <li>Use :first-child para destacar o primeiro item</li>
+            </ul>
+
+            <div class="tip">
+                Adicione transições suaves: transition: all 0.3s; para um efeito mais profissional!
+            </div>
+        </div>
+
+        
+<!-- Slide 28: Dicas Extras -->
+        <div class="slide">
+            <h2>Dicas Extras e Recursos</h2>
+            
+            <h3>🎨 Ferramentas Úteis:</h3>
+            <ul>
+                <li><strong>Color Picker:</strong> Google Color Picker, Coolors.co</li>
+                <li><strong>DevTools:</strong> Inspetor do navegador (F12) - essencial para testar!</li>
+                <li><strong>Validadores:</strong> W3C CSS Validator</li>
+                <li><strong>Referências:</strong> MDN Web Docs, CSS-Tricks</li>
+            </ul>
+
+            <h3>📚 Recursos para Estudo:</h3>
+            <ul>
+                <li><strong>MDN Web Docs:</strong> Documentação completa sobre CSS</li>
+                <li><strong>W3Schools:</strong> Tutoriais e exemplos práticos</li>
+                <li><strong>CSS-Tricks:</strong> Artigos avançados e truques</li>
+                <li><strong>Can I Use:</strong> Verificar compatibilidade entre navegadores</li>
+            </ul>
+
+            <h3>💡 Dicas de Aprendizado:</h3>
+            <ul>
+                <li>Pratique diariamente, mesmo que por 15 minutos</li>
+                <li>Recrie designs de sites que você gosta</li>
+                <li>Use o DevTools (F12) para inspecionar sites reais</li>
+                <li>Comece simples e vá aumentando a complexidade</li>
+            </ul>
+        </div>
+
+        
+
+        <div class="navigation">
+            <button class="nav-btn" id="firstBtn" onclick="goToFirst()">⏮ Primeiro</button>
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+            <span class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">28</span>
+            </span>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo →</button>
+            <button class="nav-btn" id="lastBtn" onclick="goToLast()">Último ⏭</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+            
+            // Atualiza botões
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            document.getElementById('firstBtn').disabled = currentSlide === 0;
+            document.getElementById('lastBtn').disabled = currentSlide === totalSlides - 1;
+            
+            // Scroll para o topo
+            window.scrollTo(0, 0);
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function goToFirst() {
+            showSlide(0);
+        }
+
+        function goToLast() {
+            showSlide(totalSlides - 1);
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') goToFirst();
+            if (e.key === 'End') goToLast();
+        });
+
+        // Inicialização
+        showSlide(0);
+    </script>
+</body>
+</html>
