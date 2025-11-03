@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Gráfica em Python</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slides-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        .slide {
+            background: white;
+            width: 95%;
+            max-width: 1400px;
+            height: 75vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px 70px 50px 70px;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-header {
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.6em;
+            margin: 25px 0 15px 0;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.3em;
+            font-weight: 300;
+        }
+
+        .slide-content {
+            flex: 1;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 14px 0 14px 45px;
+            position: relative;
+            font-size: 1.25em;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        ul li:before {
+            content: "▸";
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 10px;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+
+        .advantages {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .advantage-item {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .advantage-icon {
+            font-size: 2em;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 25px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        .image-placeholder {
+            background: linear-gradient(135deg, #e0e7ff 0%, #e9d5ff 100%);
+            border: 3px dashed #667eea;
+            border-radius: 12px;
+            padding: 60px 30px;
+            text-align: center;
+            margin: 20px 0;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 25px;
+            border-radius: 60px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.nav-main {
+            padding: 12px 30px;
+            font-size: 1em;
+        }
+
+        button.nav-edge {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #e9d5ff 100%);
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+        }
+
+        button.nav-edge:hover:not(:disabled) {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 28px;
+            right: 30px;
+            color: #667eea;
+            font-size: 0.95em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 10px 18px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #667eea30 0%, #667eea30 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            padding-left: 50px;
+        }
+
+        .steps li:before {
+            content: counter(step-counter);
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .widget-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e7ff;
+            transition: all 0.3s ease;
+        }
+
+        .widget-item:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .widget-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .layout-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .layout-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        .layout-visual {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            min-height: 80px;
+        }
+
+        .layout-visual.vertical {
+            flex-direction: column;
+        }
+
+        .layout-item {
+            background: #667eea;
+            border-radius: 5px;
+            padding: 10px;
+            color: white;
+            text-align: center;
+            flex: 1;
+        }
+
+        .tip-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tip-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .interface-diagram {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #e0e7ff;
+        }
+
+        .diagram-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .diagram-box {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .diagram-sidebar {
+            width: 150px;
+        }
+
+        .diagram-main {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.6em;
+            }
+            
+            .two-column, .advantages, .widget-grid, .layout-demo {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
+                <h1 style="font-size: 4em; margin-bottom: 20px;">Interface Gráfica com Python</h1>
+                <p class="subtitle" style="font-size: 2.8em; margin-bottom: 40px; font-weight: bold;">Qt Designer</p>
+                <div>
+                    <img src="qt_logo.png" style="max-width:140px;max-height:150px;margin-bottom: 40px">
+                </div>
+                <p style="color: #666; font-size: 1.2em">Programação Orientada a Objetos <br> Profa. Fernanda Lígia</p>
+            </div>
+            <div class="slide-number">1 / 11</div>
+        </div>
+
+        <!-- Slide 2: O que é Qt Designer -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>O que é Qt Designer?</h2>
+            </div>
+            <div class="slide-content">
+                <p style="font-size: 1.2em; margin-bottom: 30px; line-height: 1.8;">
+                    Qt Designer é uma ferramenta <span class="highlight">visual</span> para criar interfaces gráficas 
+                    de usuário (GUI) de forma intuitiva, usando o framework Qt.
+                </p>
+                <div class="advantages">
+                    <div class="advantage-item">
+                        <div class="advantage-icon">🖱️</div>
+                        <div>
+                            <strong>Drag & Drop</strong>
+                            <p>Arraste e solte componentes</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">⚡</div>
+                        <div>
+                            <strong>Rápido</strong>
+                            <p>Sem escrever código de UI</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">👁️</div>
+                        <div>
+                            <strong>Preview Real-time</strong>
+                            <p>Visualize enquanto cria</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">🌐</div>
+                        <div>
+                            <strong>Multiplataforma</strong>
+                            <p>Windows, Linux, macOS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">2 / 11</div>
+        </div>
+
+        <!-- Slide 3: Instalação -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Instalação</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Instalando PyQt5 com Qt Designer</h3>
+                <pre>pip install PyQt5 PyQt5-tools</pre>
+
+                <h3 style="margin-top: 30px;">Localizando o Qt Designer</h3>
+                <div class="two-column">
+                    <div class="card">
+                        <h3>Windows</h3>
+                        <code style="font-size: 0.75em;">Python\Lib\site-packages\qt5_applications\Qt\bin\designer.exe</code>
+                    </div>
+                    <div class="card">
+                        <h3>Linux</h3>
+                        <code>designer</code>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Execute no terminal</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">3 / 11</div>
+        </div>
+
+        <!-- Slide 4: Screenshot -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Interface Qt Designer</h2>
+            </div>
+            <div class="slide-content">
+                <div class="interface-diagram">
+                    <img src="qt_main.png" style="width:100%; height:100%;">
+                </div>
+            </div>
+            <div class="two-column" style="margin-top: 20px;">
+                    <div>
+                        <h3>Widget Box</h3>
+                        <p>Catálogo de componentes</p>
+                    </div>
+                    <div>
+                        <h3>Property Editor</h3>
+                        <p>Configura propriedades</p>
+                    </div>
+                    <div>
+                        <h3>Área Central</h3>
+                        <p>Canvas de design</p>
+                    </div>
+                    <div>
+                        <h3>Signal/Slot</h3>
+                        <p>Conexão de eventos</p>
+                    </div>
+                </div>
+            <div class="slide-number">4 / 11</div>
+        </div>
+
+        <!-- Slide 5: Primeiro Projeto -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Criando sua Primeira Interface</h2>
+            </div>
+            <div class="slide-content">
+                <ul class="steps">
+                    <li><strong>Criar novo arquivo:</strong> File → New → Main Window</li>
+                    <li><strong>Adicionar widgets:</strong> Arraste QPushButton, QLabel e QLineEdit</li>
+                    <li><strong>Configurar propriedades:</strong>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>objectName: <code>btnEnviar</code></li>
+                            <li>text: "Enviar"</li>
+                            <li>Ajuste fontes e tamanhos</li>
+                        </ul>
+                    </li>
+                    <li><strong>Salvar:</strong> File → Save As → <code>minha_interface.ui</code></li>
+                </ul>
+
+                <div class="tip-box" style="margin-top: 30px;">
+                    <strong>💡 Dica Importante</strong>
+                    Sempre use nomes descritivos em objectName! Use <code>btnSalvar</code> ao invés de <code>pushButton_1</code>
+                </div>
+            </div>
+            <div class="slide-number">5 / 11</div>
+        </div>
+
+        <!-- Slide 6: Widgets Principais -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Widgets Principais</h2>
+            </div>
+            <div class="slide-content">
+                <div class="widget-grid">
+                    <div class="widget-item">
+                        <strong>QLineEdit</strong>
+                        <p>Campo de texto</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QPushButton</strong>
+                        <p>Botão padrão</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QLabel</strong>
+                        <p>Texto/Imagem</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QComboBox</strong>
+                        <p>Lista dropdown</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QCheckBox</strong>
+                        <p>Caixa de seleção</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QRadioButton</strong>
+                        <p>Botão de opção</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QTextEdit</strong>
+                        <p>Área de texto</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QSpinBox</strong>
+                        <p>Campo numérico</p>
+                    </div>
+                    <div class="widget-item">
+                        <strong>QProgressBar</strong>
+                        <p>Barra de progresso</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">6 / 11</div>
+        </div>
+
+        <!-- Slide 7: Layouts -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Layouts e Organização</h2>
+            </div>
+            <div class="slide-content">
+                <p style="font-size: 1.1em; margin-bottom: 20px;">
+                    Layouts garantem que sua interface se adapte a diferentes tamanhos de janela.
+                </p>
+                
+                <div class="layout-demo">
+                    <div class="layout-box">
+                        <strong>Vertical Layout</strong>
+                        <div class="layout-visual vertical">
+                            <div class="layout-item">Widget 1</div>
+                            <div class="layout-item">Widget 2</div>
+                            <div class="layout-item">Widget 3</div>
+                        </div>
+                    </div>
+                    <div class="layout-box">
+                        <strong>Horizontal Layout</strong>
+                        <div class="layout-visual">
+                            <div class="layout-item">Widget 1</div>
+                            <div class="layout-item">Widget 2</div>
+                            <div class="layout-item">Widget 3</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Como aplicar:</h3>
+                <ol style="margin-left: 30px; font-size: 1.05em; line-height: 2;">
+                    <li>Selecione os widgets (Ctrl + clique)</li>
+                    <li>Botão direito → Layout → Escolha o tipo</li>
+                    <li>Sempre aplique layout no Form principal!</li>
+                </ol>
+            </div>
+            <div class="slide-number">7 / 11</div>
+        </div>
+
+        <!-- Slide 8: Tipos de Layout -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Tipos de Layout</h2>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="card">
+                        <h3>📊 Grid Layout</h3>
+                        <p>Organiza em grade (linhas e colunas)</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 15px;">
+                            <div style="background: #667eea; color: white; padding: 10px; border-radius: 5px; text-align: center;">A</div>
+                            <div style="background: #667eea; color: white; padding: 10px; border-radius: 5px; text-align: center;">B</div>
+                            <div style="background: #667eea; color: white; padding: 10px; border-radius: 5px; text-align: center;">C</div>
+                            <div style="background: #667eea; color: white; padding: 10px; border-radius: 5px; text-align: center;">D</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>📝 Form Layout</h3>
+                        <p>Ideal para formulários (label + campo)</p>
+                        <div style="margin-top: 15px;">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                                <div style="background: #764ba2; color: white; padding: 8px; border-radius: 5px; width: 80px; text-align: center;">Nome:</div>
+                                <div style="background: #667eea; color: white; padding: 8px; border-radius: 5px; flex: 1; text-align: center;">____</div>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="background: #764ba2; color: white; padding: 8px; border-radius: 5px; width: 80px; text-align: center;">Email:</div>
+                                <div style="background: #667eea; color: white; padding: 8px; border-radius: 5px; flex: 1; text-align: center;">____</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">8 / 11</div>
+        </div>
+
+        <!-- Slide 9: Conectando ao Python - Método 1 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Conectando ao Código Python</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Método 1: Converter .ui para .py</h3>
+                <pre>pyuic5 minha_interface.ui -o minha_interface.py</pre>
+
+                <h3>Método 2: Carregar .ui diretamente (Mais simples)</h3>
+                <pre>from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication
+
+app = QApplication([])
+janela = uic.loadUi("minha_interface.ui")
+janela.show()
+app.exec_()</pre>
+            </div>
+            <div class="slide-number">9 / 11</div>
+        </div>
+
+
+        <!-- Slide 10: Dicas Importantes -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Dicas Importantes</h2>
+            </div>
+            <div class="slide-content">
+                <div class="advantages">
+                    <div class="advantage-item">
+                        <div class="advantage-icon">📝</div>
+                        <div>
+                            <strong>Nomes Descritivos</strong>
+                            <p>Use nomes que façam sentido, exemplo: btnSalvar em vez de pushButton_1</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">📐</div>
+                        <div>
+                            <strong>Sempre Use Layouts</strong>
+                            <p>Interface responsiva e adaptável</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">👁️</div>
+                        <div>
+                            <strong>Preview Frequente</strong>
+                            <p>Visualize como está ficando sua interface gráfica</p>
+                        </div>
+                    </div>
+                    <div class="advantage-item">
+                        <div class="advantage-icon">💾</div>
+                        <div>
+                            <strong>Salve Regularmente</strong>
+                            <p>Qt Designer pode travar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">10 / 11</div>
+        </div>
+
+        <!-- Slide 11: Exercícios -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2><br><br></h2>
+            </div>
+            <div class="slide-content">
+                 <h2><center>Dúvidas? <br><br>
+                    <p style="color: #666; font-size: 0.5em">Programação Orientada a Objetos <br> Profa. Fernanda Lígia</p>
+                 </center></h2>
+            </div>
+            <div class="slide-number">11 / 11</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="firstBtn" class="nav-edge" onclick="goToSlide(0)">⏮ Primeiro</button>
+        <button id="prevBtn" class="nav-main" onclick="changeSlide(-1)">← Anterior</button>
+        <button id="nextBtn" class="nav-main" onclick="changeSlide(1)">Próximo →</button>
+        <button id="lastBtn" class="nav-edge" onclick="goToSlide(totalSlides - 1)">Último ⏭</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateButtons() {
+            document.getElementById('firstBtn').disabled = currentSlide === 0;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            document.getElementById('lastBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateButtons();
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function goToSlide(slideNumber) {
+            showSlide(slideNumber);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') goToSlide(0);
+            if (e.key === 'End') goToSlide(totalSlides - 1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
