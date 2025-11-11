@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qt Designer - Propriedades, Métodos e Sinais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #5A6C7D;
+            --accent-color: #2C5AA0;
+            --bg-color: #F5F7FA;
+            --text-color: #2D3748;
+            --border-color: #CBD5E0;
+            --header-bg: #2D3748;
+            --nav-bg: #4A5568;
+            --slide-bg: #ffffff;
+            --code-bg: #F7FAFC;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            overflow-x: hidden;
+        }
+
+        .slides-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--slide-bg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .slide-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-header h2 {
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .component-card {
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .component-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .property-list, .method-list, .signal-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .property-list h4, .method-list h4, .signal-list h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .property-item, .method-item, .signal-item {
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            border-left: 3px solid transparent;
+        }
+
+        .property-item:hover, .method-item:hover, .signal-item:hover {
+            border-left-color: var(--primary-color);
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .example-box {
+            background: #E6F2FF;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .example-box h4 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-color);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--border-color);
+            z-index: 100;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem;
+            }
+            
+            .slide-header h1 {
+                font-size: 2rem;
+            }
+            
+            .slide-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .component-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-content > * {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="slide-counter" id="slide-counter">1 / 10</div>
+    
+    <div class="slides-container">
+        <div class="slides" id="slides">
+            <!-- Slide 1: Introdução -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Qt Designer</h1>
+                    <h2>Propriedades, Métodos e Sinais</h2>
+                </div>
+                <div class="slide-content">
+                    <p>O Qt Designer é uma ferramenta visual para criar interfaces de usuário com o framework Qt. Ele permite criar janelas e diálogos usando uma interface de arrastar e soltar.</p>
+                    
+                    <div class="example-box">
+                        <h4>Objetivos:</h4>
+                        <ul>
+                            <li>Principais componentes do Qt Designer</li>
+                            <li>Propriedades que controlam aparência e comportamento</li>
+                            <li>Métodos para interagir com os componentes</li>
+                            <li>Sinais para responder a eventos do usuário</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Cada componente Qt possui três aspectos principais:</p>
+                    <ul>
+                        <li><strong>Propriedades:</strong> Atributos que definem aparência e comportamento</li>
+                        <li><strong>Métodos:</strong> Funções que podemos chamar para interagir com o componente</li>
+                        <li><strong>Sinais:</strong> Eventos emitidos quando algo acontece com o componente</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Slide 2: QLabel -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>QLabel</h1>
+                    <h2>Exibição de texto e imagens</h2>
+                </div>
+                <div class="slide-content">
+                    <p>O QLabel é usado para exibir texto ou imagens que não podem ser editados pelo usuário.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>Propriedades Principais</h3>
+                            <div class="property-list">
+                                <div class="property-item"><code>text</code> - Texto exibido</div>
+                                <div class="property-item"><code>pixmap</code> - Imagem exibida</div>
+                                <div class="property-item"><code>alignment</code> - Alinhamento do texto</div>
+                                <div class="property-item"><code>wordWrap</code> - Quebra automática de linha</div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>Métodos Principais</h3>
+                            <div class="method-list">
+                                <div class="method-item"><code>setText()</code> - Define o texto</div>
+                                <div class="method-item"><code>text()</code> - Retorna o texto atual</div>
+                                <div class="method-item"><code>setPixmap()</code> - Define uma imagem</div>
+                                <div class="method-item"><code>clear()</code> - Limpa o conteúdo</div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>Sinais</h3>
+                            <div class="signal-list">
+                                <div class="signal-item"><code>linkActivated()</code> - Link clicado</div>
+                                <div class="signal-item"><code>linkHovered()</code> - Mouse sobre link</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>Exemplo de uso:</h4>
+                        <pre><code># Criando um QLabel
+label = QLabel("Texto do Label")
+label.setAlignment(Qt.AlignCenter)
+label.setStyleSheet("color: blue; font-size: 16px;")</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 3: QLineEdit e QTextEdit -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Campos de Entrada</h1>
+                    <h2>QLineEdit e QTextEdit</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Componentes para entrada de texto pelo usuário.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>QLineEdit (Linha única)</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>text</code> - Texto atual</div>
+                                <div class="property-item"><code>placeholderText</code> - Texto de dica</div>
+                                <div class="property-item"><code>echoMode</code> - Modo de exibição (senha)</div>
+                                <div class="property-item"><code>maxLength</code> - Comprimento máximo</div>
+                            </div>
+                            <div class="method-list">
+                                <h4>Métodos:</h4>
+                                <div class="method-item"><code>setText()</code>, <code>text()</code></div>
+                                <div class="method-item"><code>clear()</code>, <code>selectAll()</code></div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>textChanged()</code></div>
+                                <div class="signal-item"><code>returnPressed()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QTextEdit (Multilinha)</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>plainText</code> - Texto simples</div>
+                                <div class="property-item"><code>html</code> - Conteúdo HTML</div>
+                                <div class="property-item"><code>readOnly</code> - Somente leitura</div>
+                            </div>
+                            <div class="method-list">
+                                <h4>Métodos:</h4>
+                                <div class="method-item"><code>setPlainText()</code>, <code>toPlainText()</code></div>
+                                <div class="method-item"><code>setHtml()</code>, <code>toHtml()</code></div>
+                                <div class="method-item"><code>append()</code> - Adiciona texto</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>textChanged()</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 4: Botões -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Botões</h1>
+                    <h2>QPushButton, QRadioButton e QCheckBox</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Componentes para interação do usuário através de cliques.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>QPushButton</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>text</code> - Texto do botão</div>
+                                <div class="property-item"><code>icon</code> - Ícone do botão</div>
+                                <div class="property-item"><code>checkable</code> - Pode ser marcado</div>
+                                <div class="property-item"><code>checked</code> - Estado marcado</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>clicked()</code> - Botão clicado</div>
+                                <div class="signal-item"><code>toggled()</code> - Estado mudou</div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QRadioButton</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>text</code> - Texto do botão</div>
+                                <div class="property-item"><code>checked</code> - Estado marcado</div>
+                                <div class="property-item"><code>autoExclusive</code> - Exclusividade automática</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>toggled()</code> - Estado mudou</div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QCheckBox</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>text</code> - Texto da caixa</div>
+                                <div class="property-item"><code>checked</code> - Estado marcado</div>
+                                <div class="property-item"><code>tristate</code> - Permite terceiro estado</div>
+                                <div class="property-item"><code>checkState</code> - Estado completo</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>stateChanged()</code> - Estado mudou</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>Conectando sinais a funções:</h4>
+                        <pre><code># Conectando um botão a uma função
+button.clicked.connect(self.minha_funcao)
+
+# Conectando um checkbox
+checkbox.stateChanged.connect(self.estado_mudou)</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 5: Listas e Combos -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Listas e Seleção</h1>
+                    <h2>QComboBox, QListWidget e QTableWidget</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Componentes para seleção de itens em listas.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>QComboBox</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>currentIndex</code> - Índice selecionado</div>
+                                <div class="property-item"><code>currentText</code> - Texto selecionado</div>
+                                <div class="property-item"><code>count</code> - Número de itens</div>
+                                <div class="property-item"><code>editable</code> - Permite edição</div>
+                            </div>
+                            <div class="method-list">
+                                <h4>Métodos:</h4>
+                                <div class="method-item"><code>addItem()</code>, <code>addItems()</code></div>
+                                <div class="method-item"><code>currentText()</code>, <code>setCurrentText()</code></div>
+                                <div class="method-item"><code>clear()</code> - Remove todos os itens</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>currentIndexChanged()</code></div>
+                                <div class="signal-item"><code>currentTextChanged()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QListWidget</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>currentRow</code> - Linha selecionada</div>
+                                <div class="property-item"><code>count</code> - Número de itens</div>
+                                <div class="property-item"><code>sortingEnabled</code> - Ordenação automática</div>
+                            </div>
+                            <div class="method-list">
+                                <h4>Métodos:</h4>
+                                <div class="method-item"><code>addItem()</code>, <code>addItems()</code></div>
+                                <div class="method-item"><code>currentItem()</code> - Item selecionado</div>
+                                <div class="method-item"><code>takeItem()</code> - Remove item</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>itemClicked()</code></div>
+                                <div class="signal-item"><code>currentRowChanged()</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 6: Controles Numéricos -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Controles Numéricos</h1>
+                    <h2>QSpinBox, QDoubleSpinBox e QSlider</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Componentes para entrada e seleção de valores numéricos.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>QSpinBox (Inteiros)</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>value</code> - Valor atual</div>
+                                <div class="property-item"><code>minimum</code> - Valor mínimo</div>
+                                <div class="property-item"><code>maximum</code> - Valor máximo</div>
+                                <div class="property-item"><code>prefix</code> - Prefixo do valor</div>
+                                <div class="property-item"><code>suffix</code> - Sufixo do valor</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>valueChanged()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QDoubleSpinBox (Decimais)</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>value</code> - Valor atual</div>
+                                <div class="property-item"><code>decimals</code> - Casas decimais</div>
+                                <div class="property-item"><code>singleStep</code> - Incremento</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>valueChanged()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QSlider</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>value</code> - Valor atual</div>
+                                <div class="property-item"><code>orientation</code> - Orientação</div>
+                                <div class="property-item"><code>tickPosition</code> - Posição das marcas</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>valueChanged()</code></div>
+                                <div class="signal-item"><code>sliderMoved()</code></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>Exemplo de uso:</h4>
+                        <pre><code># Criando um spinbox para idade
+idade_spinbox = QSpinBox()
+idade_spinbox.setRange(0, 120)
+idade_spinbox.setValue(25)
+idade_spinbox.setSuffix(" anos")
+idade_spinbox.valueChanged.connect(self.idade_mudou)</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 7: Data e Hora -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Data e Hora</h1>
+                    <h2>QDateEdit, QTimeEdit e QDateTimeEdit</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Componentes para entrada e seleção de datas e horas.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>QDateEdit</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>date</code> - Data atual</div>
+                                <div class="property-item"><code>minimumDate</code> - Data mínima</div>
+                                <div class="property-item"><code>maximumDate</code> - Data máxima</div>
+                                <div class="property-item"><code>displayFormat</code> - Formato de exibição</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>dateChanged()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QTimeEdit</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>time</code> - Hora atual</div>
+                                <div class="property-item"><code>minimumTime</code> - Hora mínima</div>
+                                <div class="property-item"><code>maximumTime</code> - Hora máxima</div>
+                                <div class="property-item"><code>displayFormat</code> - Formato de exibição</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>timeChanged()</code></div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>QDateTimeEdit</h3>
+                            <div class="property-list">
+                                <h4>Propriedades:</h4>
+                                <div class="property-item"><code>dateTime</code> - Data e hora</div>
+                                <div class="property-item"><code>minimumDateTime</code> - Data/hora mínima</div>
+                                <div class="property-item"><code>maximumDateTime</code> - Data/hora máxima</div>
+                            </div>
+                            <div class="signal-list">
+                                <h4>Sinais:</h4>
+                                <div class="signal-item"><code>dateTimeChanged()</code></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 8: Propriedades Comuns -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Propriedades Comuns</h1>
+                    <h2>Herdadas de QWidget</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Todos os componentes Qt herdam propriedades e métodos da classe base QWidget.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>Propriedades Visuais</h3>
+                            <div class="property-list">
+                                <div class="property-item"><code>enabled</code> - Habilitado/Desabilitado</div>
+                                <div class="property-item"><code>visible</code> - Visível/Oculto</div>
+                                <div class="property-item"><code>geometry</code> - Posição e tamanho</div>
+                                <div class="property-item"><code>styleSheet</code> - Estilo CSS</div>
+                                <div class="property-item"><code>font</code> - Fonte do texto</div>
+                                <div class="property-item"><code>toolTip</code> - Dica de ferramenta</div>
+                            </div>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>Métodos de Controle</h3>
+                            <div class="method-list">
+                                <div class="method-item"><code>show()</code> - Mostra o widget</div>
+                                <div class="method-item"><code>hide()</code> - Oculta o widget</div>
+                                <div class="method-item"><code>setEnabled()</code> - Habilita/Desabilita</div>
+                                <div class="method-item"><code>setGeometry()</code> - Define posição/tamanho</div>
+                                <div class="method-item"><code>setStyleSheet()</code> - Define estilo</div>
+                                <div class="method-item"><code>setFocus()</code> - Define foco</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>Exemplo de estilização com CSS:</h4>
+                        <pre><code># Aplicando estilo a um botão
+botao.setStyleSheet("""
+    QPushButton {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    QPushButton:hover {
+        background-color: #45a049;
+    }
+""")</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 9: Sinais e Slots -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Sinais e Slots</h1>
+                    <h2>Comunicação entre componentes</h2>
+                </div>
+                <div class="slide-content">
+                    <p>O sistema de Sinais e Slots é um mecanismo de comunicação entre objetos Qt, permitindo que um objeto emita um sinal quando ocorre um evento, e outros objetos possam conectar-se a esse sinal através de slots (funções).</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>Conectando Sinais a Slots</h3>
+                            <div class="method-list">
+                                <div class="method-item"><code>objeto.sinal.connect(funcao)</code></div>
+                            </div>
+                            <p>Exemplos:</p>
+                            <ul>
+                                <li><code>botao.clicked.connect(self.minha_funcao)</code></li>
+                                <li><code>spinbox.valueChanged.connect(self.valor_mudou)</code></li>
+                                <li><code>lineedit.textChanged.connect(self.texto_mudou)</code></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>Sinais com Parâmetros</h3>
+                            <p>Muitos sinais enviam parâmetros para as funções conectadas:</p>
+                            <ul>
+                                <li><code>textChanged(QString texto)</code></li>
+                                <li><code>valueChanged(int valor)</code></li>
+                                <li><code>currentIndexChanged(int indice)</code></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>Exemplo completo:</h4>
+                        <pre><code>class MinhaJanela(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        
+        # Criando componentes
+        self.botao = QPushButton("Clique aqui")
+        self.label = QLabel("Texto inicial")
+        
+        # Conectando sinal a slot
+        self.botao.clicked.connect(self.botao_clicado)
+        
+    def botao_clicado(self):
+        self.label.setText("Botão foi clicado!")</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 10: Conclusão -->
+            <div class="slide">
+                <div class="slide-header">
+                    <h1>Conclusão</h1>
+                    <h2>Resumo e Próximos Passos</h2>
+                </div>
+                <div class="slide-content">
+                    <p>Nesta apresentação, exploramos os principais componentes do Qt Designer, suas propriedades, métodos e sinais.</p>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h3>Pontos Principais</h3>
+                            <ul>
+                                <li>Cada componente tem propriedades específicas</li>
+                                <li>Métodos permitem interagir programaticamente</li>
+                                <li>Sinais notificam sobre eventos</li>
+                                <li>Todos herdam propriedades comuns de QWidget</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h3>Próximos Passos</h3>
+                            <ul>
+                                <li>Pratique criando interfaces simples</li>
+                                <li>Experimente conectar sinais a slots</li>
+                                <li>Explore estilização com CSS</li>
+                                <li>Consulte a documentação oficial do Qt</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn">Anterior</button>
+        <button class="nav-btn" id="next-btn">Próximo</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.getElementById('slides');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const progress = document.getElementById('progress');
+            const slideCounter = document.getElementById('slide-counter');
+            
+            let currentSlide = 0;
+            const totalSlides = document.querySelectorAll('.slide').length;
+            
+            function updateSlide() {
+                slides.style.transform = `translateX(-${currentSlide * 100}vw)`;
+                progress.style.width = `${(currentSlide + 1) / totalSlides * 100}%`;
+                slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+                
+                // Atualizar estado dos botões
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+            }
+            
+            prevBtn.addEventListener('click', function() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            });
+            
+            // Navegação por teclado
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                } else if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                }
+            });
+            
+            // Inicializar
+            updateSlide();
+        });
+    </script>
+</body>
+</html>
