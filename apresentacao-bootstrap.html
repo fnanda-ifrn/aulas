@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução ao Bootstrap - Framework CSS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #14b8a6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --code-bg: #2d3748;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 60px;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-header {
+            border-left: 6px solid var(--primary);
+            padding-left: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            color: var(--dark);
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #475569;
+        }
+
+        ul, ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #475569;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 20px 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #e2e8f0;
+        }
+
+        .code-inline {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        .grid-example {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .grid-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .grid-col {
+            background: white;
+            border: 2px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+            flex: 1;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .feature-card h4 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .feature-card p {
+            color: #57534e;
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .component-showcase {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-example {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .important-box {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-left: 5px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .important-box h4 {
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .important-box p {
+            color: #7f1d1d;
+            margin: 0;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #22c55e;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .success-box h4 {
+            color: #166534;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .success-box p {
+            color: #14532d;
+            margin: 0;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .column {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .keyword {
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            color: #5b21b6;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        @media print {
+            .slide {
+                page-break-after: always;
+                display: flex !important;
+                height: auto;
+            }
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="slide-header">
+                <h1>Bootstrap</h1>
+                <p class="subtitle">Framework CSS para Desenvolvimento Web Responsivo</p>
+            </div>
+            <div class="content">
+                <div style="text-align: center; margin: 60px 0;">
+                    <p style="font-size: 1.5em; color: var(--primary); font-weight: 600;">
+                        <br><br><br>
+                        Informática para Internet - Autoria Web
+                    </p>
+                </div>
+                <div class="features-grid">
+                    
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()" disabled>← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">1</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é Bootstrap -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>O que é Bootstrap?</h2>
+            </div>
+            <div class="content">
+                <p>
+                    <span class="highlight">Bootstrap</span> é o framework front-end mais popular do mundo para 
+                    construção de sites responsivos e mobile-first. Criado originalmente pelo Twitter em 2011, 
+                    é um conjunto de ferramentas que inclui HTML, CSS e JavaScript.
+                </p>
+
+                <h3>📚 Principais Características</h3>
+                <ul>
+                    <li><strong>Sistema de Grid Responsivo:</strong> Organize o layout de forma flexível e adaptável</li>
+                    <li><strong>Componentes Pré-construídos:</strong> Botões, formulários, navegação, cards e muito mais</li>
+                    <li><strong>Classes Utilitárias:</strong> Estilização rápida sem escrever CSS customizado</li>
+                    <li><strong>Compatibilidade:</strong> Funciona em todos os navegadores modernos</li>
+                    <li><strong>Documentação Completa:</strong> Guias detalhados e exemplos práticos</li>
+                    <li><strong>Open Source:</strong> Gratuito e mantido por uma grande comunidade</li>
+                </ul>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">2</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 3: Instalação -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Como Instalar o Bootstrap</h2>
+            </div>
+            <div class="content">
+                <h3>🔗 Método 1: Via CDN (Mais Rápido)</h3>
+                <p>Adicione estas linhas no <span class="code-inline">&lt;head&gt;</span> do seu HTML:</p>
+                
+                <div class="code-block"><pre>&lt;!-- CSS do Bootstrap --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+      rel="stylesheet"&gt;
+
+&lt;!-- JavaScript do Bootstrap (antes do &lt;/body&gt;) --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"&gt;
+&lt;/script&gt;</pre></div>
+
+                <h3>📦 Método 2: Download</h3>
+                <ol>
+                    <li>Acesse <strong>getbootstrap.com</strong></li>
+                    <li>Baixe a versão compilada</li>
+                    <li>Extraia os arquivos na pasta do seu projeto</li>
+                    <li>Referencie os arquivos CSS e JS localmente</li>
+                </ol>
+
+                <div class="important-box">
+                    <h4>⚠️ Atenção!</h4>
+                    <p>Sempre inclua o CSS no <code>&lt;head&gt;</code> e o JavaScript antes do fechamento 
+                    de <code>&lt;/body&gt;</code> para melhor desempenho!</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">3</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 4: Template Básico -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Template HTML Básico com Bootstrap</h2>
+            </div>
+            <div class="content">
+                <p>Este é um template completo para iniciar qualquer projeto Bootstrap:</p>
+                
+                <div class="code-block"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Meu Site com Bootstrap&lt;/title&gt;
+    
+    &lt;!-- CSS do Bootstrap --&gt;
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+          rel="stylesheet"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+    &lt;h1 class="text-center"&gt;Olá, Bootstrap!&lt;/h1&gt;
+    
+    &lt;!-- JavaScript do Bootstrap --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"&gt;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+
+                <div class="success-box">
+                    <h4>✅ Pronto para usar!</h4>
+                    <p>Copie este template e comece a adicionar componentes Bootstrap. A tag <code>viewport</code> 
+                    é essencial para responsividade!</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">4</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Sistema de Grid - Conceitos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Sistema de Grid - Fundamentos</h2>
+            </div>
+            <div class="content">
+                <p>O <span class="highlight">Grid System</span> é a base do Bootstrap. Ele usa um sistema de 
+                <strong>12 colunas</strong> flexíveis que se adaptam automaticamente ao tamanho da tela.</p>
+
+                <h3>🏗️ Estrutura Básica</h3>
+                <div class="two-columns">
+                    <div class="column">
+                        <h4>Componentes do Grid:</h4>
+                        <ul style="padding-left: 20px;">
+                            <li><span class="keyword">container</span> - Envolve todo o conteúdo</li>
+                            <li><span class="keyword">row</span> - Agrupa colunas horizontalmente</li>
+                            <li><span class="keyword">col</span> - Define as colunas</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h4>Breakpoints:</h4>
+                        <ul style="padding-left: 20px;">
+                            <li><span class="keyword">sm</span> ≥ 576px</li>
+                            <li><span class="keyword">md</span> ≥ 768px</li>
+                            <li><span class="keyword">lg</span> ≥ 992px</li>
+                            <li><span class="keyword">xl</span> ≥ 1200px</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="grid-example">
+                    <h4 style="margin-bottom: 20px;">Visualização do Grid de 12 Colunas:</h4>
+                    <div class="grid-row">
+                        <div class="grid-col">1</div>
+                        <div class="grid-col">2</div>
+                        <div class="grid-col">3</div>
+                        <div class="grid-col">4</div>
+                        <div class="grid-col">5</div>
+                        <div class="grid-col">6</div>
+                        <div class="grid-col">7</div>
+                        <div class="grid-col">8</div>
+                        <div class="grid-col">9</div>
+                        <div class="grid-col">10</div>
+                        <div class="grid-col">11</div>
+                        <div class="grid-col">12</div>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">5</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Grid - Exemplos Práticos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Sistema de Grid - Exemplos</h2>
+            </div>
+            <div class="content">
+                <h3>📝 Exemplo 1: Três Colunas Iguais</h3>
+                <div class="code-block"><pre>&lt;div class="container"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col"&gt;Coluna 1&lt;/div&gt;
+        &lt;div class="col"&gt;Coluna 2&lt;/div&gt;
+        &lt;div class="col"&gt;Coluna 3&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <h3>📝 Exemplo 2: Colunas com Tamanhos Específicos</h3>
+                <div class="code-block"><pre>&lt;div class="container"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col-8"&gt;Conteúdo Principal (8 colunas)&lt;/div&gt;
+        &lt;div class="col-4"&gt;Sidebar (4 colunas)&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <h3>📝 Exemplo 3: Responsivo (Diferentes Telas)</h3>
+                <div class="code-block"><pre>&lt;div class="container"&gt;
+    &lt;div class="row"&gt;
+        &lt;div class="col-12 col-md-6 col-lg-4"&gt;Card 1&lt;/div&gt;
+        &lt;div class="col-12 col-md-6 col-lg-4"&gt;Card 2&lt;/div&gt;
+        &lt;div class="col-12 col-md-6 col-lg-4"&gt;Card 3&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <p style="font-size: 0.95em; color: #64748b; margin-top: 20px;">
+                    💡 Mobile: 1 coluna | Tablet: 2 colunas | Desktop: 3 colunas
+                </p>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">6</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Botões -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes: Botões</h2>
+            </div>
+            <div class="content">
+                <p>Bootstrap oferece diversos estilos de botões prontos para uso:</p>
+
+                <h3>🎨 Cores dos Botões</h3>
+                <div class="code-block"><pre>&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="btn btn-success"&gt;Success&lt;/button&gt;
+&lt;button class="btn btn-danger"&gt;Danger&lt;/button&gt;
+&lt;button class="btn btn-warning"&gt;Warning&lt;/button&gt;
+&lt;button class="btn btn-info"&gt;Info&lt;/button&gt;</pre></div>
+
+                <h3>📏 Tamanhos</h3>
+                <div class="code-block"><pre>&lt;button class="btn btn-primary btn-lg"&gt;Grande&lt;/button&gt;
+&lt;button class="btn btn-primary"&gt;Normal&lt;/button&gt;
+&lt;button class="btn btn-primary btn-sm"&gt;Pequeno&lt;/button&gt;</pre></div>
+
+                <h3>🎭 Variações</h3>
+                <div class="code-block"><pre>&lt;!-- Botão com contorno --&gt;
+&lt;button class="btn btn-outline-primary"&gt;Outline&lt;/button&gt;
+
+&lt;!-- Botão de bloco (largura total) --&gt;
+&lt;button class="btn btn-primary w-100"&gt;Botão Bloco&lt;/button&gt;
+
+&lt;!-- Botão desabilitado --&gt;
+&lt;button class="btn btn-primary" disabled&gt;Desabilitado&lt;/button&gt;</pre></div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">7</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: Cards -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes: Cards</h2>
+            </div>
+            <div class="content">
+                <p>Cards são containers flexíveis e extensíveis para exibir conteúdo:</p>
+
+                <h3>🃏 Card Básico</h3>
+                <div class="code-block"><pre>&lt;div class="card" style="width: 18rem;"&gt;
+    &lt;img src="imagem.jpg" class="card-img-top" alt="..."&gt;
+    &lt;div class="card-body"&gt;
+        &lt;h5 class="card-title"&gt;Título do Card&lt;/h5&gt;
+        &lt;p class="card-text"&gt;Descrição do conteúdo do card.&lt;/p&gt;
+        &lt;a href="#" class="btn btn-primary"&gt;Ver mais&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <h3>🎨 Card com Header e Footer</h3>
+                <div class="code-block"><pre>&lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;
+        Cabeçalho
+    &lt;/div&gt;
+    &lt;div class="card-body"&gt;
+        &lt;h5 class="card-title"&gt;Título&lt;/h5&gt;
+        &lt;p class="card-text"&gt;Conteúdo do card.&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="card-footer text-muted"&gt;
+        Rodapé
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <div class="success-box">
+                    <h4>💡 Dica Profissional</h4>
+                    <p>Combine cards com o sistema de grid para criar layouts de galeria responsivos!</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">8</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: Navbar -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes: Navbar (Barra de Navegação)</h2>
+            </div>
+            <div class="content">
+                <p>Crie menus de navegação profissionais e responsivos:</p>
+
+                <div class="code-block"><pre>&lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+    &lt;div class="container-fluid"&gt;
+        &lt;a class="navbar-brand" href="#"&gt;Meu Site&lt;/a&gt;
+        
+        &lt;button class="navbar-toggler" type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav"&gt;
+            &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+        
+        &lt;div class="collapse navbar-collapse" id="navbarNav"&gt;
+            &lt;ul class="navbar-nav"&gt;
+                &lt;li class="nav-item"&gt;
+                    &lt;a class="nav-link active" href="#"&gt;Início&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li class="nav-item"&gt;
+                    &lt;a class="nav-link" href="#"&gt;Sobre&lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li class="nav-item"&gt;
+                    &lt;a class="nav-link" href="#"&gt;Contato&lt;/a&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/nav&gt;</pre></div>
+
+                <div class="important-box">
+                    <h4>📱 Responsividade Automática</h4>
+                    <p>O navbar se transforma em menu hambúrguer em telas pequenas automaticamente!</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">9</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 10: Formulários -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes: Formulários</h2>
+            </div>
+            <div class="content">
+                <p>Bootstrap facilita a criação de formulários bonitos e funcionais:</p>
+
+                <h3>📝 Formulário Básico</h3>
+                <div class="code-block"><pre>&lt;form&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label for="nome" class="form-label"&gt;Nome&lt;/label&gt;
+        &lt;input type="text" class="form-control" id="nome"&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label for="email" class="form-label"&gt;Email&lt;/label&gt;
+        &lt;input type="email" class="form-control" id="email"&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label for="mensagem" class="form-label"&gt;Mensagem&lt;/label&gt;
+        &lt;textarea class="form-control" id="mensagem" rows="3"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-primary"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;</pre></div>
+
+                <h3>✅ Validação</h3>
+                <div class="code-block"><pre>&lt;input type="text" class="form-control is-valid"&gt;
+&lt;input type="text" class="form-control is-invalid"&gt;</pre></div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">10</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 11: Alertas e Badges -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes: Alertas e Badges</h2>
+            </div>
+            <div class="content">
+                <h3>⚠️ Alertas</h3>
+                <div class="code-block"><pre>&lt;div class="alert alert-success" role="alert"&gt;
+    Operação realizada com sucesso!
+&lt;/div&gt;
+
+&lt;div class="alert alert-warning" role="alert"&gt;
+    Atenção: Verifique os dados!
+&lt;/div&gt;
+
+&lt;div class="alert alert-danger" role="alert"&gt;
+    Erro: Algo deu errado!
+&lt;/div&gt;</pre></div>
+
+                <h3>🏷️ Badges (Etiquetas)</h3>
+                <div class="code-block"><pre>&lt;span class="badge bg-primary"&gt;Novo&lt;/span&gt;
+&lt;span class="badge bg-success"&gt;Ativo&lt;/span&gt;
+&lt;span class="badge bg-danger"&gt;Urgente&lt;/span&gt;
+&lt;span class="badge bg-warning text-dark"&gt;Pendente&lt;/span&gt;
+
+&lt;!-- Badge em botão --&gt;
+&lt;button class="btn btn-primary"&gt;
+    Notificações &lt;span class="badge bg-danger"&gt;5&lt;/span&gt;
+&lt;/button&gt;</pre></div>
+
+                <div class="success-box">
+                    <h4>💡 Use para Feedback Visual</h4>
+                    <p>Alertas e badges melhoram a comunicação com o usuário!</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">11</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 12: Classes Utilitárias -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Classes Utilitárias</h2>
+            </div>
+            <div class="content">
+                <p>Bootstrap oferece centenas de classes para estilização rápida:</p>
+
+                <h3>🎨 Cores</h3>
+                <div class="code-block"><pre>&lt;!-- Cor do texto --&gt;
+&lt;p class="text-primary"&gt;Texto azul&lt;/p&gt;
+&lt;p class="text-success"&gt;Texto verde&lt;/p&gt;
+&lt;p class="text-danger"&gt;Texto vermelho&lt;/p&gt;
+
+&lt;!-- Cor de fundo --&gt;
+&lt;div class="bg-primary text-white"&gt;Fundo azul&lt;/div&gt;
+&lt;div class="bg-success text-white"&gt;Fundo verde&lt;/div&gt;</pre></div>
+
+                <h3>📏 Espaçamento (Margin e Padding)</h3>
+                <div class="code-block"><pre>&lt;!-- m = margin, p = padding --&gt;
+&lt;!-- t=top, b=bottom, s=start, e=end, x=horizontal, y=vertical --&gt;
+
+&lt;div class="mt-3"&gt;Margin top 3&lt;/div&gt;
+&lt;div class="p-4"&gt;Padding 4&lt;/div&gt;
+&lt;div class="mx-auto"&gt;Margem horizontal automática (centraliza)&lt;/div&gt;
+&lt;div class="my-5"&gt;Margem vertical 5&lt;/div&gt;</pre></div>
+
+                <h3>📝 Texto</h3>
+                <div class="code-block"><pre>&lt;p class="text-center"&gt;Centralizado&lt;/p&gt;
+&lt;p class="text-start"&gt;Início&lt;/p&gt;
+&lt;p class="text-end"&gt;Fim&lt;/p&gt;
+&lt;p class="fw-bold"&gt;Negrito&lt;/p&gt;
+&lt;p class="fst-italic"&gt;Itálico&lt;/p&gt;
+&lt;p class="text-uppercase"&gt;maiúsculas&lt;/p&gt;</pre></div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">12</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 13: Display e Flexbox -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Classes Utilitárias: Display e Flexbox</h2>
+            </div>
+            <div class="content">
+                <h3>👁️ Display</h3>
+                <div class="code-block"><pre>&lt;div class="d-none"&gt;Escondido&lt;/div&gt;
+&lt;div class="d-block"&gt;Bloco&lt;/div&gt;
+&lt;div class="d-inline"&gt;Inline&lt;/div&gt;
+&lt;div class="d-flex"&gt;Flexbox&lt;/div&gt;
+
+&lt;!-- Responsivo --&gt;
+&lt;div class="d-none d-md-block"&gt;Visível apenas em MD+&lt;/div&gt;</pre></div>
+
+                <h3>📦 Flexbox</h3>
+                <div class="code-block"><pre>&lt;!-- Container Flexbox --&gt;
+&lt;div class="d-flex justify-content-center"&gt;
+    &lt;div&gt;Item 1&lt;/div&gt;
+    &lt;div&gt;Item 2&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Alinhamento --&gt;
+&lt;div class="d-flex justify-content-between"&gt;...&lt;/div&gt;
+&lt;div class="d-flex align-items-center"&gt;...&lt;/div&gt;
+&lt;div class="d-flex flex-column"&gt;...&lt;/div&gt;</pre></div>
+
+                <h3>📐 Dimensões</h3>
+                <div class="code-block"><pre>&lt;div class="w-25"&gt;Largura 25%&lt;/div&gt;
+&lt;div class="w-50"&gt;Largura 50%&lt;/div&gt;
+&lt;div class="w-100"&gt;Largura 100%&lt;/div&gt;
+&lt;div class="h-50"&gt;Altura 50%&lt;/div&gt;</pre></div>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">13</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 14: Modal e Carousel -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Componentes Interativos</h2>
+            </div>
+            <div class="content">
+                <h3>🪟 Modal (Janela)</h3>
+                <div class="code-block"><pre>&lt;!-- Botão que abre o modal --&gt;
+&lt;button type="button" class="btn btn-primary" 
+        data-bs-toggle="modal" 
+        data-bs-target="#meuModal"&gt;
+    Abrir Modal
+&lt;/button&gt;
+
+&lt;!-- Estrutura do Modal --&gt;
+&lt;div class="modal fade" id="meuModal"&gt;
+    &lt;div class="modal-dialog"&gt;
+        &lt;div class="modal-content"&gt;
+            &lt;div class="modal-header"&gt;
+                &lt;h5 class="modal-title"&gt;Título&lt;/h5&gt;
+                &lt;button type="button" class="btn-close" 
+                        data-bs-dismiss="modal"&gt;&lt;/button&gt;
+            &lt;/div&gt;
+            &lt;div class="modal-body"&gt;
+                Conteúdo do modal...
+            &lt;/div&gt;
+            &lt;div class="modal-footer"&gt;
+                &lt;button class="btn btn-secondary" 
+                        data-bs-dismiss="modal"&gt;Fechar&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+
+                <h3>🎠 Carousel (Carrossel)</h3>
+                <p style="font-size: 0.95em;">Perfeito para galerias de imagens e slideshows!</p>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">14</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()">Próximo →</button>
+            </div>
+        </div>
+
+        <!-- Slide 15: Recursos e Próximos Passos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Próximos Passos e Recursos</h2>
+            </div>
+            <div class="content">
+                <h3>📚 Documentação Oficial</h3>
+                <p>Acesse <strong>getbootstrap.com</strong> para documentação completa, exemplos e componentes adicionais.</p>
+
+                <h3>🎯 O que praticar:</h3>
+                <ul>
+                    <li>Crie uma página pessoal usando o sistema de grid</li>
+                    <li>Construa um formulário de contato com validação</li>
+                    <li>Desenvolva uma galeria de produtos com cards</li>
+                    <li>Implemente uma navbar responsiva completa</li>
+                </ul>
+
+                <h3>💪 Dicas Finais</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🔍 Explore</h4>
+                        <p>Teste todos os componentes na documentação</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎨 Customize</h4>
+                        <p>Bootstrap é personalizável com CSS próprio</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Mobile First</h4>
+                        <p>Sempre teste em diferentes tamanhos de tela</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🚀 Pratique</h4>
+                        <p>A prática leva à perfeição!</p>
+                    </div>
+                </div>
+
+                
+            </div>
+            <div class="navigation">
+                <button class="nav-btn" onclick="prevSlide()">← Anterior</button>
+                <span class="slide-counter">Slide <span id="current">15</span> de <span id="total">15</span></span>
+                <button class="nav-btn" onclick="nextSlide()" disabled>Próximo →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlideCounter() {
+            document.querySelectorAll('#current').forEach(el => {
+                el.textContent = currentSlide + 1;
+            });
+            document.querySelectorAll('#total').forEach(el => {
+                el.textContent = totalSlides;
+            });
+        }
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = n;
+            slides[currentSlide].classList.add('active');
+            updateSlideCounter();
+            updateButtons();
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        function updateButtons() {
+            const prevButtons = document.querySelectorAll('.navigation .nav-btn:first-child');
+            const nextButtons = document.querySelectorAll('.navigation .nav-btn:last-child');
+
+            prevButtons.forEach(btn => {
+                btn.disabled = currentSlide === 0;
+            });
+
+            nextButtons.forEach(btn => {
+                btn.disabled = currentSlide === slides.length - 1;
+            });
+        }
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Inicializar
+        updateSlideCounter();
+        updateButtons();
+    </script>
+</body>
+</html>
