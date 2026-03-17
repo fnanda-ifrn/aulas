@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programação OO vs Programação Estruturada — IFRN Campus São Paulo do Potengi</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #ffffff;
+      --bg2:      #f5f5f5;
+      --bg3:      #ececec;
+      --text:     #1a1a1a;
+      --text2:    #555555;
+      --text3:    #888888;
+      --border:   rgba(0,0,0,0.12);
+      --border2:  rgba(0,0,0,0.22);
+      --radius:   10px;
+      --radius-lg:14px;
+      --purple:   #534AB7;
+      --purple-l: #EEEDFE;
+      --green:    #0F6E56;
+      --green-l:  #E1F5EE;
+      --amber:    #854F0B;
+      --amber-l:  #FAEEDA;
+      --shadow:   0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #1c1c1e;
+        --bg2:     #2c2c2e;
+        --bg3:     #3a3a3c;
+        --text:    #f2f2f7;
+        --text2:   #aeaeb2;
+        --text3:   #6e6e73;
+        --border:  rgba(255,255,255,0.10);
+        --border2: rgba(255,255,255,0.20);
+        --purple-l:#1e1a3a;
+        --green-l: #0a2a22;
+        --amber-l: #2a1a06;
+        --shadow:  0 2px 12px rgba(0,0,0,0.3);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg3);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 12px 40px;
+    }
+
+    .container { max-width: 820px; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, var(--purple) 0%, #3B34A0 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px 20px;
+      margin-bottom: 20px;
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+    .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .header-icon { font-size: 32px; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .header p  { font-size: 13px; opacity: .85; margin-top: 2px; }
+    .header-sub { font-size: 12px; opacity: .7; margin-top: 6px; border-top: 1px solid rgba(255,255,255,.2); padding-top: 8px; }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow);
+    }
+    .topbar label { font-size: 13px; font-weight: 500; color: var(--text2); white-space: nowrap; }
+    .topbar input {
+      flex: 1; min-width: 200px;
+      font-size: 14px; padding: 8px 12px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg2);
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .topbar input:focus { border-color: var(--purple); }
+    .save-btn {
+      padding: 9px 20px;
+      font-size: 13px; font-weight: 600;
+      border: none; border-radius: var(--radius);
+      background: var(--purple); color: #fff;
+      cursor: pointer; white-space: nowrap;
+      transition: opacity .15s, transform .1s;
+      box-shadow: 0 2px 8px rgba(83,74,183,.35);
+    }
+    .save-btn:hover  { opacity: .9; }
+    .save-btn:active { transform: scale(.97); }
+
+    /* TABS */
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+    .tab {
+      padding: 8px 16px; font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      color: var(--text2);
+      background: var(--bg);
+      transition: all .2s;
+      user-select: none;
+    }
+    .tab:hover  { border-color: var(--purple); color: var(--purple); }
+    .tab.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+    /* PAGE */
+    .page { display: none; }
+    .page.on { display: block; }
+
+    /* CARD */
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .card h2 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+    .card p  { font-size: 13px; color: var(--text2); line-height: 1.75; }
+
+    /* BUBBLE */
+    .bubble { border-radius: var(--radius); padding: 13px 15px; margin-bottom: 10px; font-size: 13px; line-height: 1.75; }
+    .b-purple { background: var(--purple-l); border-left: 3px solid var(--purple); }
+    .b-green  { background: var(--green-l);  border-left: 3px solid var(--green); }
+    .b-amber  { background: var(--amber-l);  border-left: 3px solid var(--amber); }
+
+    /* GRIDS */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .mini-card .icon { font-size: 26px; display: block; margin-bottom: 6px; }
+    .mini-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .mini-card p  { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+    /* ANALOGY GRID */
+    .analogy-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; margin: 12px 0; }
+    .an-box { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; text-align: center; background: var(--bg2); }
+    .an-box .icon { font-size: 30px; display: block; margin-bottom: 8px; }
+    .an-box h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .an-box p  { font-size: 12px; color: var(--text2); line-height: 1.5; }
+    .an-arrow  { font-size: 24px; color: var(--text3); text-align: center; }
+
+    /* TABLE */
+    table.cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.cmp th {
+      background: var(--bg2); padding: 9px 12px;
+      font-weight: 600; font-size: 12px; color: var(--text2);
+      border-bottom: 1px solid var(--border); text-align: left;
+    }
+    table.cmp td { padding: 9px 12px; border-bottom: 1px solid var(--border); line-height: 1.65; vertical-align: top; }
+    table.cmp tr:last-child td { border-bottom: none; }
+    table.cmp tr:hover td { background: var(--bg2); }
+
+    /* DRAG & DROP */
+    .dd-bank {
+      padding: 10px 12px;
+      border: 1px dashed var(--border2);
+      border-radius: var(--radius-lg);
+      margin-bottom: 12px;
+      min-height: 58px;
+      background: var(--bg);
+    }
+    .dd-bank-label { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+    .dd-zones { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .dd-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-lg);
+      min-height: 140px;
+      padding: 12px;
+      transition: background .2s, border-color .2s;
+      background: var(--bg);
+    }
+    .dd-zone.over { background: var(--bg2); border-color: var(--purple); }
+    .dd-zone h4 { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .5px; }
+    .chip {
+      display: inline-flex; align-items: center;
+      padding: 7px 13px; border-radius: 20px;
+      font-size: 12px; cursor: grab;
+      margin: 3px;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text);
+      user-select: none;
+      line-height: 1.4;
+      transition: box-shadow .15s, opacity .15s;
+    }
+    .chip:hover  { box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+    .chip:active { cursor: grabbing; opacity: .7; }
+    .chip.in-pe  { background: var(--purple-l); border-color: var(--purple); color: var(--purple); }
+    .chip.in-oop { background: var(--green-l);  border-color: var(--green);  color: var(--green); }
+
+    /* TEXTAREA */
+    textarea.resp {
+      width: 100%; min-height: 100px;
+      font-size: 13px; padding: 12px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg2);
+      color: var(--text);
+      resize: vertical; margin-top: 10px;
+      font-family: inherit;
+      outline: none; transition: border-color .2s;
+    }
+    textarea.resp:focus { border-color: var(--purple); }
+    .hint { font-size: 11px; color: var(--text3); margin-top: 6px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--text); color: var(--bg);
+      padding: 11px 20px; border-radius: var(--radius-lg);
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity .3s;
+      pointer-events: none; z-index: 999;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+    }
+    .toast.show { opacity: 1; }
+
+    /* RESPONSIVO */
+    @media (max-width: 580px) {
+      .grid2, .grid3, .dd-zones, .analogy-grid { grid-template-columns: 1fr; }
+      .an-arrow { transform: rotate(90deg); }
+      body { padding: 12px 8px 36px; }
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: var(--bg2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- CABEÇALHO -->
+  <div class="header">
+    <div class="header-top">
+      <span class="header-icon">🧩</span>
+      <div>
+        <h1>Programação OO vs Programação Estruturada</h1>
+        <p>Uma introdução aos paradigmas de programação</p>
+      </div>
+    </div>
+    <div class="header-sub">IFRN Campus São Paulo do Potengi &nbsp;·&nbsp; Informática para Internet &nbsp;·&nbsp; Programação Orientada a Objetos</div>
+  </div>
+
+  <!-- NOME + SALVAR -->
+  <div class="topbar">
+    <label for="nome-input">✏️ Nome do(a) aluno(a):</label>
+    <input id="nome-input" type="text" placeholder="Digite seu nome completo...">
+    <button class="save-btn" onclick="gerarPDF()">💾 Salvar respostas em PDF</button>
+  </div>
+
+  <!-- ABAS -->
+  <div class="tabs">
+    <div class="tab active" onclick="go(0)">🏠 Analogias</div>
+    <div class="tab" onclick="go(1)">🔍 Diferenças</div>
+    <div class="tab" onclick="go(2)">🃏 Atividade — Classifique</div>
+  </div>
+
+  <!-- ==================== PAGE 0: ANALOGIAS ==================== -->
+  <div class="page on" id="p0">
+
+    <div class="card">
+      <h2>🍳 Imagine uma receita de bolo</h2>
+      <p>Programar é como resolver um problema passo a passo. Mas existe mais de um jeito de organizar esse passo a passo. Veja dois jeitos de "fazer um bolo":</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card" style="border-left: 3px solid var(--purple);">
+        <h2 style="color: var(--purple);">📋 Jeito Estruturado</h2>
+        <p style="margin-bottom: 10px;">Uma <strong>lista de passos</strong> que você segue do começo ao fim:</p>
+        <div class="bubble b-purple">
+          1. Pegar farinha, ovos e açúcar<br>
+          2. Misturar tudo<br>
+          3. <em>Se</em> o forno estiver quente → colocar a massa<br>
+          4. Esperar 40 minutos<br>
+          5. Tirar e servir
+        </div>
+        <p>O código funciona como um <strong>roteiro de filme</strong>: começa, executa os passos, termina. Os ingredientes (dados) ficam de um lado e o que fazer com eles (funções) fica do outro.</p>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <h2 style="color: var(--green);">📦 Jeito Orientado a Objetos</h2>
+        <p style="margin-bottom: 10px;">Em vez de passos, você cria <strong>entidades inteligentes</strong>:</p>
+        <div class="bubble b-green">
+          🎂 <strong>Bolo</strong> sabe:<br>
+          &nbsp;&nbsp;— Quais são seus ingredientes<br>
+          &nbsp;&nbsp;— Como misturar a si mesmo<br>
+          &nbsp;&nbsp;— Quando está pronto<br><br>
+          🔥 <strong>Forno</strong> sabe:<br>
+          &nbsp;&nbsp;— Sua temperatura atual<br>
+          &nbsp;&nbsp;— Como assar um bolo
+        </div>
+        <p>Cada "coisa" do problema vira um <strong>objeto</strong> que guarda seus dados e sabe o que fazer. É como personagens de um jogo!</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎮 Outra analogia: personagem de videogame</h2>
+      <div class="analogy-grid">
+        <div class="an-box" style="border-left: 3px solid var(--purple);">
+          <span class="icon">📜</span>
+          <h3>Estruturada</h3>
+          <p>Lista de comandos:<br>moverPersonagem()<br>atacarInimigo()<br>verificarVida()</p>
+        </div>
+        <div class="an-arrow">⟷</div>
+        <div class="an-box" style="border-left: 3px solid var(--green);">
+          <span class="icon">⚔️</span>
+          <h3>Orientada a Objetos</h3>
+          <p>Personagem é um objeto:<br>nome, vida, ataque<br>ele mesmo sabe mover,<br>atacar e verificar vida</p>
+        </div>
+      </div>
+      <div class="bubble b-amber" style="margin-top: 4px;">
+        <strong>Resumo simples:</strong> Na estruturada, você escreve <em>o que fazer</em>. Na POO, você cria <em>quem vai fazer</em>.
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="mini-card" style="text-align: center;">
+        <span class="icon">🧱</span>
+        <h3>Sequência</h3>
+        <p>Passos em ordem, um após o outro</p>
+      </div>
+      <div class="mini-card" style="text-align: center;">
+        <span class="icon">🔀</span>
+        <h3>Seleção</h3>
+        <p>Escolhas: "se isso, então aquilo"</p>
+      </div>
+      <div class="mini-card" style="text-align: center;">
+        <span class="icon">🔁</span>
+        <h3>Repetição</h3>
+        <p>Repetir algo várias vezes</p>
+      </div>
+    </div>
+    <p style="font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px;">Os três blocos fundamentais da programação estruturada</p>
+
+  </div>
+
+  <!-- ==================== PAGE 1: DIFERENÇAS ==================== -->
+  <div class="page" id="p1">
+
+    <div class="card">
+      <h2>🔍 O que muda na prática?</h2>
+      <p>Veja os conceitos lado a lado com exemplos do dia a dia.</p>
+    </div>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>🟣 Estruturada</th>
+            <th>🟢 Orientada a Objetos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Como organiza?</strong></td>
+            <td>Em funções soltas, como uma lista de receitas separadas</td>
+            <td>Em objetos, como personagens que sabem o que fazem</td>
+          </tr>
+          <tr>
+            <td><strong>Onde ficam os dados?</strong></td>
+            <td>Variáveis soltas, fora das funções</td>
+            <td>Dentro do objeto, que protege seus próprios dados</td>
+          </tr>
+          <tr>
+            <td><strong>Analogia da vida real</strong></td>
+            <td>Um caderno de instruções passo a passo</td>
+            <td>Um time de pessoas, cada uma especialista em algo</td>
+          </tr>
+          <tr>
+            <td><strong>É difícil de aprender?</strong></td>
+            <td>Mais simples de começar — fluxo linear e direto</td>
+            <td>Pede mais planejamento, mas organiza e possibilita melhor crescimento e manutenção do sistema</td>
+          </tr>
+          <tr>
+            <td><strong>Exemplo no dia a dia</strong></td>
+            <td>Roteiro de uma peça teatral — cena 1, cena 2...</td>
+            <td>Os próprios atores, que sabem seus papéis</td>
+          </tr>
+          <tr>
+            <td><strong>Reutilização</strong></td>
+            <td>Chama a mesma função em diferentes momentos</td>
+            <td>Cria vários objetos a partir do mesmo "molde" (classe)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>💡 Classe × Objeto — o conceito mais importante da POO</h2>
+      <div class="grid2" style="margin-top: 10px;">
+        <div class="bubble b-purple" style="margin: 0;">
+          <strong>🏠 Classe = Planta do apartamento</strong><br><br>
+          É o <em>molde</em>, o projeto. A planta diz: "todo apartamento terá quartos, banheiro, sala". Mas a planta em si não é um apartamento — é só o modelo.
+        </div>
+        <div class="bubble b-green" style="margin: 0;">
+          <strong>🏠 Objeto = Apartamento construído</strong><br><br>
+          É a <em>instância real</em> feita a partir da planta. O apto 201 tem morador "João", o 202 tem "Maria" — cada um é um objeto diferente da mesma classe.
+        </div>
+      </div>
+      <div class="bubble b-amber" style="margin-top: 12px;">
+        <strong>Na prática:</strong> a classe <code>Aluno</code> é o molde. O objeto <code>aluno1</code> é o João, com suas notas específicas. O objeto <code>aluno2</code> é a Maria, com as notas dela. Mesma classe, objetos diferentes!
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧠 Os 4 pilares da POO — versão simples</h2>
+      <div class="grid2">
+        <div class="mini-card">
+          <span style="font-size: 22px;">🔒</span>
+          <h3 style="margin: 8px 0 4px;">Encapsulamento</h3>
+          <p>Guardar os dados <em>dentro</em> do objeto, protegidos. Como uma carteira — você decide o que mostrar.</p>
+        </div>
+        <div class="mini-card">
+          <span style="font-size: 22px;">👪</span>
+          <h3 style="margin: 8px 0 4px;">Herança</h3>
+          <p>Uma classe filha herda características da classe pai. Como filhos herdam traços dos pais.</p>
+        </div>
+        <div class="mini-card">
+          <span style="font-size: 22px;">🎭</span>
+          <h3 style="margin: 8px 0 4px;">Polimorfismo</h3>
+          <p>O mesmo comando, comportamentos diferentes. "Falar" para uma pessoa e para um papagaio é bem diferente!</p>
+        </div>
+        <div class="mini-card">
+          <span style="font-size: 22px;">🎩</span>
+          <h3 style="margin: 8px 0 4px;">Abstração</h3>
+          <p>Esconder os detalhes complicados. Você usa o celular sem saber como ele funciona por dentro.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== PAGE 2: CLASSIFIQUE ==================== -->
+  <div class="page" id="p2">
+
+    <div class="card">
+      <h2>🃏 Atividade — Classifique as características</h2>
+      <p>Arraste cada cartão para a coluna correta: <strong>Programação Estruturada</strong> ou <strong>Orientação a Objetos</strong>. Você pode arrastar de volta para reorganizar.</p>
+    </div>
+
+    <div class="dd-bank" id="dd-bank">
+      <p class="dd-bank-label">Cartões disponíveis — arraste para uma das colunas abaixo</p>
+    </div>
+
+    <div class="dd-zones">
+      <div class="dd-zone" id="zone-pe"
+           ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event,'pe')">
+        <h4>🟣 Programação Estruturada</h4>
+      </div>
+      <div class="dd-zone" id="zone-oop"
+           ondragover="dOver(event)" ondragleave="dLeave(event)" ondrop="dDrop(event,'oop')">
+        <h4>🟢 Orientada a Objetos</h4>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h2>✏️ Questão aberta</h2>
+      <p>Escolha um exemplo do seu dia a dia (escola, jogo, redes sociais, etc.) e explique com suas próprias palavras: <strong>qual seria a "classe" e quais seriam os "objetos"</strong> nesse exemplo?</p>
+      <textarea class="resp" id="resposta-aberta"
+        placeholder="Ex: Em um jogo de futebol, Jogador seria a classe. Neymar e Messi seriam objetos desta classe, cada um com seu próprio nome, posição e número de gols..."></textarea>
+    </div>
+
+  </div>
+
+</div><!-- /container -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== NAVEGAÇÃO ===================== */
+function go(i) {
+  document.querySelectorAll('.page').forEach((p, j) => p.classList.toggle('on', j === i));
+  document.querySelectorAll('.tab').forEach((t, j) => t.classList.toggle('active', j === i));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===================== TOAST ===================== */
+function toast(msg, dur = 3500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+/* ===================== DRAG & DROP ===================== */
+const cards = [
+  { id: 'c1', text: 'Dados e funções ficam separados',                      ans: 'pe'  },
+  { id: 'c2', text: 'Usa herança entre classes',                             ans: 'oop' },
+  { id: 'c3', text: 'Organiza o código em sequência, seleção e repetição',   ans: 'pe'  },
+  { id: 'c4', text: 'Um objeto guarda seus dados e sabe o que fazer',        ans: 'oop' },
+  { id: 'c5', text: 'Chama funções passando variáveis como parâmetro',       ans: 'pe'  },
+  { id: 'c6', text: 'Classe é o molde; objeto é a instância real',           ans: 'oop' },
+  { id: 'c7', text: 'Encapsulamento protege os dados internos do objeto',    ans: 'oop' },
+  { id: 'c8', text: 'O fluxo principal segue passos do início ao fim',       ans: 'pe'  },
+];
+
+function buildDD() {
+  const bank = document.getElementById('dd-bank');
+  while (bank.children.length > 1) bank.removeChild(bank.lastChild);
+  document.querySelectorAll('#zone-pe .chip, #zone-oop .chip').forEach(c => c.remove());
+
+  cards.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.draggable = true;
+    el.id = c.id;
+    el.dataset.ans = c.ans;
+    el.textContent = c.text;
+    el.ondragstart = e => e.dataTransfer.setData('text/plain', e.target.id);
+    bank.appendChild(el);
+  });
+}
+
+function dOver(e)  { e.preventDefault(); e.currentTarget.classList.add('over'); }
+function dLeave(e) { e.currentTarget.classList.remove('over'); }
+
+function dDrop(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('over');
+  const id  = e.dataTransfer.getData('text/plain');
+  const el  = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('in-pe', 'in-oop');
+  el.classList.add(zone === 'pe' ? 'in-pe' : 'in-oop');
+  e.currentTarget.appendChild(el);
+}
+
+// Devolver ao banco
+const bank = document.getElementById('dd-bank');
+bank.addEventListener('dragover',  e => e.preventDefault());
+bank.addEventListener('dragleave', e => e.currentTarget.classList.remove('over'));
+bank.addEventListener('drop', e => {
+  e.preventDefault();
+  const id = e.dataTransfer.getData('text/plain');
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('in-pe', 'in-oop');
+  bank.appendChild(el);
+});
+
+buildDD();
+
+/* ===================== GERAR PDF ===================== */
+function gerarPDF() {
+  const nome = (document.getElementById('nome-input').value || '').trim();
+  if (!nome) {
+    toast('⚠️ Digite seu nome antes de salvar!');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const W   = 210;
+  const ml  = 18;
+  const mr  = 18;
+  const cw  = W - ml - mr;
+  let y     = 18;
+
+  const cPurple = [83, 74, 183];
+  const cGreen  = [15, 110, 86];
+  const cGray   = [110, 110, 110];
+  const cBlack  = [28, 28, 28];
+  const cWhite  = [255, 255, 255];
+  const cBg     = [248, 248, 252];
+  const cLine   = [220, 220, 225];
+
+  function checkPage(h = 12) {
+    if (y + h > 278) { doc.addPage(); y = 18; }
+  }
+
+  /* ---------- CABEÇALHO ---------- */
+  doc.setFillColor(...cPurple);
+  doc.roundedRect(ml, y, cw, 26, 3, 3, 'F');
+
+  doc.setTextColor(...cWhite);
+  doc.setFontSize(15); doc.setFont('helvetica', 'bold');
+  doc.text('Paradigmas de Programacao', W / 2, y + 9, { align: 'center' });
+
+  doc.setFontSize(9.5); doc.setFont('helvetica', 'normal');
+  doc.text('Programacao Estruturada x Orientacao a Objetos', W / 2, y + 16, { align: 'center' });
+  doc.text('IFRN Campus Sao Paulo do Potengi  -  Informatica para Internet  -  POO', W / 2, y + 22, { align: 'center' });
+  y += 32;
+
+  /* ---------- DADOS DO ALUNO ---------- */
+  doc.setFillColor(...cBg);
+  doc.setDrawColor(...cLine);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(ml, y, cw, 14, 2, 2, 'FD');
+
+  doc.setTextColor(...cGray);
+  doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+  doc.text('Aluno(a):', ml + 4, y + 6);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...cBlack);
+  doc.text(nome, ml + 26, y + 6);
+
+  const dt = new Date().toLocaleDateString('pt-BR');
+  doc.setTextColor(...cGray); doc.setFont('helvetica', 'bold');
+  doc.text('Data:', W - mr - 30, y + 6);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...cBlack);
+  doc.text(dt, W - mr - 16, y + 6);
+  y += 20;
+
+  /* ========== ATIVIDADE — CLASSIFIQUE ========== */
+  doc.setFillColor(...cPurple);
+  doc.roundedRect(ml, y, cw, 10, 2, 2, 'F');
+  doc.setTextColor(...cWhite);
+  doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+  doc.text('Atividade - Classifique as caracteristicas', ml + 5, y + 6.8);
+  y += 15;
+
+  const peItems  = Array.from(document.querySelectorAll('#zone-pe .chip')).map(c => c.textContent);
+  const oopItems = Array.from(document.querySelectorAll('#zone-oop .chip')).map(c => c.textContent);
+  const naoClass = Array.from(document.querySelectorAll('#dd-bank .chip')).map(c => c.textContent);
+
+  function renderColuna(titulo, cor, bgHex, items) {
+    checkPage(18);
+    doc.setFillColor(...bgHex);
+    doc.setDrawColor(...cor);
+    doc.setLineWidth(0.5);
+    doc.roundedRect(ml, y, cw, 9, 2, 2, 'FD');
+    doc.setTextColor(...cor);
+    doc.setFontSize(10); doc.setFont('helvetica', 'bold');
+    doc.text(titulo, ml + 5, y + 6);
+    y += 12;
+
+    if (items.length === 0) {
+      doc.setTextColor(...cGray); doc.setFont('helvetica', 'italic'); doc.setFontSize(9);
+      doc.text('Nenhum cartao classificado aqui.', ml + 6, y + 4);
+      y += 9;
+    } else {
+      items.forEach(txt => {
+        checkPage(9);
+        const ls = doc.splitTextToSize('• ' + txt, cw - 10);
+        doc.setTextColor(...cBlack); doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+        doc.text(ls, ml + 6, y + 4);
+        y += ls.length * 5 + 2;
+      });
+    }
+    y += 5;
+  }
+
+  renderColuna('Programacao Estruturada', cPurple, [240, 238, 255], peItems);
+  renderColuna('Orientacao a Objetos',    cGreen,  [232, 248, 242], oopItems);
+
+  if (naoClass.length > 0) {
+    checkPage(10);
+    doc.setTextColor(...cGray); doc.setFontSize(8.5); doc.setFont('helvetica', 'italic');
+    const ncText  = `Nao classificados (${naoClass.length}): ` + naoClass.join('  /  ');
+    const ncLines = doc.splitTextToSize(ncText, cw);
+    doc.text(ncLines, ml, y, { maxWidth: cw });
+    y += ncLines.length * 4.5 + 6;
+  }
+
+  y += 6;
+
+  /* ========== QUESTÃO ABERTA ========== */
+  checkPage(18);
+  doc.setFillColor(245, 245, 248);
+  doc.setDrawColor(180, 180, 190);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(ml, y, cw, 10, 2, 2, 'FD');
+  doc.setTextColor(...cBlack);
+  doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+  doc.text('Questao Aberta', ml + 5, y + 6.8);
+  y += 14;
+
+  const enunciado = 'Escolha um exemplo do seu dia a dia e explique com suas palavras: qual seria a "classe" e quais seriam os "objetos" nesse contexto?';
+  doc.setTextColor(...cGray); doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+  const eLines = doc.splitTextToSize(enunciado, cw);
+  doc.text(eLines, ml, y);
+  y += eLines.length * 4.5 + 5;
+
+  const resp = (document.getElementById('resposta-aberta').value || '').trim() || 'Nao respondida.';
+  doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(...cBlack);
+  const rLines = doc.splitTextToSize(resp, cw - 8);
+  const boxH   = rLines.length * 5.5 + 8;
+  checkPage(boxH + 4);
+  doc.setFillColor(252, 252, 254);
+  doc.setDrawColor(...cLine); doc.setLineWidth(0.3);
+  doc.roundedRect(ml, y, cw, boxH, 2, 2, 'FD');
+  doc.text(rLines, ml + 5, y + 6);
+  y += boxH + 6;
+
+  /* ========== RODAPÉ EM TODAS AS PÁGINAS ========== */
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setTextColor(180, 180, 190);
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+    doc.text(
+      `IFRN Campus Sao Paulo do Potengi  -  POO  -  ${dt}  -  Pagina ${p} de ${totalPages}`,
+      W / 2, 291, { align: 'center' }
+    );
+    doc.setDrawColor(210, 210, 220); doc.setLineWidth(0.2);
+    doc.line(ml, 288, W - mr, 288);
+  }
+
+  /* ========== SALVAR ========== */
+  const nomeArq = nome
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_').toLowerCase();
+  doc.save(`atividade_paradigmas_${nomeArq}.pdf`);
+  toast('✅ PDF gerado com sucesso! Verifique sua pasta de downloads.');
+}
+</script>
+</body>
+</html>
