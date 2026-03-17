@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto de Desenvolvimento de Sistemas para Internet</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #1e3a8a;
+    --navy2:  #1e40af;
+    --accent: #2563eb;
+    --accent2: #60a5fa;
+    --light:  #eff6ff;
+    --white:  #ffffff;
+    --gray:   #64748b;
+    --text:   #1e293b;
+    --muted:  #475569;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #dde3ed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+    padding: 48px 20px;
+  }
+
+  .slide {
+    width: 297mm;
+    height: 200mm;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 48px rgba(30,58,138,0.18);
+    border-radius: 6px;
+  }
+
+  .stripe {
+    height: 6px;
+    background: linear-gradient(90deg, var(--navy) 0%, var(--accent) 55%, var(--accent2) 100%);
+    flex-shrink: 0;
+  }
+
+  .slide-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 12px 42px 0;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 42px 12px;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  .footer span { font-size: 9px; color: #94a3b8; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; }
+  .footer .dot-line { flex: 1; height: 1px; background: #e2e8f0; margin: 0 14px; }
+
+  .slide-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 5px;
+    line-height: 1.2;
+  }
+  .slide-title span { color: var(--accent); }
+  .divider {
+    width: 44px; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    margin-bottom: 18px;
+  }
+
+  /* CAPA */
+  .slide-capa { background: var(--navy); }
+  .slide-capa .stripe { background: linear-gradient(90deg, var(--accent2) 0%, var(--accent) 100%); }
+  .capa-body { flex: 1; display: flex; align-items: center; padding: 0 60px; position: relative; }
+  .capa-text { flex: 1; display: flex; flex-direction: column; }
+  .capa-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.3);
+    color: var(--accent2);
+    font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 600;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 5px 14px; border-radius: 3px;
+    margin-bottom: 20px; width: fit-content;
+  }
+  .capa-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; }
+  .capa-h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 34px; font-weight: 700;
+    color: var(--white); line-height: 1.2;
+    max-width: 560px; margin-bottom: 10px;
+  }
+  .capa-h1 em { color: var(--accent2); font-style: normal; }
+  .capa-assunto { font-size: 14px; color: #93c5fd; font-weight: 400; margin-bottom: 32px; }
+  .capa-meta { display: flex; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
+  .capa-meta-item { display: flex; flex-direction: column; gap: 4px; padding-right: 28px; margin-right: 28px; border-right: 1px solid rgba(255,255,255,0.08); }
+  .capa-meta-item:last-child { border-right: none; }
+  .cml { font-size: 8.5px; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #475569; }
+  .cmv { font-size: 13px; color: #cbd5e1; }
+  .capa-deco { width: 200px; height: 200px; flex-shrink: 0; opacity: 0.06; }
+  .capa-footer-cls span { color: #fcfcfc !important; }
+  .capa-footer-cls .dot-line { background: rgba(255,255,255,0.05) !important; }
+  .ifrn-badge {
+    background: rgba(37,99,235,0.18); border: 1px solid rgba(37,99,235,0.28);
+    color: var(--accent2); font-family: 'Outfit', sans-serif;
+    font-size: 9.5px; font-weight: 600; letter-spacing: 2px;
+    padding: 3px 11px; border-radius: 3px;
+  }
+
+  /* BODY */
+  .body { flex: 1; padding: 14px 42px 0; display: flex; flex-direction: column; }
+
+  /* EMENTA */
+  .ementa-box {
+    background: var(--light); border-left: 5px solid var(--accent);
+    border-radius: 0 8px 8px 0; padding: 16px 22px;
+    font-size: 20px; color: #334155; line-height: 1.7;
+    margin-bottom: 16px; font-style: italic;
+  }
+  .info-row { display: flex; gap: 14px; }
+  .info-card { flex: 1; background: var(--navy); border-radius: 8px; padding: 14px 18px; display: flex; flex-direction: column; gap: 5px; }
+  .ic-label { font-size: 8.5px; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #475569; }
+  .ic-value { font-size: 15px; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent2); line-height: 1.2; }
+
+  /* OBJETIVOS */
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  .obj-item { display: flex; align-items: flex-start; gap: 12px; background: var(--light); border-radius: 8px; padding: 13px 16px; }
+  .obj-num { width: 26px; height: 26px; background: var(--accent); color: white; border-radius: 50%; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .obj-text { font-size: 12px; color: var(--text); line-height: 1.5; }
+
+  /* CONTEÚDOS */
+  .content-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; }
+  .content-block { background: var(--light); border-radius: 8px; padding: 16px 18px; }
+  .content-block h3 { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .num-badge { background: var(--accent); color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sub-list { list-style: none; }
+  .sub-list li { font-size: 14px; color: #475569; line-height: 1.5; padding: 4px 0 4px 16px; position: relative; border-bottom: 1px solid #dbeafe; }
+  .sub-list li:last-child { border-bottom: none; }
+  .sub-list li::before { content: '›'; position: absolute; left: 3px; color: var(--accent2); font-size: 15px; line-height: 1.1; font-weight: 700; }
+  .sub-list li.sub { padding-left: 28px; font-size: 11px; color: #64748b; }
+  .sub-list li.sub::before { left: 16px; font-size: 12px; color: #93c5fd; }
+
+  /* AVALIAÇÃO */
+  .aval-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; flex: 1; }
+  .aval-card { background: var(--navy); border-radius: 10px; 
+    padding: 22px 20px; display: flex; flex-direction: column; gap: 12px; 
+    max-height: 400px; }
+  .aval-icon { font-size: 28px; }
+  .aval-card h4 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent2); line-height: 1.3; }
+  .aval-card p { font-size: 14px; color: #94a3b8; line-height: 1.6; }
+
+  /* FERRAMENTAS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 14px;
+    flex: 1;
+  }
+  .tool-card {
+    border: 2px solid #dbeafe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background: var(--light);
+    max-height: 160px;
+  }
+  .tool-img-placeholder {
+    width: 100%;
+    flex: 1;
+    min-height: 52px;
+    background: #dbeafe;
+    border: 2px dashed #93c5fd;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #93c5fd;
+    font-size: 10px;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .tool-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .tool-img {
+    width: 100%;
+    flex: 1;
+    min-height: 52px;
+    max-height: 72px;
+    object-fit: contain;
+    border-radius: 6px;
+  }
+  .tool-img.outras {
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  /* LOCAL */
+  .local-body { flex: 1; padding: 14px 42px 0; display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+  .local-col { display: flex; flex-direction: column; gap: 12px; }
+  .local-big { background: var(--navy); border-radius: 10px; padding: 24px 28px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .lb-label { font-size: 9px; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: #475569; }
+  .lb-val { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 700; color: var(--white); line-height: 1.2; }
+  .lb-sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .lb-room { display: inline-block; background: rgba(96,165,250,0.2); border: 1px solid rgba(96,165,250,0.35); color: var(--accent2); font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 4px; margin-top: 6px; width: fit-content; }
+  .local-info-card { background: var(--light); border-radius: 8px; padding: 13px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .lic-label { font-size: 8.5px; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+  .lic-val { font-size: 12.5px; color: var(--text); font-weight: 500; line-height: 1.4; }
+  .local-map { flex: 1; background: linear-gradient(135deg, var(--navy2), var(--navy)); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+  .local-map .map-icon { font-size: 36px; position: relative; z-index: 1; }
+  .local-map .map-label { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; color: var(--accent2); letter-spacing: 2px; text-transform: uppercase; position: relative; z-index: 1; }
+  .local-map .map-sub { font-size: 10px; color: #475569; position: relative; z-index: 1; }
+  .map-rings { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 18px solid rgba(37,99,235,0.08); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  .map-rings::before { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; border: 18px solid rgba(37,99,235,0.04); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+  /* DÚVIDAS */
+  .slide-duvidas { background: var(--navy); }
+  .slide-duvidas .stripe { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+  .duvidas-body { flex: 1; display: flex; align-items: center; padding-left: 420px; gap: 52px; }
+  
+  .duvidas-big { font-family: 'Outfit', sans-serif; font-size: 62px; font-weight: 700; color: white; line-height: 1.05; }
+  .duvidas-big em { color: var(--accent2); font-style: normal; }
+  .duvidas-sub { font-size: 13.5px; color: #64748b; max-width: 340px; line-height: 1.6; }
+  
+  .contact-item { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; padding: 13px 18px; min-width: 280px; }
+  .ci-icon { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+  .ci-text { display: flex; flex-direction: column; gap: 2px; }
+  .ci-label { font-size: 8.5px; font-family: 'Outfit', sans-serif; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #475569; }
+  .ci-val { font-size: 12.5px; color: #cbd5e1; }
+
+  @media print {
+    @page { size: A4 landscape; margin: 0; }
+    body { background: white; padding: 0; gap: 0; }
+    .slide { width: 297mm; height: 210mm; box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
+    .slide:last-child { page-break-after: avoid; }
+    .print-hint { display: none; }
+  }
+
+  .print-hint { background: #1e3a8a; color: #93c5fd; font-size: 12px; padding: 11px 24px; border-radius: 8px; margin-bottom: 4px; text-align: center; }
+  .print-hint strong { color: #60a5fa; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 – CAPA -->
+<div class="slide slide-capa">
+  <div class="stripe"></div>
+  <div class="capa-body">
+    <div class="capa-text">
+      <div class="capa-eyebrow">4º Ano · Informática para Internet</div>
+      <h1 class="capa-h1">Projeto de <em>Desenvolvimento</em> de Sistemas para Internet</h1>
+      <p class="capa-assunto">Apresentação da Disciplina</p>
+      <div class="capa-meta">
+        <div class="capa-meta-item">
+          <span class="cml">Professora</span>
+          <span class="cmv">Profa. Fernanda Lígia</span>
+        </div>
+        <div class="capa-meta-item">
+          <span class="cml">Carga Horária</span>
+          <span class="cmv">60h · 80 h/a</span>
+        </div>
+        <div class="capa-meta-item">
+          <span class="cml">Instituição</span>
+          <span class="cmv">IFRN – Campus São Paulo do Potengi</span>
+        </div>
+      </div>
+    </div>
+    <svg class="capa-deco" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" stroke="white" stroke-width="2"/>
+      <circle cx="100" cy="100" r="65" stroke="white" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="40" stroke="white" stroke-width="1"/>
+      <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" stroke="white" stroke-width="1.5" fill="none"/>
+      <line x1="10" y1="100" x2="190" y2="100" stroke="white" stroke-width="0.7"/>
+      <line x1="100" y1="10" x2="100" y2="190" stroke="white" stroke-width="0.7"/>
+      <line x1="27" y1="55" x2="173" y2="145" stroke="white" stroke-width="0.4"/>
+      <line x1="173" y1="55" x2="27" y2="145" stroke="white" stroke-width="0.4"/>
+    </svg>
+  </div>
+  <div class="footer capa-footer-cls">
+    <span class="ifrn-badge">IFRN · 2026</span>
+    <div class="dot-line"></div>
+    <span>Curso Técnico Integrado em Informática para Internet</span>
+  </div>
+</div>
+
+<!-- SLIDE 2 – EMENTA -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="body">
+    <div class="slide-label">Sobre a Disciplina</div>
+    <div class="slide-title">Ementa <span>&amp; Visão Geral</span></div>
+    <div class="divider"></div>
+    <div class="ementa-box">
+      <ul style="list-style-type: none;" >
+        <li>Conceitos básicos sobre processo de desenvolvimento de software. </li>
+        <li>Conhecer e aplicar um processo de desenvolvimento de software para desenvolvimento de sistemas.</li>
+        <li>Conceitos básicos de gerência de projetos.</li>
+        <li>Projetar e implementar um sistema para Internet.</li>
+      </ul>  
+    </div>
+    <div class="info-row">
+      <div class="info-card">
+        <span class="ic-label">Disciplina</span>
+        <span class="ic-value">Proj. Sist. Internet</span>
+      </div>
+      <div class="info-card">
+        <span class="ic-label">Série</span>
+        <span class="ic-value">4º Ano</span>
+      </div>
+      <div class="info-card">
+        <span class="ic-label">Carga Horária</span>
+        <span class="ic-value">60h · 80 h/a</span>
+      </div>
+      <div class="info-card">
+        <span class="ic-label">Modalidade</span>
+        <span class="ic-value">Presencial</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line"></div>
+    <span>Profa. Fernanda Lígia · 2026</span>
+  </div>
+</div>
+
+<!-- SLIDE 3 – OBJETIVOS -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="body">
+    <div class="slide-label">O que vamos aprender</div>
+    <div class="slide-title">Objetivos <span>da Disciplina</span></div>
+    <div class="divider"></div>
+    <div class="obj-grid">
+      <div class="obj-item"><div class="obj-num">1</div><span class="obj-text">Compreender a importância de um processo de software</span></div>
+      <div class="obj-item"><div class="obj-num">2</div><span class="obj-text">Conhecer os diversos componentes de um processo de software</span></div>
+      <div class="obj-item"><div class="obj-num">3</div><span class="obj-text">Usar um processo de software no desenvolvimento de sistemas</span></div>
+      <div class="obj-item"><div class="obj-num">4</div><span class="obj-text">Conhecer a estrutura organizacional de equipes adequadas a projetos</span></div>
+      <div class="obj-item"><div class="obj-num">5</div><span class="obj-text">Ter ciência dos conceitos básicos sobre gerência de projetos</span></div>
+      <div class="obj-item"><div class="obj-num">6</div><span class="obj-text">Projetar e implementar um sistema completo para Internet</span></div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line"></div>
+    <span>Profa. Fernanda Lígia · 2026</span>
+  </div>
+</div>
+
+<!-- SLIDE 4 – CONTEÚDOS -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="body">
+    <div class="slide-label">Programa</div>
+    <div class="slide-title">Bases <span>Científico-Tecnológicas</span></div>
+    <div class="divider"></div>
+    <div class="content-cols">
+      <div>
+        <div class="content-block">
+          <h3> Processo de Desenvolvimento</h3>
+          <ul class="sub-list">
+            <li>Conceitos básicos</li>
+            <li class="sub">Papéis, Atividades, Fases</li>
+            <li class="sub">Produtos de trabalho</li>
+            <li class="sub">Ciclo de vida</li>
+            <li>Tipos de processos</li>
+            <li class="sub">Processos prescritivos</li>
+            <li class="sub">Processos ágeis</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="content-block">
+          <h3>Gerência de Projetos</h3>
+          <ul class="sub-list">
+            <li>Conceitos básicos de gerência</li>
+            <li>Planejamento, escopo e cronograma</li>
+            <li>Gestão de riscos e qualidade</li>
+          </ul>
+        </div>
+        <div class="content-block">
+          <h3> Desenvolvimento do Sistema</h3>
+          <ul class="sub-list">
+            <li>Projeto completo para Internet</li>
+            <li>Do levantamento à entrega final</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line"></div>
+    <span>Profa. Fernanda Lígia · 2026</span>
+  </div>
+</div>
+
+<!-- SLIDE 5 – AVALIAÇÃO -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="body">
+    <div class="slide-label">Sobre as avaliações</div>
+    <div class="slide-title">Formas de <span>Avaliação</span></div>
+    <div class="divider"></div>
+    <div class="aval-grid">
+      <div class="aval-card">
+        <div class="aval-icon">📝</div>
+        <h4>Avaliações Escritas e Práticas</h4>
+        <p>Provas teóricas sobre processos de software e gerência de projetos, além de atividades práticas no laboratório.</p>
+      </div>
+      <div class="aval-card">
+        <div class="aval-icon">📂</div>
+        <h4>Trabalhos Individuais e em Grupo</h4>
+        <p>Listas de exercícios, trabalhos e pesquisas sobre os temas abordados ao longo da disciplina.</p>
+      </div>
+      <div class="aval-card">
+        <div class="aval-icon">🖥️</div>
+        <h4>Apresentação dos Projetos</h4>
+        <p>Serão realizados acompanhamentos das equipes durante a disciplina.</p>
+        <p>Desenvolvimento e apresentação de um sistema Web completo, com documentação e demonstração funcional ao final da disciplina.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line"></div>
+    <span>Profa. Fernanda Lígia · 2026</span>
+  </div>
+</div>
+
+<!-- SLIDE 6 – FERRAMENTAS -->
+<div class="slide">
+  <div class="stripe"></div>
+  <div class="body">
+    <div class="slide-label">Tecnologias e recursos</div>
+    <div class="slide-title">Ferramentas <span>que usaremos</span></div>
+    <div class="divider"></div>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <img src="imgs/logo-vscode.png" class="tool-img" alt="Visual Studio Code">
+        <span class="tool-name">Visual Studio Code</span>
+      </div>
+      <div class="tool-card">
+        <img src="imgs/logo-git.png" class="tool-img" alt="Git">
+        <span class="tool-name">Git</span>
+      </div>
+      <div class="tool-card">
+        <img src="imgs/logo-github.svg" class="tool-img" alt="GitHub">
+        <span class="tool-name">GitHub</span>
+      </div>
+      <div class="tool-card">
+        <img src="imgs/suap-logo.png" class="tool-img" alt="SUAP">
+        <span class="tool-name">SUAP</span>
+      </div>
+      <div class="tool-card">
+        <img src="imgs/logo-gsa.png" class="tool-img" alt="Google Sala de Aula">
+        <span class="tool-name">Google Sala de Aula</span>
+      </div>
+      <div class="tool-card">
+        <img src="imgs/outrasferramentas.png" class="tool-img outras" alt="Outras Ferramentas">
+        <span class="tool-name">Outras Ferramentas</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <span>IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line"></div>
+    <span>Profa. Fernanda Lígia · 2026</span>
+  </div>
+</div>
+
+
+<!-- SLIDE 7 – DÚVIDAS -->
+<div class="slide slide-duvidas">
+  <div class="stripe"></div>
+  <div class="duvidas-body">
+    <div class="duvidas-big">Alguma<br><em>Dúvida?</em></div>
+    
+  </div>
+  <div class="footer">
+    <span style="color:#ffffff !important">IFRN – Campus São Paulo do Potengi</span>
+    <div class="dot-line" style="background:rgba(209, 204, 204, 0.05)!important"></div>
+    <span style="color:#fff!important">Curso Técnico Integrado em Informática para Internet · 2026</span>
+  </div>
+</div>
+
+</body>
+</html>
