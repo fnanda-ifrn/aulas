@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atividade Prática — Sistema Operacional · ETD</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --verde:    #006633;
+  --verde-cl: #E6F2EC;
+  --verde-md: #C2DFD0;
+  --laranja:  #E8650A;
+  --azul:     #1B4F8A;
+  --azul-cl:  #EBF2FC;
+  --cinza1:   #F4F6F8;
+  --cinza2:   #E2E8F0;
+  --cinza3:   #94A3B8;
+  --texto:    #1E293B;
+  --branco:   #FFFFFF;
+  --amarelo:  #F59E0B;
+  --am-cl:    #FFFBEB;
+  --rad:      12px;
+  --rad-lg:   20px;
+  --sombra:   0 2px 16px rgba(0,0,0,.09);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Lato', sans-serif; background: var(--cinza1); color: var(--texto); font-size: 15px; line-height: 1.6; }
+
+/* ── CABEÇALHO ── */
+.cabecalho { background: var(--branco); border-bottom: 3px solid var(--verde); box-shadow: var(--sombra); position: sticky; top: 0; z-index: 200; }
+.cab-inner { max-width: 980px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.cab-logo-box { width: 42px; height: 42px; background: var(--verde); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: .75rem; color: #fff; line-height: 1.1; text-align: center; padding: 4px; flex-shrink: 0; }
+.cab-titulo { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--verde); line-height: 1.2; }
+.cab-titulo small { display: block; font-size: .72rem; font-weight: 600; color: var(--cinza3); text-transform: uppercase; letter-spacing: .06em; }
+.cab-spacer { flex: 1; }
+.btn-pdf { display: inline-flex; align-items: center; gap: 9px; background: var(--laranja); color: #fff; border: none; border-radius: var(--rad); padding: 11px 22px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .95rem; cursor: pointer; box-shadow: 0 3px 12px rgba(232,101,10,.35); transition: transform .15s, box-shadow .15s; white-space: nowrap; }
+.btn-pdf:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,101,10,.4); }
+
+/* ── PRINT HEADER ── */
+.print-header { display: none; padding: 0 0 18px; border-bottom: 2px solid var(--verde); margin-bottom: 24px; }
+
+/* ── HERO ── */
+.hero { background: linear-gradient(135deg, var(--verde) 0%, #009944 100%); padding: 40px 24px 36px; color: #fff; }
+.hero-inner { max-width: 980px; margin: 0 auto; }
+.hero-tag { display: inline-block; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); border-radius: 99px; padding: 3px 14px; font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; margin-bottom: 14px; }
+.hero h1 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.15; margin-bottom: 8px; }
+.hero h1 em { font-style: normal; color: #FCD34D; }
+.hero-sub { font-size: .95rem; opacity: .85; max-width: 620px; margin-bottom: 24px; }
+.id-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; max-width: 720px; }
+.id-field { display: flex; flex-direction: column; gap: 4px; }
+.id-field label { font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .75; }
+.id-field input { background: rgba(255,255,255,.15); border: 1.5px solid rgba(255,255,255,.35); border-radius: 8px; padding: 8px 12px; color: #fff; font-family: 'Lato', sans-serif; font-size: .9rem; outline: none; transition: border-color .2s, background .2s; }
+.id-field input::placeholder { opacity: .55; }
+.id-field input:focus { border-color: #FCD34D; background: rgba(255,255,255,.22); }
+
+/* ── WRAPPER ── */
+.wrapper { max-width: 980px; margin: 0 auto; padding: 32px 24px 60px; }
+
+/* ── PARTE ── */
+.parte { background: var(--branco); border-radius: var(--rad-lg); box-shadow: var(--sombra); margin-bottom: 28px; overflow: hidden; }
+.parte-header { display: flex; align-items: center; gap: 14px; padding: 18px 24px; background: var(--cinza1); border-bottom: 2px solid var(--cinza2); }
+.parte-num { width: 40px; height: 40px; border-radius: 10px; background: var(--verde); color: #fff; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.parte-header h2 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--verde); }
+.parte-header h2 span { display: block; font-size: .72rem; font-weight: 600; color: var(--cinza3); text-transform: uppercase; letter-spacing: .06em; }
+.parte-body { padding: 24px; }
+
+/* ── TASK ── */
+.task { border: 1.5px solid var(--cinza2); border-radius: var(--rad); margin-bottom: 20px; overflow: hidden; }
+.task:last-child { margin-bottom: 0; }
+.task-header { display: flex; align-items: center; gap: 12px; padding: 13px 18px; background: var(--cinza1); border-bottom: 1px solid var(--cinza2); }
+.task-ico { font-size: 1.3rem; flex-shrink: 0; }
+.task-header h3 { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .95rem; }
+.task-body { padding: 18px; }
+
+/* instrução */
+.instrucao { font-size: .88rem; color: #475569; line-height: 1.65; margin-bottom: 14px; }
+.instrucao b { color: var(--texto); }
+.instrucao code { background: #F1F5F9; border: 1px solid var(--cinza2); border-radius: 5px; padding: 1px 7px; font-family: 'JetBrains Mono', monospace; font-size: .85em; color: var(--laranja); }
+
+/* frase digitar */
+.frase-box { background: #F8FAFC; border: 1.5px dashed var(--cinza2); border-radius: 10px; padding: 14px 18px; margin: 12px 0; font-family: 'JetBrains Mono', monospace; font-size: .88rem; line-height: 1.9; color: #334155; }
+.frase-box b { color: var(--laranja); font-weight: 600; }
+
+/* alerta */
+.alerta { display: flex; gap: 10px; align-items: flex-start; background: var(--am-cl); border: 1.5px solid #FDE68A; border-radius: 10px; padding: 12px 16px; font-size: .85rem; line-height: 1.55; margin-bottom: 14px; }
+.alerta .al-ico { font-size: 1.2rem; flex-shrink: 0; }
+.alerta.verde { background: var(--verde-cl); border-color: var(--verde-md); }
+.alerta.azul  { background: var(--azul-cl);  border-color: #BFDBFE; }
+
+/* checklist */
+.check-lista { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.check-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--cinza1); border: 1.5px solid var(--cinza2); border-radius: 9px; cursor: pointer; font-size: .88rem; transition: background .15s, border-color .15s; user-select: none; }
+.check-item input[type=checkbox] { accent-color: var(--verde); width: 16px; height: 16px; cursor: pointer; }
+.check-item.done { background: var(--verde-cl); border-color: var(--verde-md); }
+
+/* upload */
+.upload-area { margin-top: 14px; border: 2px dashed var(--cinza2); border-radius: var(--rad); padding: 18px 20px; background: #FAFBFC; transition: border-color .2s, background .2s; }
+.upload-area:hover { border-color: var(--verde); background: var(--verde-cl); }
+.upload-area label { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; text-align: center; }
+.upload-area .up-ico { font-size: 2rem; }
+.upload-area .up-titulo { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .9rem; color: var(--verde); }
+.upload-area .up-sub { font-size: .78rem; color: var(--cinza3); }
+.upload-area input[type=file] { display: none; }
+.upload-area .up-filename { margin-top: 8px; font-size: .82rem; color: var(--verde); font-weight: 600; display: none; }
+.img-preview { margin-top: 10px; max-width: 100%; max-height: 260px; border-radius: 8px; border: 1.5px solid var(--verde-md); display: none; }
+
+/* questões (sem auto-correção) */
+.quiz-q { margin-bottom: 20px; }
+.quiz-q:last-child { margin-bottom: 0; }
+.quiz-q p { font-size: .9rem; font-weight: 600; margin-bottom: 10px; line-height: 1.5; }
+.opcoes { display: flex; flex-direction: column; gap: 7px; }
+.opcao { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1.5px solid var(--cinza2); border-radius: 9px; cursor: pointer; font-size: .87rem; transition: border-color .15s, background .15s; }
+.opcao:hover { border-color: var(--verde); background: var(--verde-cl); }
+.opcao input[type=radio] { accent-color: var(--verde); width: 15px; height: 15px; }
+
+/* campo texto */
+.resp-field { width: 100%; border: 1.5px solid var(--cinza2); border-radius: 9px; padding: 10px 14px; font-family: 'Lato', sans-serif; font-size: .88rem; resize: vertical; min-height: 64px; outline: none; transition: border-color .2s; background: var(--branco); color: var(--texto); margin-top: 6px; }
+.resp-field:focus { border-color: var(--verde); }
+
+/* tabela */
+.anot-table { width: 100%; border-collapse: collapse; font-size: .86rem; margin-top: 8px; }
+.anot-table th { background: var(--verde); color: #fff; padding: 9px 12px; text-align: left; font-family: 'Nunito', sans-serif; font-weight: 700; }
+.anot-table td { padding: 8px 12px; border-bottom: 1px solid var(--cinza2); vertical-align: top; }
+.anot-table tr:last-child td { border-bottom: none; }
+.anot-table tr:nth-child(even) td { background: var(--cinza1); }
+.anot-table td input { width: 100%; border: none; background: transparent; font-family: 'Lato', sans-serif; font-size: .86rem; outline: none; padding: 2px 0; border-bottom: 1px dashed var(--cinza2); }
+
+/* botão ghost */
+.btn-ghost { display: inline-flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 9px; font-family: 'Nunito', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; background: var(--cinza1); color: var(--texto); border: 1.5px solid var(--cinza2); transition: transform .15s, box-shadow .15s; }
+.btn-ghost:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+
+/* matching */
+.match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media(max-width:520px){ .match-grid { grid-template-columns: 1fr; } }
+.match-col h4 { font-family: 'Nunito', sans-serif; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--cinza3); margin-bottom: 10px; }
+.match-item { padding: 9px 14px; border-radius: 9px; margin-bottom: 7px; font-size: .86rem; cursor: pointer; border: 1.5px solid var(--cinza2); background: var(--branco); transition: border-color .15s, background .15s, transform .1s; }
+.match-item.esq { background: var(--azul); color: #fff; border-color: transparent; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.match-item.esq:hover { background: #2563EB; transform: scale(1.02); }
+.match-item.dir:hover { background: var(--cinza1); transform: scale(1.02); }
+.match-item.sel-esq { background: #2563EB; outline: 3px solid #93C5FD; }
+.match-item.sel-dir { border-color: var(--verde); background: var(--verde-cl); }
+.match-item.pareado-esq { background: var(--verde); color: #fff; border-color: transparent; cursor: default; }
+.match-item.pareado-dir { background: var(--verde-cl); border-color: var(--verde-md); color: var(--verde); cursor: default; }
+
+/* drag */
+.drag-lista { display: flex; flex-direction: column; gap: 9px; }
+.drag-item { display: flex; align-items: center; gap: 12px; background: var(--cinza1); border: 1.5px solid var(--cinza2); border-radius: 9px; padding: 11px 15px; cursor: grab; user-select: none; transition: border-color .2s, box-shadow .2s; }
+.drag-item:active { cursor: grabbing; }
+.drag-item.drag-over { border-color: var(--verde); box-shadow: 0 0 0 3px rgba(0,102,51,.18); }
+.drag-handle { color: var(--cinza3); font-size: 1.1rem; }
+.drag-num { width: 26px; height: 26px; border-radius: 7px; background: var(--laranja); color: #fff; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.drag-text { font-size: .88rem; }
+
+/* passos */
+.steps-ol { counter-reset: step; display: flex; flex-direction: column; gap: 10px; }
+.step-li { counter-increment: step; display: flex; gap: 13px; align-items: flex-start; }
+.step-li::before { content: counter(step); width: 28px; height: 28px; min-width: 28px; border-radius: 50%; background: var(--laranja); color: #fff; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: .82rem; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.step-txt { font-size: .87rem; line-height: 1.6; color: #334155; }
+.step-txt b { color: var(--texto); }
+.step-txt code { background: #F1F5F9; border: 1px solid var(--cinza2); border-radius: 4px; padding: 1px 6px; font-family: 'JetBrains Mono', monospace; font-size: .85em; color: var(--laranja); }
+
+/* ── PRINT ── */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* esconder elementos de navegação e interação */
+  .cabecalho,
+  .btn-pdf,
+  .btn-ghost,
+  .rodape-pdf,
+  .drag-handle,
+  .up-ico, .up-titulo, .up-sub,
+  button { display: none !important; }
+
+  /* cabeçalho impresso */
+  .print-header { display: flex !important; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--verde); }
+
+  body { background: #fff !important; font-size: 12px; }
+  .hero {
+    padding: 20px 0 16px !important;
+    background: var(--verde) !important;
+    -webkit-print-color-adjust: exact;
+  }
+  .hero-tag { display: none; }
+  .hero h1 { font-size: 1.5rem !important; }
+  .hero-sub { display: none; }
+
+  /* campos identificação */
+  .id-field input {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255,255,255,.6) !important;
+    border-radius: 0 !important;
+    color: #fff !important;
+    padding: 4px 0 !important;
+  }
+
+  .wrapper { padding: 16px 0 20px; }
+
+  /* partes */
+  .parte {
+    box-shadow: none !important;
+    border: 1.5px solid var(--cinza2) !important;
+    break-inside: avoid;
+    margin-bottom: 18px;
+  }
+  .parte-header { background: var(--verde-cl) !important; padding: 12px 18px !important; }
+  .parte-header h2 { font-size: 1rem !important; }
+
+  /* tasks */
+  .task { break-inside: avoid; margin-bottom: 12px; }
+  .task-header { background: var(--cinza1) !important; padding: 10px 14px !important; }
+  .task-body { padding: 12px 14px !important; }
+
+  /* instrução */
+  .instrucao { margin-bottom: 8px; }
+
+  /* checklist — mostrar estado marcado/desmarcado */
+  .check-item {
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+    background: var(--cinza1) !important;
+    border: 1px solid var(--cinza2) !important;
+    break-inside: avoid;
+  }
+  .check-item.done { background: var(--verde-cl) !important; border-color: var(--verde-md) !important; }
+  .check-item input[type=checkbox] { width: 13px !important; height: 13px !important; }
+
+  /* questões — mostrar alternativa selecionada */
+  .opcao { padding: 6px 10px !important; border-radius: 6px !important; }
+  .opcao:has(input:checked) {
+    background: var(--verde-cl) !important;
+    border-color: var(--verde-md) !important;
+    font-weight: 700;
+  }
+  .opcao input[type=radio] { width: 13px !important; height: 13px !important; }
+
+  /* campos de texto preenchidos */
+  .resp-field {
+    border: none !important;
+    border-bottom: 1px solid var(--cinza2) !important;
+    border-radius: 0 !important;
+    padding: 4px 0 !important;
+    background: transparent !important;
+    min-height: auto !important;
+    resize: none !important;
+  }
+
+  /* tabela de processos */
+  .anot-table td input {
+    border-bottom: 1px solid var(--cinza2) !important;
+  }
+
+  /* matching — mostrar pares formados */
+  .match-item { padding: 6px 10px !important; margin-bottom: 5px !important; border-radius: 6px !important; font-size: .8rem !important; }
+  .match-item.esq { background: var(--azul) !important; color: #fff !important; }
+  .match-item.pareado-esq { background: var(--verde) !important; color: #fff !important; }
+  .match-item.pareado-dir { background: var(--verde-cl) !important; border-color: var(--verde-md) !important; color: var(--verde) !important; }
+  .match-col h4 { font-size: .68rem !important; margin-bottom: 6px !important; }
+
+  /* drag — mostrar itens na ordem escolhida, limpo */
+  .drag-item {
+    padding: 7px 12px !important;
+    border-radius: 6px !important;
+    background: var(--cinza1) !important;
+    cursor: default !important;
+  }
+  .drag-num { background: var(--laranja) !important; width: 22px !important; height: 22px !important; font-size: .75rem !important; }
+
+  /* upload — esconder área interativa, mostrar só a imagem se houver */
+  .upload-area {
+    border: 1px dashed var(--cinza3) !important;
+    background: #fafafa !important;
+    padding: 8px 12px !important;
+  }
+  .upload-area label { pointer-events: none; }
+  .upload-area .up-filename { display: block !important; font-size: .78rem !important; color: var(--cinza3) !important; }
+  .img-preview {
+    display: block !important;
+    max-height: 200px !important;
+    margin-top: 6px !important;
+  }
+
+  /* steps */
+  .step-li::before { background: var(--laranja) !important; width: 22px !important; height: 22px !important; font-size: .75rem !important; }
+  .step-txt { font-size: .82rem !important; }
+
+  /* alertas */
+  .alerta { padding: 8px 12px !important; margin-bottom: 8px !important; }
+  .alerta.verde { background: var(--verde-cl) !important; }
+  .alerta.azul  { background: var(--azul-cl)  !important; }
+
+  /* frase box */
+  .frase-box { padding: 10px 14px !important; font-size: .8rem !important; line-height: 1.7 !important; }
+
+  /* tabela de referência */
+  .anot-table th { background: var(--verde) !important; font-size: .78rem !important; padding: 6px 10px !important; }
+  .anot-table td { padding: 5px 10px !important; font-size: .8rem !important; }
+  .anot-table tr:nth-child(even) td { background: var(--cinza1) !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── CABEÇALHO ── -->
+<header class="cabecalho">
+  <div class="cab-inner">
+    <div class="cab-logo-box">IF<br>RN</div>
+    <div class="cab-titulo">
+      <small>Educação em Tecnologias Digitais</small>
+      Atividade Prática · Sistema Operacional
+    </div>
+    <div class="cab-spacer"></div>
+    <button class="btn-pdf" onclick="window.print()">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M16 6l-4-4-4 4"/>
+      </svg>
+      Salvar / Imprimir PDF
+    </button>
+  </div>
+</header>
+
+<!-- cabeçalho só no PDF impresso -->
+<div class="print-header" style="max-width:980px;margin:0 auto;padding:12px 24px 0">
+  <div style="width:48px;height:48px;background:var(--verde);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:.85rem;text-align:center;line-height:1.1;padding:4px">IF<br>RN</div>
+  <div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:1.1rem;color:var(--verde)">Atividade Prática — Sistema Operacional</div>
+    <div style="font-size:.78rem;color:var(--cinza3)">Educação em Tecnologias Digitais · IFRN</div>
+  </div>
+</div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Sistema Operacional · Windows</div>
+    <h1>Atividade Prática:<br><em>Explorando o SO</em></h1>
+    <p class="hero-sub">Nesta atividade você vai explorar o Windows na prática — área de trabalho, teclado, explorador de arquivos e utilitários do sistema.</p>
+    <div class="id-grid">
+      <div class="id-field"><label>👤 Nome completo</label><input type="text" placeholder="Seu nome aqui"></div>
+      <div class="id-field"><label>🏫 Turma</label><input type="text" placeholder="Ex.: MA1V"></div>
+      <div class="id-field"><label>📅 Data</label><input type="date" id="campo-data"></div>
+
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+<!-- ═══ PARTE 1 ═══ -->
+<section class="parte">
+  <div class="parte-header">
+    <div class="parte-num">1</div>
+    <h2>Introdução à Área de Trabalho<span>Explorando o Windows visualmente</span></h2>
+  </div>
+  <div class="parte-body">
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">🖥️</span><h3>1.1 — Identificando os elementos da tela</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Observe a tela do seu computador e marque cada elemento que você conseguir localizar.</p>
+        <div class="check-lista">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>🖼️ Papel de parede (imagem de fundo da área de trabalho)</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>🗂️ Ícones na área de trabalho</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>📋 Barra de tarefas (faixa na parte inferior)</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>🪟 Botão do Menu Iniciar</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>🕐 Relógio e ícones do sistema (canto inferior direito)</span></label>
+        </div>
+        <div style="margin-top:18px">
+          <label style="font-size:.85rem;font-weight:700">✏️ Com suas palavras: qual é a função da Barra de Tarefas?</label>
+          <textarea class="resp-field" placeholder="Digite sua resposta aqui…" rows="2"></textarea>
+        </div>
+        <div class="upload-area" id="up-1-1">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print da área de trabalho</span>
+            <span class="up-sub">Tire um print com <strong>Win + Shift + S</strong>, salve e selecione o arquivo aqui</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-1-1')">
+            <span class="up-filename" id="fn-up-1-1"></span>
+          </label>
+          <img class="img-preview" id="prev-up-1-1">
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">📝</span><h3>1.2 — Abrindo o Bloco de Notas pelo Menu Iniciar</h3></div>
+      <div class="task-body">
+        <div class="alerta verde">
+          <span class="al-ico">💡</span>
+          <span>Clique no botão <b>Iniciar</b> (tecla <code>⊞ Win</code>), pesquise por <b>"Bloco de Notas"</b> e dê um <b>clique duplo</b> para abrir. Depois minimize-o clicando no traço ( <b>–</b> ) no canto superior direito.</span>
+        </div>
+        <div class="quiz-q">
+          <p><b>Questão 1.</b> O que acontece quando você clica no botão <b>minimizar</b> de uma janela?</p>
+          <div class="opcoes">
+            <label class="opcao"><input type="radio" name="q12"> O programa é fechado definitivamente</label>
+            <label class="opcao"><input type="radio" name="q12"> A janela fica em modo de tela cheia</label>
+            <label class="opcao"><input type="radio" name="q12"> A janela fica oculta, mas o programa continua aberto na barra de tarefas</label>
+            <label class="opcao"><input type="radio" name="q12"> O computador entra em modo de suspensão</label>
+          </div>
+        </div>
+        <div class="check-lista" style="margin-top:14px">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Abri o Bloco de Notas pelo Menu Iniciar ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Minimizei a janela e a localizei na barra de tarefas ✔</span></label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ PARTE 2 ═══ -->
+<section class="parte">
+  <div class="parte-header">
+    <div class="parte-num">2</div>
+    <h2>Prática com o Teclado e Digitação<span>Teclas especiais, símbolos e atalhos</span></h2>
+  </div>
+  <div class="parte-body">
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">⌨️</span><h3>2.1 — Referência rápida: teclas para digitar símbolos</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Consulte este quadro sempre que precisar durante a atividade:</p>
+        <table class="anot-table">
+          <thead><tr><th>Tecla / Combinação</th><th>O que faz</th><th>Exemplo</th></tr></thead>
+          <tbody>
+            <tr><td><code>Shift + letra</code></td><td>Letra maiúscula pontualmente</td><td>A, B, C…</td></tr>
+            <tr><td><code>Shift + número/símbolo</code></td><td>Símbolo superior da tecla</td><td>! @ # $ % &amp; * ( )</td></tr>
+            <tr><td><code>Alt Gr + tecla</code></td><td>Símbolo do lado direito inferior</td><td>ª º ³ €</td></tr>
+            <tr><td><code>` + vogal</code></td><td>Acento grave</td><td>à, è, ù…</td></tr>
+            <tr><td><code>~ + vogal</code></td><td>Til</td><td>ã, õ…</td></tr>
+            <tr><td><code>´ + vogal</code></td><td>Acento agudo</td><td>á, é, í, ó, ú…</td></tr>
+            <tr><td><code>^ + vogal</code></td><td>Circunflexo</td><td>â, ê, ô…</td></tr>
+            <tr><td><code>CapsLock</code></td><td>Trava maiúsculas</td><td>TEXTO EM CAPS</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">📋</span><h3>2.2 — Digitação com teclas especiais no Bloco de Notas</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Restaure o Bloco de Notas na barra de tarefas. Digite <b>exatamente</b> as linhas abaixo, prestando atenção às maiúsculas, acentos e símbolos:</p>
+        <div class="frase-box">
+          <b>Linha 1:</b> O aluno digitou corretamente: ! @ # $ % &amp; * ( ) - = + [ ] { } ; : , . / ? \ | ³ ~ ^ ´ ` ºª<br>
+          <b>Linha 2:</b> Informática<br>
+          <b>Linha 3:</b> @internet<br>
+          <b>Linha 4:</b> $istema s<br>
+          <b>Linha 5:</b> enha123<br>
+          <b>Linha 6:</b> café_útil
+        </div>
+        <div class="alerta">
+          <span class="al-ico">⚠️</span>
+          <span>Para os acentos: pressione primeiro a tecla do acento (<code>´</code> ou <code>`</code> ou <code>~</code>) e <em>depois</em> a vogal desejada.</span>
+        </div>
+        <div class="check-lista">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Digitei a linha de símbolos especiais (linha 1) ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Digitei "Informática" com acento correto ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Digitei "café_útil" com acentos agudos ✔</span></label>
+        </div>
+        <div class="upload-area" id="up-2-2">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print do Bloco de Notas com o texto digitado</span>
+            <span class="up-sub">Win + Shift + S → selecione a janela → Cole no Paint → Salve → Selecione aqui</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-2-2')">
+            <span class="up-filename" id="fn-up-2-2"></span>
+          </label>
+          <img class="img-preview" id="prev-up-2-2">
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">⚡</span><h3>2.3 — Atalhos essenciais do teclado</h3></div>
+      <div class="task-body">
+        <p class="instrucao">No Bloco de Notas, execute os atalhos abaixo na ordem indicada:</p>
+        <div class="steps-ol">
+          <div class="step-li"><div class="step-txt">Digite um pequeno texto (pode ser o seu nome e a data de hoje).</div></div>
+          <div class="step-li"><div class="step-txt">Pressione <code>Ctrl + A</code> para <b>selecionar tudo</b>.</div></div>
+          <div class="step-li"><div class="step-txt">Pressione <code>Ctrl + C</code> para <b>copiar</b>.</div></div>
+          <div class="step-li"><div class="step-txt">Clique no final do texto e pressione <code>Ctrl + V</code> <b>duas vezes</b> para colar.</div></div>
+          <div class="step-li"><div class="step-txt">Selecione a <b>última linha</b> com o mouse, pressione <code>Ctrl + X</code> para <b>recortar</b>.</div></div>
+          <div class="step-li"><div class="step-txt">Posicione o cursor no início do texto e pressione <code>Ctrl + V</code> para colar no novo local.</div></div>
+          <div class="step-li"><div class="step-txt">Salve o arquivo com <code>Ctrl + S</code>, com o nome <code>atalhos_seuNome.txt</code>, na área de trabalho.</div></div>
+        </div>
+
+        <div style="margin-top:20px">
+          <p style="font-size:.88rem;font-weight:700;margin-bottom:12px">🎯 Associe cada atalho à sua função — clique em um atalho e depois na função correspondente:</p>
+          <div class="match-grid">
+            <div>
+              <h4>⌨️ Atalho</h4>
+              <div class="match-item esq" data-key="ctrlA" onclick="selecionarEsq(this)">Ctrl + A</div>
+              <div class="match-item esq" data-key="ctrlC" onclick="selecionarEsq(this)">Ctrl + C</div>
+              <div class="match-item esq" data-key="ctrlV" onclick="selecionarEsq(this)">Ctrl + V</div>
+              <div class="match-item esq" data-key="ctrlX" onclick="selecionarEsq(this)">Ctrl + X</div>
+              <div class="match-item esq" data-key="ctrlZ" onclick="selecionarEsq(this)">Ctrl + Z</div>
+              <div class="match-item esq" data-key="ctrlS" onclick="selecionarEsq(this)">Ctrl + S</div>
+            </div>
+            <div>
+              <h4>⚡ Função</h4>
+              <div class="match-item dir" data-key="ctrlV" onclick="selecionarDir(this)">Colar o conteúdo da área de transferência</div>
+              <div class="match-item dir" data-key="ctrlS" onclick="selecionarDir(this)">Salvar o arquivo atual</div>
+              <div class="match-item dir" data-key="ctrlA" onclick="selecionarDir(this)">Selecionar todo o conteúdo</div>
+              <div class="match-item dir" data-key="ctrlZ" onclick="selecionarDir(this)">Desfazer a última ação</div>
+              <div class="match-item dir" data-key="ctrlC" onclick="selecionarDir(this)">Copiar o conteúdo selecionado</div>
+              <div class="match-item dir" data-key="ctrlX" onclick="selecionarDir(this)">Recortar o conteúdo selecionado</div>
+            </div>
+          </div>
+          <button class="btn-ghost" style="margin-top:10px" onclick="resetarMatch()">🔄 Recomeçar associações</button>
+        </div>
+
+        <div class="upload-area" id="up-2-3" style="margin-top:16px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print do texto após usar os atalhos</span>
+            <span class="up-sub">O texto deve estar colado/reorganizado conforme os passos acima</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-2-3')">
+            <span class="up-filename" id="fn-up-2-3"></span>
+          </label>
+          <img class="img-preview" id="prev-up-2-3">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ PARTE 3 ═══ -->
+<section class="parte">
+  <div class="parte-header">
+    <div class="parte-num">3</div>
+    <h2>Explorador de Arquivos<span>Pastas, arquivos, compactação e lixeira</span></h2>
+  </div>
+  <div class="parte-body">
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">📁</span><h3>3.1 — Criando pastas e arquivo de texto</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Abra o <b>Explorador de Arquivos</b> com <code>Win + E</code> e realize os passos a seguir na <b>Área de Trabalho</b>:</p>
+        <div class="steps-ol">
+          <div class="step-li"><div class="step-txt">Crie uma pasta chamada <code>Meus_Arquivos</code> (clique direito → Novo → Pasta).</div></div>
+          <div class="step-li"><div class="step-txt">Dentro de <code>Meus_Arquivos</code>, crie três subpastas: <code>Textos</code>, <code>Imagens</code> e <code>Projetos</code>.</div></div>
+          <div class="step-li"><div class="step-txt">Dentro de <code>Textos</code>, crie um arquivo de texto chamado <code>resumo.txt</code>.</div></div>
+          <div class="step-li"><div class="step-txt">Abra <code>resumo.txt</code> e digite: <em>"Este é meu primeiro arquivo criado na prática."</em></div></div>
+          <div class="step-li"><div class="step-txt">Salve e feche o arquivo.</div></div>
+        </div>
+        <div class="check-lista" style="margin-top:14px">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Pasta <code>Meus_Arquivos</code> criada na Área de Trabalho ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Subpastas <code>Textos</code>, <code>Imagens</code> e <code>Projetos</code> criadas ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Arquivo <code>resumo.txt</code> criado e salvo com o texto correto ✔</span></label>
+        </div>
+        <div class="upload-area" id="up-3-1" style="margin-top:14px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print mostrando a estrutura de pastas criada</span>
+            <span class="up-sub">Deve ser possível ver <code>Meus_Arquivos</code> e as subpastas</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-3-1')">
+            <span class="up-filename" id="fn-up-3-1"></span>
+          </label>
+          <img class="img-preview" id="prev-up-3-1">
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">🗃️</span><h3>3.2 — Operações com arquivos: copiar, renomear, excluir e restaurar</h3></div>
+      <div class="task-body">
+        <div class="steps-ol">
+          <div class="step-li"><div class="step-txt"><b>Copie</b> o arquivo <code>resumo.txt</code> da pasta <code>Textos</code> para a pasta <code>Projetos</code> (<code>Ctrl+C</code> → abrir <code>Projetos</code> → <code>Ctrl+V</code>).</div></div>
+          <div class="step-li"><div class="step-txt"><b>Renomeie</b> o arquivo copiado para <code>resumo_projetos.txt</code> (clique direito → Renomear).</div></div>
+          <div class="step-li"><div class="step-txt"><b>Exclua</b> o arquivo original <code>resumo.txt</code> da pasta <code>Textos</code> (selecione → tecla <code>Delete</code>).</div></div>
+          <div class="step-li"><div class="step-txt">Abra a <b>Lixeira</b> na Área de Trabalho e verifique se o arquivo está lá.</div></div>
+          <div class="step-li"><div class="step-txt"><b>Restaure</b> o arquivo: clique direito nele → <b>Restaurar</b>. Confira se voltou à pasta <code>Textos</code>.</div></div>
+        </div>
+        <div class="quiz-q" style="margin-top:18px">
+          <p><b>Questão 2.</b> Quando você exclui um arquivo com a tecla <code>Delete</code>, ele é permanentemente apagado?</p>
+          <div class="opcoes">
+            <label class="opcao"><input type="radio" name="q32"> Sim, é apagado para sempre imediatamente</label>
+            <label class="opcao"><input type="radio" name="q32"> Não, ele vai para a Lixeira e pode ser restaurado</label>
+            <label class="opcao"><input type="radio" name="q32"> Sim, mas pode ser recuperado pelo sistema automaticamente</label>
+            <label class="opcao"><input type="radio" name="q32"> Depende do tamanho do arquivo</label>
+          </div>
+        </div>
+        <div class="check-lista" style="margin-top:14px">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Copiei e renomeei o arquivo para <code>resumo_projetos.txt</code> ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Excluí o original e verifiquei na Lixeira ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Restaurei o arquivo da Lixeira com sucesso ✔</span></label>
+        </div>
+        <div class="upload-area" id="up-3-2" style="margin-top:14px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print da pasta <code>Projetos</code> com o arquivo renomeado</span>
+            <span class="up-sub">Deve aparecer <code>resumo_projetos.txt</code></span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-3-2')">
+            <span class="up-filename" id="fn-up-3-2"></span>
+          </label>
+          <img class="img-preview" id="prev-up-3-2">
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">🗜️</span><h3>3.3 — Compactando e extraindo arquivos (.zip)</h3></div>
+      <div class="task-body">
+        <div class="alerta azul">
+          <span class="al-ico">📦</span>
+          <span>Compactar arquivos é como colocar várias coisas em uma caixa menor — os arquivos ficam agrupados e ocupam menos espaço.</span>
+        </div>
+        <div class="steps-ol">
+          <div class="step-li"><div class="step-txt">Clique com o botão <b>direito</b> na pasta <code>Projetos</code>.</div></div>
+          <div class="step-li"><div class="step-txt">Selecione <b>"Enviar para" → "Pasta compactada (zipada)"</b>.</div></div>
+          <div class="step-li"><div class="step-txt">Renomeie o arquivo gerado para <code>backup_projetos.zip</code>.</div></div>
+          <div class="step-li"><div class="step-txt">Clique com o botão direito no <code>.zip</code> → <b>"Extrair tudo"</b> → Escolha um local → Extrair.</div></div>
+        </div>
+        <div class="check-lista" style="margin-top:14px">
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Criei o arquivo <code>backup_projetos.zip</code> ✔</span></label>
+          <label class="check-item" onclick="marcar(this)"><input type="checkbox"> <span>Extraí o conteúdo do .zip com sucesso ✔</span></label>
+        </div>
+        <div class="upload-area" id="up-3-3" style="margin-top:14px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print mostrando o arquivo <code>.zip</code> criado</span>
+            <span class="up-sub">O arquivo <code>backup_projetos.zip</code> deve aparecer visível</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-3-3')">
+            <span class="up-filename" id="fn-up-3-3"></span>
+          </label>
+          <img class="img-preview" id="prev-up-3-3">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ PARTE 4 ═══ -->
+<section class="parte">
+  <div class="parte-header">
+    <div class="parte-num">4</div>
+    <h2>Utilitários do Sistema<span>Gerenciador de Tarefas e Antivírus</span></h2>
+  </div>
+  <div class="parte-body">
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">📊</span><h3>4.1 — Gerenciador de Tarefas</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Abra o <b>Gerenciador de Tarefas</b> com <code>Ctrl + Shift + Esc</code>. Vá à aba <b>"Processos"</b> e preencha a tabela com três processos em execução:</p>
+        <table class="anot-table">
+          <thead><tr><th>#</th><th>Nome do processo</th><th>CPU (%)</th><th>Memória (MB)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><input type="text" placeholder="Ex.: chrome.exe"></td><td><input type="text" placeholder="Ex.: 2,3%"></td><td><input type="text" placeholder="Ex.: 120 MB"></td></tr>
+            <tr><td>2</td><td><input type="text" placeholder="…"></td><td><input type="text" placeholder="…"></td><td><input type="text" placeholder="…"></td></tr>
+            <tr><td>3</td><td><input type="text" placeholder="…"></td><td><input type="text" placeholder="…"></td><td><input type="text" placeholder="…"></td></tr>
+          </tbody>
+        </table>
+        <div class="quiz-q" style="margin-top:18px">
+          <p><b>Questão 3.</b> Para que serve o Gerenciador de Tarefas?</p>
+          <div class="opcoes">
+            <label class="opcao"><input type="radio" name="q41"> Apenas para ver a hora do sistema</label>
+            <label class="opcao"><input type="radio" name="q41"> Somente para fechar janelas abertas</label>
+            <label class="opcao"><input type="radio" name="q41"> Para formatar o computador</label>
+            <label class="opcao"><input type="radio" name="q41"> Para monitorar processos, uso de CPU/memória e encerrar programas travados</label>
+          </div>
+        </div>
+        <div class="upload-area" id="up-4-1" style="margin-top:14px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print do Gerenciador de Tarefas aberto</span>
+            <span class="up-sub">A aba "Processos" deve estar visível</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-4-1')">
+            <span class="up-filename" id="fn-up-4-1"></span>
+          </label>
+          <img class="img-preview" id="prev-up-4-1">
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <div class="task-header"><span class="task-ico">🛡️</span><h3>4.2 — Verificando o Antivírus e ordem para desligar</h3></div>
+      <div class="task-body">
+        <p class="instrucao">Observe os ícones próximos ao <b>relógio</b> (canto inferior direito). Localize o ícone do antivírus. Se não aparecer, clique na setinha <b>▲</b> para expandir.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0">
+          <div>
+            <label style="font-size:.85rem;font-weight:700">🛡️ Nome do antivírus encontrado:</label>
+            <input type="text" class="resp-field" style="min-height:auto;padding:9px 12px" placeholder="Ex.: Windows Defender, Avast…">
+          </div>
+          <div>
+            <label style="font-size:.85rem;font-weight:700">✅ Está ativo?</label>
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <label style="display:flex;align-items:center;gap:6px;font-size:.88rem;cursor:pointer"><input type="radio" name="antiv" style="accent-color:var(--verde)"> Sim, está ativo</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:.88rem;cursor:pointer"><input type="radio" name="antiv"> Não</label>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px">
+          <p style="font-size:.88rem;font-weight:700;margin-bottom:10px">🔀 Reordene os passos para <b>desligar</b> o computador com segurança — arraste para a posição correta:</p>
+          <div class="drag-lista" id="drag-desligar">
+            <div class="drag-item" draggable="true" data-id="d3"><span class="drag-handle">⠿</span><span class="drag-num" id="dn-d3">–</span><span class="drag-text">Pressionar o botão power no gabinete sem aviso</span></div>
+            <div class="drag-item" draggable="true" data-id="d1"><span class="drag-handle">⠿</span><span class="drag-num" id="dn-d1">–</span><span class="drag-text">Clicar no Menu Iniciar</span></div>
+            <div class="drag-item" draggable="true" data-id="d4"><span class="drag-handle">⠿</span><span class="drag-num" id="dn-d4">–</span><span class="drag-text">Salvar todos os arquivos abertos</span></div>
+            <div class="drag-item" draggable="true" data-id="d2"><span class="drag-handle">⠿</span><span class="drag-num" id="dn-d2">–</span><span class="drag-text">Clicar no ícone de energia → Encerrar</span></div>
+          </div>
+          <button class="btn-ghost" style="margin-top:10px" onclick="embaralharDesligar()">🔀 Embaralhar novamente</button>
+        </div>
+
+        <div class="upload-area" id="up-4-2" style="margin-top:14px">
+          <label>
+            <span class="up-ico">📷</span>
+            <span class="up-titulo">Anexe o print do ícone do antivírus na barra de tarefas</span>
+            <span class="up-sub">Amplie a área do relógio com os ícones do sistema</span>
+            <input type="file" accept="image/*" onchange="mostrarArquivo(this,'up-4-2')">
+            <span class="up-filename" id="fn-up-4-2"></span>
+          </label>
+          <img class="img-preview" id="prev-up-4-2">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- botão PDF rodapé -->
+<div class="rodape-pdf" style="text-align:center;margin:8px 0 20px">
+  <button class="btn-pdf" style="font-size:1rem;padding:14px 36px" onclick="window.print()">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17v3a1 1 0 001 1h16a1 1 0 001-1v-3M16 6l-4-4-4 4"/>
+    </svg>
+    Salvar / Imprimir PDF
+  </button>
+</div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ── CHECKLIST ──
+function marcar(label) {
+  const cb = label.querySelector('input[type=checkbox]');
+  cb.checked = !cb.checked;
+  label.classList.toggle('done', cb.checked);
+}
+
+// ── MATCHING (sem verificação) ──
+let selEsq = null, selDir = null;
+function selecionarEsq(el) {
+  if (el.classList.contains('pareado-esq')) return;
+  document.querySelectorAll('.match-item.esq:not(.pareado-esq)').forEach(e => e.classList.remove('sel-esq'));
+  el.classList.add('sel-esq');
+  selEsq = el;
+  if (selDir) parear();
+}
+function selecionarDir(el) {
+  if (el.classList.contains('pareado-dir')) return;
+  document.querySelectorAll('.match-item.dir:not(.pareado-dir)').forEach(e => e.classList.remove('sel-dir'));
+  el.classList.add('sel-dir');
+  selDir = el;
+  if (selEsq) parear();
+}
+function parear() {
+  selEsq.classList.remove('sel-esq');
+  selDir.classList.remove('sel-dir');
+  selEsq.classList.add('pareado-esq');
+  selDir.classList.add('pareado-dir');
+  selEsq = null; selDir = null;
+}
+function resetarMatch() {
+  document.querySelectorAll('.match-item').forEach(e =>
+    e.classList.remove('pareado-esq','pareado-dir','sel-esq','sel-dir'));
+  selEsq = null; selDir = null;
+}
+
+// ── DRAG DESLIGAR ──
+let dragEl = null;
+function iniciarDrag() {
+  const lista = document.getElementById('drag-desligar');
+  lista.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', () => { dragEl = item; setTimeout(() => item.style.opacity = '.4', 0); });
+    item.addEventListener('dragend',   () => { dragEl = null; item.style.opacity = ''; atualizarNums(); });
+    item.addEventListener('dragover',  e  => { e.preventDefault(); item.classList.add('drag-over'); });
+    item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+    item.addEventListener('drop', e => {
+      e.preventDefault(); item.classList.remove('drag-over');
+      if (dragEl && dragEl !== item) {
+        const all = [...lista.querySelectorAll('.drag-item')];
+        if (all.indexOf(dragEl) < all.indexOf(item)) lista.insertBefore(dragEl, item.nextSibling);
+        else lista.insertBefore(dragEl, item);
+        atualizarNums();
+      }
+    });
+  });
+}
+function atualizarNums() {
+  document.querySelectorAll('#drag-desligar .drag-item').forEach((el, i) =>
+    document.getElementById('dn-' + el.dataset.id).textContent = i + 1);
+}
+function embaralharDesligar() {
+  const lista = document.getElementById('drag-desligar');
+  const items = [...lista.querySelectorAll('.drag-item')];
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    lista.appendChild(items[j]); items.splice(j, 1);
+  }
+  items.forEach(i => lista.appendChild(i));
+  atualizarNums();
+}
+
+// ── UPLOAD ──
+function mostrarArquivo(input, areaId) {
+  if (!input.files || !input.files[0]) return;
+  const fn   = document.getElementById('fn-' + areaId);
+  const prev = document.getElementById('prev-' + areaId);
+  const area = document.getElementById(areaId);
+  fn.textContent = '✅ ' + input.files[0].name;
+  fn.style.display = 'block';
+  area.style.borderColor = 'var(--verde)';
+  area.style.background  = 'var(--verde-cl)';
+  if (prev) {
+    const reader = new FileReader();
+    reader.onload = e => { prev.src = e.target.result; prev.style.display = 'block'; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  const hoje = new Date();
+  document.getElementById('campo-data').value =
+    `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
+  embaralharDesligar();
+  iniciarDrag();
+  atualizarNums();
+});
+</script>
+</body>
+</html>
