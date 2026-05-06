@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parte 1 — Editores de Texto | Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g:    #1D6B3E;
+  --g2:   #155430;
+  --g3:   #0E3D22;
+  --gl:   #E6F4ED;
+  --gm:   #2E8B57;
+  --acc:  #F4A200;
+  --accl: #FFF5D9;
+  --blue: #1A73E8;
+  --bluel:#E8F0FE;
+  --red:  #D93025;
+  --yel:  #FBBC04;
+  --ink:  #1A1A1A;
+  --ink2: #444;
+  --ink3: #777;
+  --border:#DDD;
+  --bg:   #F8F8F6;
+  --white:#FFFFFF;
+  --shadow: 0 2px 12px rgba(0,0,0,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#1a1a1a;font-family:'Inter',sans-serif}
+
+/* ── DECK ── */
+#deck{width:100%;height:100%;position:relative}
+.slide{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;
+  background:var(--white);
+  opacity:0;transition:opacity .25s ease;
+}
+.slide.active{display:flex;opacity:1}
+
+/* ── HEADER BAR ── */
+.slide-header{
+  display:flex;align-items:center;
+  background:var(--g);color:white;
+  padding:0 32px;height:52px;flex-shrink:0;
+  gap:12px;
+}
+.ifrn-logo{
+  font-family:'Inter Tight',sans-serif;
+  font-size:15px;font-weight:800;letter-spacing:.04em;
+  border:2px solid rgba(255,255,255,.6);border-radius:4px;
+  padding:2px 8px;color:white;white-space:nowrap;
+}
+.slide-chapter{font-size:12px;opacity:.7;font-weight:400}
+.slide-title-bar{
+  font-size:14px;font-weight:600;
+  margin-left:auto;
+  background:rgba(255,255,255,.12);
+  border-radius:20px;padding:4px 14px;
+  max-width:55%;text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ── FOOTER NAV ── */
+.slide-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:48px;flex-shrink:0;
+  border-top:1px solid var(--border);background:var(--bg);
+}
+.nav-btn{
+  background:none;border:1.5px solid var(--border);border-radius:8px;
+  padding:6px 18px;font-size:13px;font-weight:500;color:var(--ink2);
+  cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.nav-btn:hover{border-color:var(--g);color:var(--g);background:var(--gl)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-btn.primary{background:var(--g);border-color:var(--g);color:white}
+.nav-btn.primary:hover{background:var(--g2)}
+.progress-dots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:60%}
+.dot{
+  width:7px;height:7px;border-radius:50%;background:var(--border);
+  cursor:pointer;transition:all .2s;flex-shrink:0;
+}
+.dot.active{background:var(--g);transform:scale(1.3)}
+.dot.chapter{border-radius:3px;width:10px}
+.slide-counter{font-size:12px;color:var(--ink3);white-space:nowrap}
+
+/* ── CONTENT ── */
+.slide-body{
+  flex:1;padding:36px 48px 20px;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.slide-body.center{align-items:center;justify-content:center;text-align:center}
+.slide-body.two-col{flex-direction:row;gap:32px;align-items:flex-start}
+
+/* ── TYPOGRAPHY ── */
+h1.slide-h{font-family:'Inter Tight',sans-serif;font-size:38px;font-weight:800;color:var(--g);line-height:1.1;margin-bottom:8px}
+h2.slide-h{font-family:'Inter Tight',sans-serif;font-size:30px;font-weight:700;color:var(--g);line-height:1.2;margin-bottom:20px}
+h3.slide-h{font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:14px}
+.slide-sub{font-size:17px;color:var(--ink2);font-weight:400;line-height:1.5;margin-bottom:12px}
+.slide-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gm);margin-bottom:8px}
+.slide-note{font-size:13px;color:var(--ink3);margin-top:12px;font-style:italic}
+
+/* ── COVER ── */
+.cover-slide .slide-body{
+  background:linear-gradient(135deg,#2E7A55 0%,#3D9E6E 55%,#56B882 100%);
+  color:white;padding:60px 64px;justify-content:center;align-items:center;text-align:center;
+}
+.cover-slide .slide-header{background:rgba(0,0,0,.25)}
+.cover-num{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:16px}
+.cover-title{font-family:'Inter Tight',sans-serif;font-size:44px;font-weight:800;line-height:1.05;margin-bottom:12px;color:white}
+.cover-title span{opacity:.75;font-weight:300}
+.cover-sub{font-size:18px;font-weight:400;opacity:.8;margin-bottom:32px}
+.cover-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cover-chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 16px;font-size:13px;font-weight:500}
+
+/* ── CHAPTER DIVIDER ── */
+.chapter-slide .slide-body{
+  background:var(--g);color:white;
+  justify-content:center;align-items:center;text-align:center;
+}
+.chapter-slide .slide-header{background:var(--g2)}
+.chapter-num{font-size:80px;font-weight:800;font-family:'Inter Tight',sans-serif;opacity:.15;line-height:1;margin-bottom:-20px}
+.chapter-title{font-family:'Inter Tight',sans-serif;font-size:40px;font-weight:800;color:white;margin-bottom:12px}
+.chapter-sub{font-size:18px;opacity:.75}
+.chapter-chips{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.chapter-chip{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:6px 18px;font-size:14px;font-weight:500}
+
+/* ── AGENDA ── */
+.agenda-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.agenda-item{
+  background:var(--bg);border:1.5px solid var(--border);border-radius:12px;
+  padding:16px 18px;display:flex;gap:12px;align-items:flex-start;
+}
+.agenda-icon{
+  width:36px;height:36px;border-radius:10px;background:var(--gl);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.agenda-text{font-size:14px;color:var(--ink2);line-height:1.4}
+.agenda-text strong{display:block;font-weight:600;color:var(--ink);margin-bottom:2px}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:12px}
+.card.green{border-color:#A8D4BB;background:var(--gl)}
+.card.amber{border-color:#F4CF7A;background:var(--accl)}
+.card.blue{border-color:#A8C4F4;background:var(--bluel)}
+.card.red{border-color:#F4A8A8;background:#FEE8E8}
+.card-title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-body{font-size:13.5px;color:var(--ink2);line-height:1.5}
+
+/* ── SUITE COMPARE ── */
+.suite-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.suite-card{
+  border:2px solid var(--border);border-radius:14px;padding:20px;text-align:center;
+  transition:border-color .2s;
+}
+.suite-card.highlight{border-color:var(--g);background:var(--gl)}
+.suite-logo{font-size:32px;margin-bottom:8px}
+.suite-name{font-weight:700;font-size:16px;margin-bottom:4px;color:var(--ink)}
+.suite-sub{font-size:12px;color:var(--ink3);margin-bottom:12px}
+.suite-apps{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:12px}
+.suite-app{font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;color:var(--ink2)}
+.suite-badge{font-size:11px;font-weight:600;background:var(--g);color:white;border-radius:20px;padding:4px 12px;display:inline-block}
+
+/* ── GOOGLE DOCS MOCKUP ── */
+.gdocs-window{
+  border:1.5px solid #CCC;border-radius:8px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);background:white;
+  font-family:'Arial',sans-serif;
+}
+.gdocs-topbar{
+  background:#F8F8F8;padding:4px 12px;
+  border-bottom:1px solid #E0E0E0;
+  display:flex;align-items:center;gap:8px;
+}
+.gdocs-topbar .g-logo{font-weight:700;color:#1D6B3E;font-size:18px;line-height:1}
+.gdocs-topbar .g-docname{font-size:14px;color:#333;font-weight:500;flex:1}
+.gdocs-topbar .g-saved{font-size:11px;color:#888}
+.gdocs-menubar{
+  background:#F8F8F8;padding:2px 8px;
+  border-bottom:1px solid #E8E8E8;
+  display:flex;gap:0;
+}
+.gdocs-menubar .gm-item{
+  font-size:13px;color:#333;padding:5px 10px;
+  border-radius:4px;cursor:pointer;white-space:nowrap;
+}
+.gdocs-menubar .gm-item:hover,.gdocs-menubar .gm-item.hl{background:#E8EAED;color:#1A73E8}
+.gdocs-toolbar{
+  background:#F8F8F8;padding:4px 8px;
+  border-bottom:1px solid #E8E8E8;
+  display:flex;align-items:center;gap:3px;flex-wrap:wrap;
+}
+.gt{
+  font-size:12px;color:#333;padding:4px 8px;border-radius:4px;
+  border:none;background:none;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;
+}
+.gt:hover,.gt.hl{background:#E8EAED}
+.gt.hl-strong{background:#C2E0FF;color:#1A73E8;font-weight:600}
+.gt-sep{width:1px;height:20px;background:#DDD;margin:0 4px;flex-shrink:0}
+.gt-font{min-width:120px;border:1px solid #DDD;border-radius:4px;padding:3px 8px;font-size:13px}
+.gt-size{width:46px;border:1px solid #DDD;border-radius:4px;padding:3px 6px;font-size:13px;text-align:center}
+.gt-bold{font-weight:700}
+.gt-italic{font-style:italic}
+.gt-underline{text-decoration:underline}
+
+.gdocs-ruler{
+  background:#F8F8F8;height:22px;border-bottom:1px solid #E8E8E8;
+  display:flex;align-items:center;padding:0 60px;
+  font-size:9px;color:#AAA;position:relative;overflow:hidden;
+}
+.ruler-marks{display:flex;gap:0;flex:1;height:100%;align-items:flex-end;padding-bottom:2px}
+.ruler-mark{font-size:8px;color:#AAA;flex:1;text-align:center;border-left:1px solid #DDD;padding-bottom:1px}
+.ruler-triangle-l,.ruler-triangle-r{
+  position:absolute;width:0;height:0;top:5px;
+  border-left:6px solid transparent;border-right:6px solid transparent;
+}
+.ruler-triangle-l{border-bottom:8px solid var(--blue);left:76px}
+.ruler-triangle-r{border-bottom:8px solid var(--blue);right:76px}
+
+.gdocs-body{
+  background:#E8E8E8;padding:20px;min-height:120px;display:flex;justify-content:center;
+}
+.gdocs-page{
+  background:white;width:100%;max-width:480px;min-height:100px;
+  padding:24px 40px;box-shadow:0 1px 4px rgba(0,0,0,.15);
+  font-size:13px;color:#333;line-height:1.6;
+}
+.gdocs-page .pg-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:8px}
+.gdocs-page .pg-body{font-size:12px;color:#444}
+.gdocs-page .cursor{
+  display:inline-block;width:1.5px;height:14px;background:#1A73E8;
+  vertical-align:text-bottom;animation:blink 1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── ANNOTATION ── */
+.annotate-wrap{position:relative;display:inline-block}
+.annotation{
+  position:absolute;z-index:10;
+  background:var(--acc);color:white;font-size:11px;font-weight:600;
+  border-radius:20px;padding:3px 10px;white-space:nowrap;
+  pointer-events:none;
+}
+.ann-line{position:absolute;background:var(--acc);pointer-events:none}
+
+/* ── HIGHLIGHT BOX (for annotations) ── */
+.hl-box{
+  border:2.5px solid var(--acc);border-radius:6px;background:rgba(244,162,0,.08);
+  padding:2px 4px;display:inline-block;position:relative;
+}
+
+/* ── CALLOUT ── */
+.callouts{display:flex;flex-direction:column;gap:8px}
+.callout{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--bg);border-radius:10px;border:1.5px solid var(--border);
+  padding:12px 16px;
+}
+.callout.g{border-color:#A8D4BB;background:var(--gl)}
+.callout.a{border-color:#F4CF7A;background:var(--accl)}
+.callout.b{border-color:#A8C4F4;background:var(--bluel)}
+.callout-icon{font-size:20px;flex-shrink:0;line-height:1.2}
+.callout-text{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.callout-text strong{color:var(--ink);font-weight:600}
+
+/* ── SHORTCUT TABLE ── */
+.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sc-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg);border-radius:8px;padding:8px 12px;
+  border:1px solid var(--border);
+}
+.sc-key{
+  background:var(--white);border:1.5px solid #CCC;border-radius:6px;
+  font-family:'Inter',monospace;font-size:11px;font-weight:600;color:var(--ink);
+  padding:3px 8px;white-space:nowrap;flex-shrink:0;
+  box-shadow:0 2px 0 #CCC;
+}
+.sc-desc{font-size:13px;color:var(--ink2)}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:36px 1fr;gap:12px;padding-bottom:16px;position:relative}
+.step:not(:last-child)::before{
+  content:'';position:absolute;left:17px;top:36px;bottom:0;
+  width:2px;background:var(--gl);
+}
+.step-num{
+  width:36px;height:36px;border-radius:50%;background:var(--g);color:white;
+  font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;z-index:1;
+}
+.step-content{padding-top:6px}
+.step-title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:3px}
+.step-desc{font-size:13px;color:var(--ink2);line-height:1.45}
+
+/* ── FONT COMPARE ── */
+.font-compare{display:flex;flex-direction:column;gap:10px}
+.fc-row{display:flex;align-items:center;gap:16px;background:var(--bg);border-radius:10px;padding:12px 18px;border:1.5px solid var(--border)}
+.fc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);width:90px;flex-shrink:0}
+.fc-sample{font-size:22px;color:var(--ink)}
+.fc-note{font-size:11px;color:var(--ink3);margin-left:auto}
+
+/* ── ALIGN DEMO ── */
+.align-demo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.align-box{border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;background:var(--bg)}
+.align-box.hl{border-color:var(--g);background:var(--gl)}
+.align-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gm);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.align-text{font-size:12.5px;color:var(--ink2);line-height:1.55}
+.align-text.left{text-align:left}
+.align-text.center{text-align:center}
+.align-text.right{text-align:right}
+.align-text.justify{text-align:justify}
+
+/* ── SPACING DEMO ── */
+.sp-demo{display:flex;flex-direction:column;gap:12px}
+.sp-box{border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;background:var(--bg);display:flex;gap:14px;align-items:flex-start}
+.sp-badge{width:52px;text-align:center;flex-shrink:0}
+.sp-badge .spb{font-weight:700;font-size:20px;color:var(--g)}
+.sp-badge .sbl{font-size:10px;color:var(--ink3);text-transform:uppercase}
+.sp-text{font-size:13px;color:var(--ink2)}
+
+/* ── LIST DEMO ── */
+.list-demo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ld-box{border:1.5px solid var(--border);border-radius:10px;padding:16px 20px;background:var(--bg)}
+.ld-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gm);margin-bottom:10px}
+.ld-box ul,.ld-box ol{margin-left:18px;font-size:13.5px;color:var(--ink2)}
+.ld-box li{margin-bottom:4px}
+.ld-box .nested{margin-left:16px;list-style:circle;margin-top:4px}
+
+/* ── ACTIVITY ── */
+.activity-box{
+  background:var(--g);border-radius:14px;padding:28px 32px;color:white;
+}
+.activity-title{font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.activity-sub{font-size:14px;opacity:.75;margin-bottom:20px}
+.activity-steps{list-style:none;display:flex;flex-direction:column;gap:10px}
+.activity-steps li{
+  display:flex;gap:12px;align-items:flex-start;
+  background:rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;
+  font-size:14px;line-height:1.4;
+}
+.activity-steps li::before{
+  content:attr(data-n);
+  background:rgba(255,255,255,.25);border-radius:50%;
+  width:22px;height:22px;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+
+/* ── SUMMARY ── */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.summary-item{
+  background:var(--gl);border:1.5px solid #A8D4BB;border-radius:10px;
+  padding:12px 16px;display:flex;gap:10px;align-items:flex-start;
+}
+.sum-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.sum-text{font-size:13.5px;color:var(--ink2);line-height:1.4}
+.sum-text strong{display:block;font-weight:600;color:var(--g);margin-bottom:2px}
+
+/* ── TIP BOX ── */
+.tip{
+  display:flex;gap:12px;align-items:flex-start;
+  background:var(--accl);border:1.5px solid #F4CF7A;border-radius:10px;padding:14px 18px;
+  margin-top:12px;
+}
+.tip-icon{font-size:20px;flex-shrink:0}
+.tip-text{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.tip-text strong{color:#7A5200;font-weight:600}
+
+/* ── FORMAT SAMPLE ── */
+.format-sample{
+  background:white;border:1.5px solid var(--border);border-radius:10px;
+  padding:20px 24px;box-shadow:var(--shadow);
+}
+.fs-row{display:flex;align-items:center;gap:16px;padding:6px 0;border-bottom:1px solid #F0F0F0}
+.fs-row:last-child{border-bottom:none}
+.fs-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);width:120px;flex-shrink:0}
+.fs-sample{flex:1;color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="deck"></div>
+
+<script>
+const slides = [
+
+/* ═══════════════════════════════════════════════════════ AULA 1 ═══ */
+
+{id:'capa1', type:'cover', chapter:'Parte 1 · Editores de Texto',
+html:`
+<div class="cover-num">PARTE 1</div>
+<div class="cover-title">Suítes de Escritório<br><span>e Editores de Texto</span></div>
+<div class="cover-sub">Introdução ao Google Docs — interface e criação de documentos</div>
+<div class="cover-chips">
+  <span class="cover-chip">📚 Educação em Tecnologias Digitais</span>
+  <span class="cover-chip">🖥️ Google Docs</span>
+</div>`},
+
+{id:'ag1', title:'O que veremos hoje',
+html:`
+<div class="slide-label">Agenda · Parte 1</div>
+<h2 class="slide-h">O que veremos hoje</h2>
+<div class="agenda-grid">
+  <div class="agenda-item"><div class="agenda-icon">📦</div><div class="agenda-text"><strong>Suíte de escritório</strong>O que é, para que serve, quais existem</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🌐</div><div class="agenda-text"><strong>Google Workspace</strong>Por que usaremos o Google Docs</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🖥️</div><div class="agenda-text"><strong>Interface do Google Docs</strong>Conhecendo cada área da tela</div></div>
+  <div class="agenda-item"><div class="agenda-icon">💾</div><div class="agenda-text"><strong>Criar e salvar documentos</strong>Nome, salvamento automático, Google Drive</div></div>
+  <div class="agenda-item"><div class="agenda-icon">✏️</div><div class="agenda-text"><strong>Prática guiada</strong>Criando o primeiro documento pessoal</div></div>
+  <div class="agenda-item"><div class="agenda-icon">📝</div><div class="agenda-text"><strong>Fio condutor</strong>Documento que cresce durante as 4 semanas</div></div>
+</div>`},
+
+{id:'suitedef', title:'O que é uma suíte de escritório?',
+html:`
+<div class="slide-label">Conceito</div>
+<h2 class="slide-h">O que é uma suíte de escritório?</h2>
+<div class="callouts">
+  <div class="callout g">
+    <span class="callout-icon">📦</span>
+    <div class="callout-text"><strong>Definição:</strong> conjunto de programas voltados à produção de documentos profissionais — textos, planilhas, apresentações e muito mais.</div>
+  </div>
+  <div class="callout b">
+    <span class="callout-icon">🎯</span>
+    <div class="callout-text"><strong>Para que serve:</strong> criar relatórios, redigir textos acadêmicos, montar planilhas financeiras, preparar apresentações, organizar dados.</div>
+  </div>
+  <div class="callout a">
+    <span class="callout-icon">💡</span>
+    <div class="callout-text"><strong>Onde é usado:</strong> empresas, escolas, universidades, órgãos públicos, escritórios — praticamente qualquer ambiente de trabalho.</div>
+  </div>
+</div>
+<div class="tip"><span class="tip-icon">🗣️</span><div class="tip-text"><strong>Pergunta para a turma:</strong> vocês já usaram algum editor de texto antes? Qual? O que fizeram com ele?</div></div>`},
+
+{id:'suitecmp', title:'Principais suítes do mercado',
+html:`
+<div class="slide-label">Comparativo</div>
+<h2 class="slide-h">As três principais suítes</h2>
+<div class="suite-grid">
+  <div class="suite-card">
+    <div class="suite-logo"><svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="m365g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EA3D2F"/>
+      <stop offset="100%" stop-color="#B52E87"/>
+    </linearGradient>
+  </defs>
+  <rect width="36" height="36" rx="6" fill="url(#m365g)"/>
+  <text x="18" y="26" font-family="Arial,sans-serif" font-size="22" font-weight="900" fill="white" text-anchor="middle">O</text>
+</svg></div>
+    <div class="suite-name">Microsoft 365</div>
+    <div class="suite-sub">Online e instalado</div>
+    <div class="suite-apps"><span class="suite-app">Word</span><span class="suite-app">Excel</span><span class="suite-app">PowerPoint</span><span class="suite-app">Outlook</span></div>
+    <div style="font-size:12px;color:#777">Pago · Muito usado no mercado</div>
+  </div>
+  <div class="suite-card highlight">
+    <div class="suite-logo">🌐</div>
+    <div class="suite-name">Google Workspace</div>
+    <div class="suite-sub">100% na nuvem</div>
+    <div class="suite-apps"><span class="suite-app">Docs</span><span class="suite-app">Sheets</span><span class="suite-app">Slides</span><span class="suite-app">Drive</span></div>
+    <div class="suite-badge">✔ Usaremos neste curso</div>
+  </div>
+  <div class="suite-card">
+    <div class="suite-logo">📄</div>
+    <div class="suite-name">LibreOffice</div>
+    <div class="suite-sub">Offline · Código aberto</div>
+    <div class="suite-apps"><span class="suite-app">Writer</span><span class="suite-app">Calc</span><span class="suite-app">Impress</span></div>
+    <div style="font-size:12px;color:#777">Gratuito · Funciona sem internet</div>
+  </div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Curiosidade:</strong> o Google Docs pode abrir e salvar arquivos do Word (.docx). As habilidades aprendidas aqui funcionam em qualquer suíte!</div></div>`},
+
+{id:'gdocspq', title:'Por que o Google Docs?',
+html:`
+<div class="slide-label">Justificativa</div>
+<h2 class="slide-h">Por que usaremos o Google Docs?</h2>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">🆓</span><div class="callout-text"><strong>100% gratuito</strong> com uma conta Google (Gmail) — sem instalação, sem licença.</div></div>
+  <div class="callout g"><span class="callout-icon">☁️</span><div class="callout-text"><strong>Salvo automaticamente na nuvem</strong> — nunca mais perder trabalho por queda de energia ou computador travado.</div></div>
+  <div class="callout g"><span class="callout-icon">👥</span><div class="callout-text"><strong>Colaboração em tempo real</strong> — várias pessoas editam ao mesmo tempo. Ideal para trabalhos em grupo e para a professora acompanhar o progresso.</div></div>
+  <div class="callout g"><span class="callout-icon">📱</span><div class="callout-text"><strong>Acesso de qualquer lugar</strong> — computador, celular ou tablet, em casa ou no campus.</div></div>
+  <div class="callout g"><span class="callout-icon">🔄</span><div class="callout-text"><strong>Compatível com o Word</strong> — pode exportar como .docx a qualquer momento.</div></div>
+</div>`},
+
+{id:'acesso', title:'Acessando o Google Docs',
+html:`
+<div class="slide-label">Primeiro acesso</div>
+<h2 class="slide-h">Como acessar o Google Docs</h2>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Abra o navegador</div><div class="step-desc">Chrome, Firefox, Edge — qualquer navegador funciona. Recomendamos o Google Chrome.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Acesse o endereço</div><div class="step-desc">Digite na barra de endereço: <strong>docs.google.com</strong> — ou busque "Google Docs" no Google.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Faça login com o Gmail</div><div class="step-desc">Use sua conta @gmail.com. Se ainda não tiver, criaremos juntos agora (leva ~3 minutos).</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Você está na página inicial</div><div class="step-desc">Verá seus documentos recentes e o botão para criar um novo. Vamos explorar isso agora!</div></div></div>
+</div>
+<div class="tip"><span class="tip-icon">⚠️</span><div class="tip-text"><strong>Atenção:</strong> se o computador do laboratório já estiver logado com outra conta, clique no ícone de perfil (canto superior direito) e troque para a sua conta.</div></div>`},
+
+{id:'interface', title:'Interface do Google Docs — visão geral',
+html:`
+<div class="slide-label">Interface</div>
+<h2 class="slide-h" style="font-size:22px;margin-bottom:14px">Visão geral da interface</h2>
+<div class="gdocs-window">
+  <div class="gdocs-topbar">
+    <span class="g-logo">Docs</span>
+    <span class="g-docname">📄 Parte01_MeuNome</span>
+    <span class="g-saved">✔ Salvo no Drive</span>
+    <span style="margin-left:auto;font-size:12px;color:#888">👤 meu@gmail.com</span>
+  </div>
+  <div class="gdocs-menubar">
+    <span class="gm-item">Arquivo</span><span class="gm-item">Editar</span><span class="gm-item">Visualizar</span>
+    <span class="gm-item">Inserir</span><span class="gm-item">Formatar</span><span class="gm-item">Ferramentas</span>
+    <span class="gm-item">Extensões</span><span class="gm-item">Ajuda</span>
+  </div>
+  <div class="gdocs-toolbar">
+    <span class="gt">↩</span><span class="gt">↪</span><span class="gt-sep"></span>
+    <span class="gt gt-font">Arial &nbsp;▾</span><span class="gt-sep"></span>
+    <span class="gt gt-size">12</span><span class="gt-sep"></span>
+    <span class="gt gt-bold">N</span><span class="gt gt-italic">I</span><span class="gt gt-underline">S</span>
+    <span class="gt-sep"></span>
+    <span class="gt">A▾</span><span class="gt">🖍▾</span><span class="gt-sep"></span>
+    <span class="gt">≡</span><span class="gt">≡</span><span class="gt">≡</span><span class="gt">⬛</span>
+    <span class="gt-sep"></span>
+    <span class="gt">↔▾</span><span class="gt">☰▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt">• ≡</span><span class="gt">1.≡</span>
+  </div>
+  <div class="gdocs-ruler">
+    <span style="font-size:9px;color:#999;white-space:nowrap">◀ margem ▶</span>
+    <div class="ruler-marks">
+      <span class="ruler-mark">1</span><span class="ruler-mark">2</span><span class="ruler-mark">3</span>
+      <span class="ruler-mark">4</span><span class="ruler-mark">5</span><span class="ruler-mark">6</span>
+      <span class="ruler-mark">7</span><span class="ruler-mark">8</span><span class="ruler-mark">9</span>
+      <span class="ruler-mark">10</span><span class="ruler-mark">11</span><span class="ruler-mark">12</span>
+    </div>
+    <span style="font-size:9px;color:#999;white-space:nowrap">◀ margem ▶</span>
+  </div>
+  <div class="gdocs-body" style="min-height:80px">
+    <div class="gdocs-page" style="min-height:80px">
+      <div class="pg-body">Comece a digitar aqui...<span class="cursor"></span></div>
+    </div>
+  </div>
+</div>
+<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+  <span style="font-size:11px;background:#E8EAED;border-radius:4px;padding:3px 8px;color:#333">① Barra de título</span>
+  <span style="font-size:11px;background:#E8EAED;border-radius:4px;padding:3px 8px;color:#333">② Barra de menus</span>
+  <span style="font-size:11px;background:#E8EAED;border-radius:4px;padding:3px 8px;color:#333">③ Barra de ferramentas</span>
+  <span style="font-size:11px;background:#E8EAED;border-radius:4px;padding:3px 8px;color:#333">④ Régua</span>
+  <span style="font-size:11px;background:#E8EAED;border-radius:4px;padding:3px 8px;color:#333">⑤ Área de edição</span>
+</div>`},
+
+{id:'menubar', title:'Barra de menus',
+html:`
+<div class="slide-label">Interface</div>
+<h2 class="slide-h">② Barra de menus</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-menubar" style="padding:6px 8px">
+    <span class="gm-item hl">Arquivo</span><span class="gm-item hl">Editar</span><span class="gm-item hl">Visualizar</span>
+    <span class="gm-item hl">Inserir</span><span class="gm-item hl">Formatar</span><span class="gm-item hl">Ferramentas</span>
+    <span class="gm-item">Extensões</span><span class="gm-item">Ajuda</span>
+  </div>
+</div>
+<div class="summary-grid">
+  <div class="summary-item"><span class="sum-icon">📁</span><div class="sum-text"><strong>Arquivo</strong>Criar, abrir, salvar, exportar, imprimir, compartilhar</div></div>
+  <div class="summary-item"><span class="sum-icon">✂️</span><div class="sum-text"><strong>Editar</strong>Desfazer, copiar, colar, localizar e substituir</div></div>
+  <div class="summary-item"><span class="sum-icon">👁️</span><div class="sum-text"><strong>Visualizar</strong>Modo de impressão, régua, linha de grade, esboço</div></div>
+  <div class="summary-item"><span class="sum-icon">➕</span><div class="sum-text"><strong>Inserir</strong>Imagens, tabelas, links, cabeçalho, rodapé, sumário</div></div>
+  <div class="summary-item"><span class="sum-icon">🎨</span><div class="sum-text"><strong>Formatar</strong>Texto, parágrafos, estilos, colunas, listas</div></div>
+  <div class="summary-item"><span class="sum-icon">🔧</span><div class="sum-text"><strong>Ferramentas</strong>Ortografia, dicionário, contar palavras, traduzir</div></div>
+</div>`},
+
+{id:'toolbar', title:'Barra de ferramentas',
+html:`
+<div class="slide-label">Interface</div>
+<h2 class="slide-h">③ Barra de ferramentas</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-toolbar" style="padding:8px">
+    <span class="gt">↩</span><span class="gt">↪</span><span class="gt-sep"></span>
+    <span class="gt" style="background:#FFF3CD;border:1px solid #F4C542">Texto normal ▾</span><span class="gt-sep"></span>
+    <span class="gt" style="background:#FFF3CD;border:1px solid #F4C542;min-width:110px">Arial &nbsp;▾</span><span class="gt-sep"></span>
+    <span class="gt" style="background:#FFF3CD;border:1px solid #F4C542;width:40px">12</span><span class="gt-sep"></span>
+    <span class="gt" style="background:#C2E0FF;border:1px solid #1A73E8" title="Negrito"><b>N</b></span>
+    <span class="gt" style="background:#C2E0FF;border:1px solid #1A73E8" title="Itálico"><i>I</i></span>
+    <span class="gt" style="background:#C2E0FF;border:1px solid #1A73E8" title="Sublinhado"><u>S</u></span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="background:#D5F5E3;border:1px solid #2E8B57">A▾</span>
+    <span class="gt" style="background:#D5F5E3;border:1px solid #2E8B57">🖍▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="background:#FADBD8;border:1px solid #E74C3C">≡L</span>
+    <span class="gt" style="background:#FADBD8;border:1px solid #E74C3C">≡C</span>
+    <span class="gt" style="background:#FADBD8;border:1px solid #E74C3C">≡R</span>
+    <span class="gt" style="background:#FADBD8;border:1px solid #E74C3C">≡J</span>
+    <span class="gt-sep"></span>
+    <span class="gt">• ≡</span><span class="gt">1.≡</span>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout a"><span class="callout-icon">🔤</span><div class="callout-text"><strong>Estilo · Fonte · Tamanho</strong> — define o tipo e aparência do texto selecionado</div></div>
+  <div class="callout b"><span class="callout-icon">✨</span><div class="callout-text"><strong>N · I · S</strong> (Negrito, Itálico, Sublinhado) — ênfase no texto. Também A (cor) e destaque.</div></div>
+  <div class="callout" style="background:#FADBD8;border-color:#F4A8A8"><span class="callout-icon">📐</span><div class="callout-text"><strong>Alinhamento</strong> — esquerda, centro, direita, justificado</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Dica:</strong> passe o mouse sobre qualquer botão da barra para ver o nome e o atalho de teclado correspondente.</div></div>`},
+
+{id:'regua', title:'A régua',
+html:`
+<div class="slide-label">Interface</div>
+<h2 class="slide-h">④ A régua — margens e recuos</h2>
+<div class="gdocs-window" style="margin-bottom:20px">
+  <div class="gdocs-ruler" style="height:30px;padding:0 20px;font-size:10px">
+    <span style="font-size:11px;color:#1A73E8;font-weight:600">◀ 2,54cm ▶</span>
+    <div style="flex:1;position:relative;border-top:1px solid #DDD;margin:0 4px">
+      <div style="position:absolute;top:-10px;left:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid #1A73E8"></div>
+      <div style="position:absolute;top:6px;left:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #1A73E8"></div>
+      <div style="display:flex;justify-content:space-between;padding:0 8px;font-size:9px;color:#AAA;margin-top:2px">
+        <span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14</span>
+      </div>
+      <div style="position:absolute;top:-10px;right:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid #1A73E8"></div>
+      <div style="position:absolute;top:6px;right:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid #1A73E8"></div>
+    </div>
+    <span style="font-size:11px;color:#1A73E8;font-weight:600">◀ 2,54cm ▶</span>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">📏</span><div class="callout-text"><strong>Área cinza (extremidades):</strong> representa as margens do documento. O padrão é 2,54 cm (1 polegada).</div></div>
+  <div class="callout b"><span class="callout-icon">▲</span><div class="callout-text"><strong>Triângulo superior azul:</strong> recuo de primeira linha do parágrafo. Arraste para definir quanto a primeira linha avança.</div></div>
+  <div class="callout b"><span class="callout-icon">▼</span><div class="callout-text"><strong>Triângulo inferior azul:</strong> recuo do restante do parágrafo (hanging indent). Útil para listas e referências bibliográficas.</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Dica:</strong> se a régua não estiver visível, vá em <strong>Visualizar → Mostrar régua</strong>.</div></div>`},
+
+{id:'criadoc', title:'Criando um novo documento',
+html:`
+<div class="slide-label">Criar documento</div>
+<h2 class="slide-h">Criando um novo documento</h2>
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Acessar docs.google.com</div>
+      <div class="step-desc">Na página inicial você verá seus documentos recentes e modelos disponíveis.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Clique em "+ Em branco"</div>
+      <div class="step-desc">Cria um documento vazio. Há também modelos prontos (currículo, carta, etc.) — exploraremos depois.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Documento aberto e pronto para digitar</div>
+      <div class="step-desc">O cursor já estará na área de texto. Tudo o que você digitar é salvo automaticamente.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      <div class="step-title">Também é possível criar pelo Google Drive</div>
+      <div class="step-desc">drive.google.com → botão "+ Novo" → Google Docs. Útil para já criar o arquivo em uma pasta específica.</div>
+    </div>
+  </div>
+</div>`},
+
+{id:'nomedoc', title:'Nomeando o documento',
+html:`
+<div class="slide-label">Criar documento</div>
+<h2 class="slide-h">Nomeando o documento</h2>
+<div class="gdocs-window" style="margin-bottom:20px">
+  <div class="gdocs-topbar">
+    <span class="g-logo">Docs</span>
+    <span class="g-docname" style="background:#FFF3CD;border:1px dashed #F4C542;border-radius:4px;padding:2px 8px;cursor:pointer" title="Clique para renomear">📄 Documento sem título &nbsp; ✏️</span>
+    <span class="g-saved" style="color:#E67E22">⚠ Não salvo</span>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout a">
+    <span class="callout-icon">👆</span>
+    <div class="callout-text"><strong>Clique em "Documento sem título"</strong> no topo da tela. Um campo de texto aparecerá — digite o nome e pressione Enter.</div>
+  </div>
+  <div class="callout g">
+    <span class="callout-icon">📝</span>
+    <div class="callout-text"><strong>Nome desta aula:</strong> <code style="background:#E8F4ED;padding:2px 6px;border-radius:4px;font-size:13px">Parte01_SeuNome</code> — ex: <code style="background:#E8F4ED;padding:2px 6px;border-radius:4px;font-size:13px">Parte01_MariaJose</code></div>
+  </div>
+</div>
+<div class="card amber" style="margin-top:14px">
+  <div class="card-title">📛 Convenção de nomes para este curso</div>
+  <div class="card-body">
+    <strong>SemanaNN_SeuNome</strong> — sem espaços, sem acentos<br>
+    Exemplo: <code>Parte01_JoaoPedro</code> · <code>Parte02_AnaSilva</code><br><br>
+    Isso facilita a organização no Drive e a entrega para a professora.
+  </div>
+</div>`},
+
+{id:'salvamento', title:'Salvamento automático',
+html:`
+<div class="slide-label">Salvar no Drive</div>
+<h2 class="slide-h">Salvamento automático — como funciona?</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-topbar">
+    <span class="g-logo">Docs</span>
+    <span class="g-docname">📄 Parte01_MeuNome</span>
+    <span class="g-saved" style="color:#188038;font-weight:600">✔ Salvo no Drive</span>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">☁️</span><div class="callout-text"><strong>Tudo é salvo automaticamente</strong> enquanto você digita. Não existe botão "Salvar" como no Word — o Ctrl+S não faz nada de diferente.</div></div>
+  <div class="callout b"><span class="callout-icon">📡</span><div class="callout-text"><strong>Requer conexão com a internet.</strong> Se a conexão cair, verá "Salvamento offline" — o documento será sincronizado quando a internet voltar.</div></div>
+  <div class="callout a"><span class="callout-icon">🕐</span><div class="callout-text"><strong>Histórico de versões:</strong> Arquivo → Histórico de versões → Ver histórico. Você pode voltar a qualquer versão anterior!</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Onde fica o arquivo?</strong> Automaticamente na raiz do <strong>Google Drive</strong> (drive.google.com). Pode ser movido para uma pasta depois.</div></div>`},
+
+{id:'drive', title:'Organizando no Google Drive',
+html:`
+<div class="slide-label">Google Drive</div>
+<h2 class="slide-h">Encontrando e organizando no Google Drive</h2>
+<div class="steps">
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <div class="step-title">Acesse drive.google.com</div>
+      <div class="step-desc">Você verá todos os seus documentos do Google Docs, Sheets e Slides. O arquivo que criamos está aqui!</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <div class="step-title">Crie uma pasta para a disciplina</div>
+      <div class="step-desc">Clique em "+ Novo" → Pasta → nomeie como <code>Editores de Texto</code>. Boa prática de organização.</div>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <div class="step-title">Mova o documento para a pasta</div>
+      <div class="step-desc">Clique com o botão direito no arquivo → "Mover para" → selecione a pasta criada.</div>
+    </div>
+  </div>
+</div>
+<div class="card green" style="margin-top:8px">
+  <div class="card-title">🔗 Compartilhar com a professora</div>
+  <div class="card-body">Botão <strong>"Compartilhar"</strong> (azul, canto superior direito) → digite o e-mail da professora → defina permissão como <strong>"Editor"</strong> ou <strong>"Leitor"</strong>.<br>Faremos isso com mais detalhe na Semana 4!</div>
+</div>`},
+
+{id:'pratica1', title:'Atividade Prática 1',
+html:`
+<div class="activity-box">
+  <div class="activity-title">✏️ Atividade Prática 1</div>
+  <div class="activity-sub">Individual</div>
+  <ul class="activity-steps">
+    <li data-n="1">Acesse <strong>docs.google.com</strong> e crie um novo documento em branco</li>
+    <li data-n="2">Nomeie o arquivo como <strong>Parte01_SeuNome</strong> (ex: Parte01_JoaoPedro)</li>
+    <li data-n="3">Digite um texto de <strong>apresentação pessoal</strong> com 3 a 5 linhas: seu nome, curso, por que escolheu o curso, o que espera aprender</li>
+    <li data-n="4">Localize e identifique na tela: a barra de menus, a barra de ferramentas e a régua</li>
+    <li data-n="5">Confirme que o arquivo está <strong>salvo no Drive</strong> (mensagem "Salvo no Drive" no topo)</li>
+    <li data-n="6">Se terminar antes: explore o menu <strong>Visualizar → Mostrar layout de impressão</strong></li>
+  </ul>
+</div>
+<div class="tip" style="margin-top:12px"><span class="tip-icon">🙋</span><div class="tip-text">Dúvidas? Levante a mão! A professora passará nas bancadas para ajudar.</div></div>`},
+
+{id:'resumo1', title:'Resumo da Aula 1',
+html:`
+<div class="slide-label">Recapitulação</div>
+<h2 class="slide-h">O que aprendemos hoje</h2>
+<div class="summary-grid">
+  <div class="summary-item"><span class="sum-icon">📦</span><div class="sum-text"><strong>Suíte de escritório</strong>Conjunto de apps para criar documentos. Exemplos: Google Workspace, Microsoft 365, LibreOffice.</div></div>
+  <div class="summary-item"><span class="sum-icon">🌐</span><div class="sum-text"><strong>Google Docs</strong>Gratuito, na nuvem, colaborativo, acessível de qualquer lugar.</div></div>
+  <div class="summary-item"><span class="sum-icon">🖥️</span><div class="sum-text"><strong>Interface</strong>Barra de título, menus, ferramentas, régua e área de edição.</div></div>
+  <div class="summary-item"><span class="sum-icon">☁️</span><div class="sum-text"><strong>Salvamento automático</strong>Tudo é salvo no Google Drive enquanto você digita. Sem Ctrl+S necessário!</div></div>
+  <div class="summary-item"><span class="sum-icon">📄</span><div class="sum-text"><strong>Documento criado</strong><code>Parte01_SeuNome</code> — será usado e enriquecido nas próximas 3 partes.</div></div>
+  <div class="summary-item"><span class="sum-icon">📅</span><div class="sum-text"><strong>Próxima aula</strong>Vamos formatar o texto criado hoje: fontes, tamanhos, espaçamentos e listas.</div></div>
+</div>`},
+
+/* ═══════════════════════════════════════════════════════ PARTE 2 ═══ */
+
+{id:'ag2', title:'Formatação de Texto',
+html:`
+<div class="slide-label">Continuação · Formatação</div>
+<h2 class="slide-h">Agora vamos formatar o texto</h2>
+<div class="agenda-grid">
+  <div class="agenda-item"><div class="agenda-icon">🔤</div><div class="agenda-text"><strong>Fontes</strong>Tipos, serifadas vs sem-serifadas, quando usar cada uma</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🔡</div><div class="agenda-text"><strong>Tamanhos e estilos</strong>Negrito, itálico, sublinhado — e quando NÃO usar</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🎨</div><div class="agenda-text"><strong>Cor e destaque</strong>Cor do texto, marcador de texto, limpar formatação</div></div>
+  <div class="agenda-item"><div class="agenda-icon">📐</div><div class="agenda-text"><strong>Parágrafo</strong>Alinhamento, espaçamento, recuo de primeira linha</div></div>
+  <div class="agenda-item"><div class="agenda-icon">📋</div><div class="agenda-text"><strong>Listas</strong>Com marcadores, numeradas e com vários níveis</div></div>
+  <div class="agenda-item"><div class="agenda-icon">✏️</div><div class="agenda-text"><strong>Prática</strong>Formatar o texto pessoal conforme gabarito</div></div>
+</div>`},
+
+{id:'oqformat', title:'O que é formatação?',
+html:`
+<div class="slide-label">Conceito</div>
+<h2 class="slide-h">O que é formatação de texto?</h2>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">🎯</span><div class="callout-text"><strong>Formatação</strong> é a aplicação de características visuais ao texto para torná-lo <strong>mais legível, organizado e adequado ao contexto</strong>.</div></div>
+</div>
+<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  <div class="card"><div class="card-title">❌ Sem formatação</div><div class="card-body" style="font-size:12px;line-height:1.4">joao pedro silva curso tecnico em informatica para internet espero aprender programacao web e desenvolvimento de sistemas ao longo do curso</div></div>
+  <div class="card green"><div class="card-title">✅ Com formatação</div><div class="card-body" style="font-size:12px;line-height:1.6"><strong style="font-size:14px">João Pedro Silva</strong><br>Curso Técnico em Informática para Internet<br><br>Espero aprender programação web e desenvolvimento de sistemas ao longo do curso.</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text">A mesma informação — mas com formatação, ela fica <strong>mais fácil de ler</strong> e <strong>mais profissional</strong>.</div></div>`},
+
+{id:'fontes', title:'Fontes — tipos e quando usar',
+html:`
+<div class="slide-label">Formatação</div>
+<h2 class="slide-h">Fontes — tipos e quando usar</h2>
+<div class="gdocs-toolbar" style="background:#F8F8F8;padding:6px 8px;border:1px solid #DDD;border-radius:8px;margin-bottom:16px">
+  <span style="font-size:12px;color:#555;margin-right:4px">Fonte:</span>
+  <span class="gt" style="min-width:130px;border:1px solid #1A73E8;background:#E8F0FE">Arial &nbsp;▾</span>
+  <span class="gt-sep"></span>
+  <span style="font-size:12px;color:#555;margin-right:4px;margin-left:8px">Tamanho:</span>
+  <span class="gt" style="width:46px;border:1px solid #1A73E8;background:#E8F0FE">12 ▾</span>
+</div>
+<div class="font-compare">
+  <div class="fc-row"><span class="fc-label">SEM serifa</span><span class="fc-sample" style="font-family:Arial,sans-serif">Arial — Texto de exemplo Aa Bb Cc</span><span class="fc-note">Leitura digital · títulos</span></div>
+  <div class="fc-row"><span class="fc-label">SEM serifa</span><span class="fc-sample" style="font-family:'Calibri',sans-serif">Calibri — Texto de exemplo Aa Bb Cc</span><span class="fc-note">Padrão Microsoft</span></div>
+  <div class="fc-row"><span class="fc-label">COM serifa</span><span class="fc-sample" style="font-family:Georgia,serif">Georgia — Texto de exemplo Aa Bb Cc</span><span class="fc-note">Documentos formais · ABNT</span></div>
+  <div class="fc-row"><span class="fc-label">COM serifa</span><span class="fc-sample" style="font-family:'Times New Roman',serif">Times New Roman — Aa Bb Cc</span><span class="fc-note">Acadêmico · jornais</span></div>
+  <div class="fc-row"><span class="fc-label">MONOESPAÇADA</span><span class="fc-sample" style="font-family:'Courier New',monospace">Courier New — código fonte</span><span class="fc-note">Código de programação</span></div>
+</div>
+<div class="tip"><span class="tip-icon">📚</span><div class="tip-text"><strong>ABNT (NBR 14724):</strong> recomenda Arial ou Times New Roman, tamanho 12pt no corpo do texto.</div></div>`},
+
+{id:'tamanhos', title:'Tamanhos de fonte',
+html:`
+<div class="slide-label">Formatação</div>
+<h2 class="slide-h">Tamanhos de fonte</h2>
+<div class="format-sample" style="margin-bottom:16px">
+  <div class="fs-row"><span class="fs-label">8pt</span><span class="fs-sample" style="font-size:8px">Texto de exemplo — notas de rodapé, legendas pequenas</span></div>
+  <div class="fs-row"><span class="fs-label">10pt</span><span class="fs-sample" style="font-size:10px">Texto de exemplo — notas de rodapé (ABNT), citações longas</span></div>
+  <div class="fs-row"><span class="fs-label" style="color:var(--g);font-weight:700">12pt ← padrão</span><span class="fs-sample" style="font-size:12px;font-weight:500">Texto de exemplo — corpo do texto (ABNT, documentos formais)</span></div>
+  <div class="fs-row"><span class="fs-label">16pt</span><span class="fs-sample" style="font-size:16px">Texto — subtítulos, cabeçalhos de seção</span></div>
+  <div class="fs-row"><span class="fs-label">24pt</span><span class="fs-sample" style="font-size:24px;font-weight:700">Título principal</span></div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">📐</span><div class="callout-text"><strong>Regra geral ABNT:</strong> corpo do texto = 12pt · Notas de rodapé e citações longas = 10pt</div></div>
+  <div class="callout a"><span class="callout-icon">💡</span><div class="callout-text"><strong>Como alterar:</strong> selecione o texto → clique no campo de tamanho na barra de ferramentas → digite o tamanho ou use as setas.</div></div>
+</div>`},
+
+{id:'estilos', title:'Negrito, itálico e sublinhado',
+html:`
+<div class="slide-label">Formatação</div>
+<h2 class="slide-h">Negrito · Itálico · Sublinhado</h2>
+<div class="gdocs-toolbar" style="background:#F8F8F8;padding:6px 8px;border:1px solid #DDD;border-radius:8px;margin-bottom:14px">
+  <span class="gt gt-bold" style="font-size:16px;width:36px;justify-content:center;border:1.5px solid #1A73E8;background:#E8F0FE">N</span>
+  <span class="gt gt-italic" style="font-size:16px;width:36px;justify-content:center;border:1.5px solid #1A73E8;background:#E8F0FE">I</span>
+  <span class="gt gt-underline" style="font-size:16px;width:36px;justify-content:center;border:1.5px solid #1A73E8;background:#E8F0FE">S</span>
+</div>
+<div class="format-sample">
+  <div class="fs-row">
+    <span class="fs-label">Negrito<br><code style="font-size:10px">Ctrl+B</code></span>
+    <span class="fs-sample"><b>Texto em negrito</b> — para ênfase forte, títulos, palavras-chave</span>
+  </div>
+  <div class="fs-row">
+    <span class="fs-label">Itálico<br><code style="font-size:10px">Ctrl+I</code></span>
+    <span class="fs-sample"><i>Texto em itálico</i> — títulos de obras, palavras estrangeiras, ênfase suave</span>
+  </div>
+  <div class="fs-row">
+    <span class="fs-label">Sublinhado<br><code style="font-size:10px">Ctrl+U</code></span>
+    <span class="fs-sample"><u>Texto sublinhado</u> — evitar em documentos formais (confunde com link)</span>
+  </div>
+  <div class="fs-row">
+    <span class="fs-label">Tachado</span>
+    <span class="fs-sample"><s>Texto tachado</s> — indicar texto removido ou cancelado</span>
+  </div>
+  <div class="fs-row">
+    <span class="fs-label">Combinado</span>
+    <span class="fs-sample"><b><i>Negrito e itálico</i></b> — use com parcimônia!</span>
+  </div>
+</div>`},
+
+{id:'cor', title:'Cor do texto e limpar formatação',
+html:`
+<div class="slide-label">Formatação</div>
+<h2 class="slide-h">Cor do texto · Destaque · Limpar formatação</h2>
+<div class="gdocs-toolbar" style="background:#F8F8F8;padding:6px 8px;border:1px solid #DDD;border-radius:8px;margin-bottom:16px">
+  <span class="gt" style="border:1.5px solid #1A73E8;background:#E8F0FE;display:flex;flex-direction:column;align-items:center;gap:1px;padding:3px 8px">
+    <span style="font-size:14px;font-weight:700">A</span>
+    <span style="height:3px;width:16px;background:#E53935;border-radius:2px"></span>
+    <span style="font-size:9px">▾</span>
+  </span>
+  <span class="gt" style="border:1.5px solid #1A73E8;background:#E8F0FE;display:flex;flex-direction:column;align-items:center;gap:1px;padding:3px 8px">
+    <span style="font-size:14px">🖍</span>
+    <span style="height:3px;width:16px;background:#FBBC04;border-radius:2px"></span>
+    <span style="font-size:9px">▾</span>
+  </span>
+  <span class="gt-sep"></span>
+  <span class="gt" style="border:1.5px solid #D93025;background:#FEECEC">Limpar formatação &nbsp; Ctrl+\</span>
+</div>
+<div class="callouts">
+  <div class="callout b"><span class="callout-icon" style="font-size:16px;font-weight:700;color:#E53935">A</span><div class="callout-text"><strong>Cor do texto:</strong> muda a cor das letras. Clique na seta ao lado do botão para escolher a cor. Cuidado com acessibilidade — evite vermelho/verde juntos.</div></div>
+  <div class="callout a"><span class="callout-icon">🖍️</span><div class="callout-text"><strong>Cor de destaque (marcador):</strong> fundo colorido no texto, como uma caneta marcadora. Útil em revisões — evite em documentos formais.</div></div>
+  <div class="callout" style="background:#FEECEC;border-color:#F4A8A8"><span class="callout-icon">🧹</span><div class="callout-text"><strong>Limpar formatação (Ctrl+\):</strong> remove TODA a formatação do texto selecionado, voltando ao padrão. Indispensável ao colar textos da internet!</div></div>
+</div>`},
+
+{id:'alinhamento', title:'Alinhamento de parágrafo',
+html:`
+<div class="slide-label">Parágrafo</div>
+<h2 class="slide-h">Alinhamento de parágrafo</h2>
+<div class="gdocs-toolbar" style="background:#F8F8F8;padding:6px 8px;border:1px solid #DDD;border-radius:8px;margin-bottom:14px">
+  <span class="gt" style="border:1.5px solid #DDD;padding:4px 10px" title="Ctrl+Shift+L">≡ Esq&nbsp;<span style="font-size:9px">Ctrl+Shift+L</span></span>
+  <span class="gt" style="border:1.5px solid #DDD;padding:4px 10px" title="Ctrl+Shift+E">≡ Cen&nbsp;<span style="font-size:9px">Ctrl+Shift+E</span></span>
+  <span class="gt" style="border:1.5px solid #DDD;padding:4px 10px" title="Ctrl+Shift+R">≡ Dir&nbsp;<span style="font-size:9px">Ctrl+Shift+R</span></span>
+  <span class="gt" style="border:1.5px solid #1A73E8;background:#E8F0FE;padding:4px 10px" title="Ctrl+Shift+J">≡ Just&nbsp;<span style="font-size:9px">Ctrl+Shift+J</span></span>
+</div>
+<div class="align-demo">
+  <div class="align-box">
+    <div class="align-label">≡ Esquerda</div>
+    <div class="align-text left">Texto alinhado à esquerda. Margem esquerda nivelada, direita irregular. Padrão em textos informais e digitais.</div>
+  </div>
+  <div class="align-box">
+    <div class="align-label">≡ Centralizado</div>
+    <div class="align-text center">Texto centralizado. Usado em títulos, poesias e convites. Evitar em parágrafos longos.</div>
+  </div>
+  <div class="align-box">
+    <div class="align-label">≡ Direita</div>
+    <div class="align-text right">Texto alinhado à direita. Usado em endereços, datas, cabeçalhos específicos.</div>
+  </div>
+  <div class="align-box hl">
+    <div class="align-label">≡ Justificado ← ABNT</div>
+    <div class="align-text justify">Texto justificado. Ambas as margens ficam niveladas. Padrão em documentos formais, livros e trabalhos acadêmicos.</div>
+  </div>
+</div>`},
+
+{id:'espacamento', title:'Espaçamento entre linhas',
+html:`
+<div class="slide-label">Parágrafo</div>
+<h2 class="slide-h">Espaçamento entre linhas e parágrafos</h2>
+<div style="font-size:13px;color:var(--ink3);margin-bottom:12px">Formatar → Espaçamento entre linhas e parágrafos → Opções de espaçamento</div>
+<div class="sp-demo">
+  <div class="sp-box"><div class="sp-badge"><div class="spb">1,0</div><div class="sbl">simples</div></div><div class="sp-text" style="line-height:1.0">Texto com espaçamento simples. Linhas muito próximas, dificulta a leitura em documentos longos. Evitar em trabalhos acadêmicos.</div></div>
+  <div class="sp-box" style="border-color:#A8D4BB;background:var(--gl)"><div class="sp-badge"><div class="spb" style="color:var(--g)">1,5</div><div class="sbl">recomendado</div></div><div class="sp-text" style="line-height:1.5">Texto com espaçamento 1,5. Boa legibilidade, equilibrado. <strong>Recomendado para trabalhos acadêmicos e documentos profissionais.</strong></div></div>
+  <div class="sp-box"><div class="sp-badge"><div class="spb">2,0</div><div class="sbl">duplo</div></div><div class="sp-text" style="line-height:2.0">Texto com espaçamento duplo. Muito espaçado — usado quando o leitor precisa escrever entre as linhas ou em alguns formatos de revisão.</div></div>
+</div>
+<div class="tip"><span class="tip-icon">📚</span><div class="tip-text"><strong>ABNT NBR 14724:</strong> espaçamento entre linhas = 1,5. Mas verifique sempre o edital ou norma específica do seu curso/instituição.</div></div>`},
+
+{id:'recuo', title:'Recuo de primeira linha',
+html:`
+<div class="slide-label">Parágrafo</div>
+<h2 class="slide-h">Recuo de primeira linha</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-ruler" style="height:26px;padding:0 50px">
+    <div style="flex:1;position:relative;height:100%;display:flex;align-items:flex-end;padding-bottom:2px">
+      <div style="display:flex;width:100%;font-size:9px;color:#AAA">
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">2</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">4</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">6</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">8</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">10</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">12</span>
+        <span style="flex:1;text-align:center;border-left:1px solid #DDD">14</span>
+      </div>
+      <div style="position:absolute;top:2px;left:14%;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:9px solid #E67E22"></div>
+    </div>
+  </div>
+  <div class="gdocs-body" style="min-height:80px;padding:12px 20px">
+    <div class="gdocs-page" style="padding:16px 28px;min-height:80px">
+      <p style="font-size:12px;line-height:1.6;text-indent:1.25cm;margin-bottom:8px;text-align:justify">Este é o primeiro parágrafo com recuo de 1,25 cm na primeira linha. Note como apenas a primeira linha avança em relação às demais.</p>
+      <p style="font-size:12px;line-height:1.6;text-indent:1.25cm;text-align:justify">Segundo parágrafo, também com recuo de primeira linha. Esta é a forma padrão exigida pela ABNT para trabalhos acadêmicos.</p>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">📐</span><div class="callout-text"><strong>ABNT:</strong> recuo de 1,25 cm na primeira linha de cada parágrafo do corpo do texto.</div></div>
+  <div class="callout a"><span class="callout-icon">⚠️</span><div class="callout-text"><strong>Não use Enter duplo</strong> para separar parágrafos! Use o espaçamento <em>depois do parágrafo</em> (Formatar → Espaçamento → Após parágrafo).</div></div>
+  <div class="callout b"><span class="callout-icon">🖱️</span><div class="callout-text"><strong>Pela régua:</strong> arraste apenas o triângulo superior para definir o recuo de primeira linha.</div></div>
+</div>`},
+
+{id:'listas', title:'Listas com marcadores e numeradas',
+html:`
+<div class="slide-label">Listas</div>
+<h2 class="slide-h">Listas com marcadores e numeradas</h2>
+<div class="gdocs-toolbar" style="background:#F8F8F8;padding:6px 8px;border:1px solid #DDD;border-radius:8px;margin-bottom:14px">
+  <span class="gt" style="border:1.5px solid #1A73E8;background:#E8F0FE;font-size:18px">•≡</span>
+  <span style="font-size:12px;color:#555;margin:0 8px">Marcadores</span>
+  <span class="gt-sep"></span>
+  <span class="gt" style="border:1.5px solid #2E8B57;background:#E6F4ED;font-size:18px">1≡</span>
+  <span style="font-size:12px;color:#555;margin:0 8px">Numerada</span>
+</div>
+<div class="list-demo">
+  <div class="ld-box">
+    <div class="ld-title">• Lista com marcadores</div>
+    <ul>
+      <li>Item um da lista</li>
+      <li>Item dois da lista</li>
+      <li>Item três da lista
+        <ul class="nested">
+          <li>Sub-item A</li>
+          <li>Sub-item B</li>
+        </ul>
+      </li>
+      <li>Item quatro</li>
+    </ul>
+    <p style="font-size:11px;color:#777;margin-top:8px">Use para itens sem ordem específica</p>
+  </div>
+  <div class="ld-box">
+    <div class="ld-title">1. Lista numerada</div>
+    <ol>
+      <li>Primeiro passo</li>
+      <li>Segundo passo</li>
+      <li>Terceiro passo
+        <ol style="margin-left:14px;list-style:lower-alpha;margin-top:4px">
+          <li>Sub-etapa a</li>
+          <li>Sub-etapa b</li>
+        </ol>
+      </li>
+      <li>Quarto passo</li>
+    </ol>
+    <p style="font-size:11px;color:#777;margin-top:8px">Use para sequências ou passos ordenados</p>
+  </div>
+</div>
+<div class="tip"><span class="tip-icon">⌨️</span><div class="tip-text"><strong>Nível de recuo:</strong> pressione <strong>Tab</strong> para entrar em um nível dentro da lista e <strong>Shift+Tab</strong> para sair.</div></div>`},
+
+{id:'atalhos', title:'Atalhos essenciais',
+html:`
+<div class="slide-label">Referência rápida</div>
+<h2 class="slide-h">Atalhos de teclado essenciais</h2>
+<div class="shortcut-grid">
+  <div class="sc-row"><span class="sc-key">Ctrl + B</span><span class="sc-desc">Negrito</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + I</span><span class="sc-desc">Itálico</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + U</span><span class="sc-desc">Sublinhado</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + \</span><span class="sc-desc">Limpar formatação</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Shift + V</span><span class="sc-desc">Colar sem formatação</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Z</span><span class="sc-desc">Desfazer</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Y</span><span class="sc-desc">Refazer</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + A</span><span class="sc-desc">Selecionar tudo</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Shift + L</span><span class="sc-desc">Alinhar à esquerda</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Shift + E</span><span class="sc-desc">Centralizar</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Shift + R</span><span class="sc-desc">Alinhar à direita</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Shift + J</span><span class="sc-desc">Justificar</span></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Dica:</strong> passe o mouse sobre qualquer botão da barra de ferramentas do Google Docs — ele mostrará o nome e o atalho correspondente.</div></div>`},
+
+{id:'pratica2', title:'Atividade Prática 2',
+html:`
+<div class="activity-box">
+  <div class="activity-title">✏️ Atividade Prática 2</div>
+  <div class="activity-sub">Abra o documento <strong>Parte01_SeuNome</strong> e aplique as formatações abaixo</div>
+  <ul class="activity-steps">
+    <li data-n="1">Selecione seu nome no documento → Fonte <strong>Georgia</strong> · Tamanho <strong>16pt</strong> · Negrito · Alinhamento <strong>centralizado</strong></li>
+    <li data-n="2">Selecione o corpo do texto → Fonte <strong>Arial</strong> · Tamanho <strong>12pt</strong> · Alinhamento <strong>justificado</strong> · Espaçamento entre linhas <strong>1,5</strong></li>
+    <li data-n="3">Aplique <strong>recuo de primeira linha de 1,25 cm</strong> em cada parágrafo do corpo (use Formatar → Estilos e formatação → ou a régua)</li>
+    <li data-n="4">No final do texto, insira uma <strong>lista numerada</strong> com 3 habilidades que quer aprender no curso</li>
+    <li data-n="5">Abaixo, insira uma <strong>lista com marcadores</strong> com 3 interesses pessoais (hobbies)</li>
+    <li data-n="6">Se terminar: aplique uma cor de destaque em uma palavra importante do seu texto</li>
+  </ul>
+</div>`},
+
+{id:'gabarito', title:'Gabarito visual da atividade',
+html:`
+<div class="slide-label">Referência</div>
+<h2 class="slide-h">Como deve ficar — gabarito visual</h2>
+<div class="gdocs-window">
+  <div class="gdocs-topbar">
+    <span class="g-logo">Docs</span>
+    <span class="g-docname">📄 Parte01_MeuNome</span>
+    <span class="g-saved">✔ Salvo no Drive</span>
+  </div>
+  <div class="gdocs-body" style="min-height:0">
+    <div class="gdocs-page" style="padding:24px 36px">
+      <p style="font-family:Georgia,serif;font-size:18px;font-weight:700;text-align:center;margin-bottom:10px">João Pedro Silva</p>
+      <p style="font-family:Arial,sans-serif;font-size:12px;text-align:justify;line-height:1.5;text-indent:1.25cm;margin-bottom:8px">Estou cursando Técnico em Informática para Internet. Escolhi este curso porque sempre tive interesse em tecnologia e programação. Espero aprender bastante sobre desenvolvimento web e sistemas.</p>
+      <p style="font-family:Arial,sans-serif;font-size:12px;text-align:justify;line-height:1.5;text-indent:1.25cm;margin-bottom:10px">Meu objetivo é trabalhar na área de TI ao concluir o curso e quem sabe cursar uma faculdade de Ciência da Computação.</p>
+      <p style="font-family:Arial,sans-serif;font-size:12px;font-weight:600;margin-bottom:4px">Habilidades que quero aprender:</p>
+      <ol style="font-size:11px;margin-left:18px;line-height:1.6">
+        <li>Programação web com HTML e CSS</li>
+        <li>Desenvolvimento de sistemas com Python</li>
+        <li>Banco de dados e SQL</li>
+      </ol>
+      <p style="font-family:Arial,sans-serif;font-size:12px;font-weight:600;margin:8px 0 4px">Meus interesses:</p>
+      <ul style="font-size:11px;margin-left:18px;line-height:1.6">
+        <li>Jogos eletrônicos</li>
+        <li>Música</li>
+        <li>Fotografia</li>
+      </ul>
+    </div>
+  </div>
+</div>`},
+
+{id:'resumo2', title:'Resumo e prévia da Parte 2',
+html:`
+<div class="slide-label">Encerramento · Parte 1</div>
+<h2 class="slide-h">O que aprendemos na Parte 1</h2>
+<div class="summary-grid">
+  <div class="summary-item"><span class="sum-icon">🔤</span><div class="sum-text"><strong>Fontes</strong>Arial, Georgia, Times — serifadas vs sem-serifadas. Padrão ABNT: 12pt.</div></div>
+  <div class="summary-item"><span class="sum-icon">✨</span><div class="sum-text"><strong>Estilos</strong>Negrito (Ctrl+B), Itálico (Ctrl+I), Sublinhado (Ctrl+U). Limpar formatação (Ctrl+\).</div></div>
+  <div class="summary-item"><span class="sum-icon">📐</span><div class="sum-text"><strong>Alinhamento</strong>Justificado para textos formais. Centralizado para títulos.</div></div>
+  <div class="summary-item"><span class="sum-icon">↕️</span><div class="sum-text"><strong>Espaçamento</strong>1,5 entre linhas (ABNT). Espaçamento antes/depois do parágrafo.</div></div>
+  <div class="summary-item"><span class="sum-icon">⇥</span><div class="sum-text"><strong>Recuo</strong>1,25 cm na primeira linha de cada parágrafo (ABNT).</div></div>
+  <div class="summary-item"><span class="sum-icon">📋</span><div class="sum-text"><strong>Listas</strong>Com marcadores (sem ordem) e numeradas (passos/sequências).</div></div>
+</div>
+<div class="card green" style="margin-top:12px">
+  <div class="card-title">📅 Parte 2 — O que vem por aí</div>
+  <div class="card-body">
+    <strong>Aula 3:</strong> Cabeçalho, rodapé e numeração de páginas<br>
+    <strong>Aula 4:</strong> Estilos de parágrafo (Título 1, 2, 3, Texto normal) — preparação para o sumário automático!<br><br>
+    O documento <code>Parte01_SeuNome</code> continuará sendo usado e enriquecido. 📄
+  </div>
+</div>`},
+
+];
+
+/* ─── BUILD ─── */
+const deck = document.getElementById('deck');
+let cur = 0;
+
+slides.forEach((s,i) => {
+  const el = document.createElement('div');
+  el.className = 'slide' + (s.type==='cover'?' cover-slide':s.type==='chapter'?' chapter-slide':'');
+  el.dataset.i = i;
+
+  const chapterLabel = s.chapter || 'Parte 1 · Google Docs';
+  const titleBar = s.title ? `<div class="slide-title-bar">${s.title}</div>` : '';
+
+  el.innerHTML = `
+    <div class="slide-header">
+      <div class="ifrn-logo">IFRN</div>
+      <span class="slide-chapter">${chapterLabel}</span>
+      ${titleBar}
+    </div>
+    <div class="slide-body${(s.type==='cover'||s.type==='chapter')?' center':''}">
+      ${s.html}
+    </div>
+    <div class="slide-footer">
+      <button class="nav-btn" id="prev${i}" onclick="go(${i-1})" ${i===0?'disabled':''}>← Anterior</button>
+      <div class="progress-dots" id="dots${i}"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="slide-counter">${i+1} / ${slides.length}</span>
+        <button class="nav-btn primary" id="next${i}" onclick="go(${i+1})" ${i===slides.length-1?'disabled':''}>Próximo →</button>
+      </div>
+    </div>`;
+  deck.appendChild(el);
+});
+
+function buildDots(active){
+  const container = document.getElementById('dots'+active);
+  if(!container) return;
+  container.innerHTML='';
+  slides.forEach((s,i)=>{
+    const d = document.createElement('span');
+    d.className='dot'+(s.type==='chapter'?' chapter':'')+(i===active?' active':'');
+    d.title=s.title||s.type||'';
+    d.onclick=()=>go(i);
+    container.appendChild(d);
+  });
+}
+
+function go(n){
+  if(n<0||n>=slides.length) return;
+  document.querySelectorAll('.slide').forEach(el=>el.classList.remove('active'));
+  const next = document.querySelector('.slide[data-i="'+n+'"]');
+  next.classList.add('active');
+  buildDots(n);
+  cur=n;
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp') go(cur-1);
+});
+
+go(0);
+</script>
+</body>
+</html>
