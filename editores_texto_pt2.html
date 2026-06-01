@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parte 2 — Cabeçalho, Rodapé e Estilos | Google Docs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#1D6B3E;--g2:#155430;--g3:#0E3D22;
+  --gl:#E6F4ED;--gm:#2E8B57;
+  --acc:#F4A200;--accl:#FFF5D9;
+  --blue:#1A73E8;--bluel:#E8F0FE;
+  --red:#D93025;--yel:#FBBC04;
+  --ink:#1A1A1A;--ink2:#444;--ink3:#777;
+  --border:#DDD;--bg:#F8F8F6;--white:#FFFFFF;
+  --shadow:0 2px 12px rgba(0,0,0,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#1a1a1a;font-family:'Inter',sans-serif}
+#deck{width:100%;height:100%;position:relative}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;background:var(--white);opacity:0;transition:opacity .25s ease}
+.slide.active{display:flex;opacity:1}
+
+/* HEADER */
+.slide-header{display:flex;align-items:center;background:var(--g);color:white;padding:0 32px;height:52px;flex-shrink:0;gap:12px}
+.ifrn-logo{font-family:'Inter Tight',sans-serif;font-size:15px;font-weight:800;letter-spacing:.04em;border:2px solid rgba(255,255,255,.6);border-radius:4px;padding:2px 8px;color:white;white-space:nowrap}
+.slide-chapter{font-size:12px;opacity:.7;font-weight:400}
+.slide-title-bar{font-size:14px;font-weight:600;margin-left:auto;background:rgba(255,255,255,.12);border-radius:20px;padding:4px 14px;max-width:55%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* FOOTER */
+.slide-footer{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:48px;flex-shrink:0;border-top:1px solid var(--border);background:var(--bg)}
+.nav-btn{background:none;border:1.5px solid var(--border);border-radius:8px;padding:6px 18px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;font-family:inherit;transition:all .15s}
+.nav-btn:hover{border-color:var(--g);color:var(--g);background:var(--gl)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-btn.primary{background:var(--g);border-color:var(--g);color:white}
+.nav-btn.primary:hover{background:var(--g2)}
+.progress-dots{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:60%}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.active{background:var(--g);transform:scale(1.3)}
+.slide-counter{font-size:12px;color:var(--ink3);white-space:nowrap}
+
+/* BODY */
+.slide-body{flex:1;padding:36px 48px 20px;overflow:hidden;display:flex;flex-direction:column}
+.slide-body.center{align-items:center;justify-content:center;text-align:center}
+
+/* TYPOGRAPHY */
+h2.slide-h{font-family:'Inter Tight',sans-serif;font-size:30px;font-weight:700;color:var(--g);line-height:1.2;margin-bottom:20px}
+h3.slide-h{font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:14px}
+.slide-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gm);margin-bottom:8px}
+
+/* COVER */
+.cover-slide .slide-body{background:linear-gradient(135deg,#2E7A55 0%,#3D9E6E 55%,#56B882 100%);color:white;padding:60px 64px;justify-content:center;align-items:center;text-align:center}
+.cover-slide .slide-header{background:rgba(0,0,0,.25)}
+.cover-num{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:16px}
+.cover-title{font-family:'Inter Tight',sans-serif;font-size:44px;font-weight:800;line-height:1.05;margin-bottom:12px;color:white}
+.cover-title span{opacity:.75;font-weight:300}
+.cover-sub{font-size:18px;font-weight:400;opacity:.8;margin-bottom:32px}
+.cover-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.cover-chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 16px;font-size:13px;font-weight:500}
+
+/* AGENDA */
+.agenda-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.agenda-item{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.agenda-icon{width:36px;height:36px;border-radius:10px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.agenda-text{font-size:14px;color:var(--ink2);line-height:1.4}
+.agenda-text strong{display:block;font-weight:600;color:var(--ink);margin-bottom:2px}
+
+/* CARD */
+.card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:12px}
+.card.green{border-color:#A8D4BB;background:var(--gl)}
+.card.amber{border-color:#F4CF7A;background:var(--accl)}
+.card.blue{border-color:#A8C4F4;background:var(--bluel)}
+.card-title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-body{font-size:13.5px;color:var(--ink2);line-height:1.5}
+
+/* CALLOUT */
+.callouts{display:flex;flex-direction:column;gap:8px}
+.callout{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:10px;border:1.5px solid var(--border);padding:12px 16px}
+.callout.g{border-color:#A8D4BB;background:var(--gl)}
+.callout.a{border-color:#F4CF7A;background:var(--accl)}
+.callout.b{border-color:#A8C4F4;background:var(--bluel)}
+.callout-icon{font-size:20px;flex-shrink:0;line-height:1.2}
+.callout-text{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.callout-text strong{color:var(--ink);font-weight:600}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:36px 1fr;gap:12px;padding-bottom:16px;position:relative}
+.step:not(:last-child)::before{content:'';position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--gl)}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--g);color:white;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1}
+.step-content{padding-top:6px}
+.step-title{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:3px}
+.step-desc{font-size:13px;color:var(--ink2);line-height:1.45}
+
+/* TIP */
+.tip{display:flex;gap:12px;align-items:flex-start;background:var(--accl);border:1.5px solid #F4CF7A;border-radius:10px;padding:14px 18px;margin-top:12px}
+.tip-icon{font-size:20px;flex-shrink:0}
+.tip-text{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.tip-text strong{color:#7A5200;font-weight:600}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.summary-item{background:var(--gl);border:1.5px solid #A8D4BB;border-radius:10px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start}
+.sum-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.sum-text{font-size:13.5px;color:var(--ink2);line-height:1.4}
+.sum-text strong{display:block;font-weight:600;color:var(--g);margin-bottom:2px}
+
+/* SHORTCUT */
+.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sc-row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:8px;padding:8px 12px;border:1px solid var(--border)}
+.sc-key{background:var(--white);border:1.5px solid #CCC;border-radius:6px;font-size:11px;font-weight:600;color:var(--ink);padding:3px 8px;white-space:nowrap;flex-shrink:0;box-shadow:0 2px 0 #CCC}
+.sc-desc{font-size:13px;color:var(--ink2)}
+
+/* ACTIVITY */
+.activity-box{background:var(--g);border-radius:14px;padding:28px 32px;color:white}
+.activity-title{font-family:'Inter Tight',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.activity-sub{font-size:14px;opacity:.75;margin-bottom:20px}
+.activity-steps{list-style:none;display:flex;flex-direction:column;gap:10px}
+.activity-steps li{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.12);border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.4}
+.activity-steps li::before{content:attr(data-n);background:rgba(255,255,255,.25);border-radius:50%;width:22px;height:22px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* GOOGLE DOCS MOCKUP */
+.gdocs-window{border:1.5px solid #CCC;border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.12);background:white;font-family:'Arial',sans-serif}
+.gdocs-topbar{background:#F8F8F8;padding:4px 12px;border-bottom:1px solid #E0E0E0;display:flex;align-items:center;gap:8px}
+.g-logo{font-weight:700;color:#1D6B3E;font-size:18px;line-height:1}
+.g-docname{font-size:14px;color:#333;font-weight:500;flex:1}
+.g-saved{font-size:11px;color:#888}
+.gdocs-menubar{background:#F8F8F8;padding:2px 8px;border-bottom:1px solid #E8E8E8;display:flex;gap:0}
+.gm-item{font-size:13px;color:#333;padding:5px 10px;border-radius:4px;cursor:pointer;white-space:nowrap}
+.gm-item.hl{background:#E8EAED;color:#1A73E8}
+.gdocs-toolbar{background:#F8F8F8;padding:4px 8px;border-bottom:1px solid #E8E8E8;display:flex;align-items:center;gap:3px;flex-wrap:wrap}
+.gt{font-size:12px;color:#333;padding:4px 8px;border-radius:4px;border:none;background:none;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
+.gt.hl{background:#E8EAED}
+.gt-sep{width:1px;height:20px;background:#DDD;margin:0 4px;flex-shrink:0}
+.gdocs-body{background:#E8E8E8;padding:14px;display:flex;justify-content:center}
+.gdocs-page{background:white;width:100%;max-width:480px;box-shadow:0 1px 4px rgba(0,0,0,.15);font-size:12px;color:#333;line-height:1.6;position:relative}
+.page-header-area{border-bottom:1.5px dashed #1A73E8;background:#EEF4FF;padding:6px 20px;font-size:11px;color:#1A73E8;font-style:italic;display:flex;justify-content:space-between;align-items:center}
+.page-header-area.editing{background:#FFFDE7;border-color:#FBBC04;color:#7A5200}
+.page-body{padding:16px 24px}
+.page-footer-area{border-top:1.5px dashed #1A73E8;background:#EEF4FF;padding:6px 20px;font-size:11px;color:#1A73E8;display:flex;justify-content:space-between;align-items:center}
+.page-footer-area.editing{background:#FFFDE7;border-color:#FBBC04;color:#7A5200}
+.gdocs-page .cursor{display:inline-block;width:1.5px;height:13px;background:#1A73E8;vertical-align:text-bottom;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* PAGE NUMBER DEMO */
+.pn-demo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pn-box{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--bg)}
+.pn-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gm);padding:8px 12px;border-bottom:1px solid var(--border);background:var(--gl)}
+.pn-page{background:white;margin:8px;border-radius:6px;border:1px solid #DDD;min-height:70px;display:flex;flex-direction:column;font-size:11px;color:#555}
+.pn-top{padding:4px 10px;text-align:right;border-bottom:1px dashed #EEE;color:#1A73E8;min-height:20px}
+.pn-mid{flex:1;padding:6px 10px;font-size:10px;color:#AAA;text-align:center;line-height:1.4}
+.pn-bot{padding:4px 10px;border-top:1px dashed #EEE;color:#1A73E8;min-height:20px}
+.pn-bot.center{text-align:center}
+.pn-bot.right{text-align:right}
+
+/* STYLE DEMO */
+.style-demo{display:flex;flex-direction:column;gap:3px}
+.style-row{display:flex;align-items:center;gap:16px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;transition:all .15s}
+.style-row.active{border-color:var(--g);background:var(--gl)}
+.style-pill{font-size:11px;font-weight:600;background:white;border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--ink3);width:90px;text-align:center;flex-shrink:0}
+.style-sample{flex:1}
+.style-where{font-size:11px;color:var(--ink3);margin-left:auto;white-space:nowrap}
+
+/* HIERARCHY DEMO */
+.hier-demo{background:white;border:1.5px solid var(--border);border-radius:12px;padding:20px 28px;box-shadow:var(--shadow)}
+.hier-row{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+.hier-bar{flex-shrink:0;background:var(--g);border-radius:2px;opacity:.6}
+.hier-text{color:var(--ink)}
+
+/* ESBOÇO DEMO */
+.esbozo{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px}
+.esbozo-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:10px}
+.esbozo-item{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:13px;color:var(--ink2)}
+.esbozo-item:hover{color:var(--blue)}
+.esbozo-item.t1{font-weight:600;color:var(--ink)}
+.esbozo-item.t2{padding-left:16px;font-size:12px}
+.esbozo-item.t3{padding-left:32px;font-size:11px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div id="deck"></div>
+<script>
+const slides = [
+
+/* ═══════════════════════ CABEÇALHO, RODAPÉ E PAGINAÇÃO ═══════════════════════ */
+
+{id:'capa', type:'cover', chapter:'Parte 2 · Google Docs',
+html:`
+<div class="cover-num">PARTE 2</div>
+<div class="cover-title">Cabeçalho, Rodapé<br><span>e Estilos de Parágrafo</span></div>
+<div class="cover-sub">Estrutura profissional do documento no Google Docs</div>
+<div class="cover-chips">
+  <span class="cover-chip">📚 Educação em Tecnologias Digitais</span>
+  <span class="cover-chip">🖥️ Google Docs</span>
+</div>`},
+
+{id:'agenda', title:'O que veremos hoje',
+html:`
+<div class="slide-label">Agenda · Parte 2</div>
+<h2 class="slide-h">O que veremos hoje</h2>
+<div class="agenda-grid">
+  <div class="agenda-item"><div class="agenda-icon">📄</div><div class="agenda-text"><strong>Cabeçalho</strong>Inserir, editar, opções — primeira página diferente</div></div>
+  <div class="agenda-item"><div class="agenda-icon">📋</div><div class="agenda-text"><strong>Rodapé</strong>Inserir e editar o rodapé do documento</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🔢</div><div class="agenda-text"><strong>Numeração de páginas</strong>Inserir, posicionar, formatar e ocultar da capa</div></div>
+  <div class="agenda-item"><div class="agenda-icon">✏️</div><div class="agenda-text"><strong>Atividade Prática 1</strong>Aplicar cabeçalho, rodapé e paginação</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🎨</div><div class="agenda-text"><strong>Estilos de parágrafo</strong>Título 1, 2, 3, Texto normal — hierarquia do documento</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🗂️</div><div class="agenda-text"><strong>Esboço e prévia</strong>Como estilos preparam o sumário automático</div></div>
+</div>`},
+
+{id:'conceito', title:'O que são cabeçalho e rodapé?',
+html:`
+<div class="slide-label">Conceito</div>
+<h2 class="slide-h">O que são cabeçalho e rodapé?</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area">📄 Cabeçalho — aparece no topo de todas as páginas</div>
+      <div class="page-body" style="min-height:60px">
+        <div style="font-size:11px;color:#AAA;text-align:center;padding:10px 0">Conteúdo do documento...</div>
+      </div>
+      <div class="page-footer-area">Rodapé — aparece no rodapé de todas as páginas &nbsp;&nbsp; <span>1</span></div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">⬆️</span><div class="callout-text"><strong>Cabeçalho:</strong> área no topo de cada página. Repetido automaticamente em todas as páginas. Usado para título do documento, nome da instituição, logotipo.</div></div>
+  <div class="callout g"><span class="callout-icon">⬇️</span><div class="callout-text"><strong>Rodapé:</strong> área na parte inferior de cada página. Usado para número de página, data, nome do autor, notas.</div></div>
+</div>`},
+
+{id:'paraque', title:'Para que servem?',
+html:`
+<div class="slide-label">Aplicação</div>
+<h2 class="slide-h">Para que servem na prática?</h2>
+<div class="agenda-grid">
+  <div class="agenda-item"><div class="agenda-icon">🏫</div><div class="agenda-text"><strong>Trabalhos acadêmicos</strong>Nome da instituição, curso e disciplina no cabeçalho; numeração de páginas no rodapé (ABNT)</div></div>
+  <div class="agenda-item"><div class="agenda-icon">🏢</div><div class="agenda-text"><strong>Documentos corporativos</strong>Logo da empresa no cabeçalho, rodapé com endereço e contato</div></div>
+  <div class="agenda-item"><div class="agenda-icon">📑</div><div class="agenda-text"><strong>Relatórios</strong>Título do relatório e seção atual no cabeçalho; página e total de páginas no rodapé</div></div>
+  <div class="agenda-item"><div class="agenda-icon">⚖️</div><div class="agenda-text"><strong>Contratos e documentos legais</strong>Identificação das partes no cabeçalho; rubrica e página no rodapé</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Vantagem:</strong> o cabeçalho e rodapé são editados uma única vez e aparecem em <strong>todas</strong> as páginas automaticamente.</div></div>`},
+
+{id:'acessar', title:'Acessando cabeçalho e rodapé',
+html:`
+<div class="slide-label">Como acessar</div>
+<h2 class="slide-h">Como acessar cabeçalho e rodapé</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-menubar" style="padding:6px 8px">
+    <span class="gm-item">Arquivo</span><span class="gm-item">Editar</span><span class="gm-item">Visualizar</span>
+    <span class="gm-item hl">Inserir</span>
+    <span class="gm-item">Formatar</span><span class="gm-item">Ferramentas</span>
+  </div>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Menu Inserir → Cabeçalho e número de página</div><div class="step-desc">No submenu aparecem as opções: Cabeçalho, Rodapé, Número de página, Contagem de páginas.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Ou: clique duas vezes na margem superior/inferior</div><div class="step-desc">Clicar duas vezes na área acima do texto (cabeçalho) ou abaixo (rodapé) ativa automaticamente a área de edição.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">A área fica em destaque com borda azul</div><div class="step-desc">O restante do documento fica levemente apagado, indicando que você está editando o cabeçalho ou rodapé.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Pressione Esc ou clique no corpo do texto para sair</div><div class="step-desc">O cabeçalho/rodapé volta ao visual normal e será repetido em todas as páginas.</div></div></div>
+</div>`},
+
+{id:'editarcabecalho', title:'Inserindo e editando o cabeçalho',
+html:`
+<div class="slide-label">Cabeçalho</div>
+<h2 class="slide-h">Inserindo e editando o cabeçalho</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area editing">
+        ✏️ &nbsp; <span style="font-weight:600">IFRN — Campus São Paulo do Potengi</span>
+        <span style="font-size:10px;opacity:.7">← editando agora</span>
+      </div>
+      <div class="page-body" style="min-height:50px">
+        <div style="font-size:11px;color:#CCC;text-align:center;padding:8px 0">Corpo do documento...</div>
+      </div>
+      <div class="page-footer-area" style="background:#F8F8F8;border-color:#DDD;color:#AAA">rodapé</div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">✍️</span><div class="callout-text"><strong>Digite normalmente</strong> dentro da área do cabeçalho. Toda a formatação de texto da Parte 1 funciona aqui: fontes, negrito, alinhamento, etc.</div></div>
+  <div class="callout b"><span class="callout-icon">↔️</span><div class="callout-text"><strong>Alinhamento:</strong> use <strong>Tab</strong> para mover o cursor para o centro ou direita do cabeçalho (o Google Docs já insere paradas de tabulação no cabeçalho).</div></div>
+  <div class="callout a"><span class="callout-icon">📐</span><div class="callout-text"><strong>Margem do cabeçalho:</strong> clique em "Opções" dentro da área do cabeçalho para ajustar a margem em centímetros.</div></div>
+</div>`},
+
+{id:'opcoes', title:'Opções do cabeçalho',
+html:`
+<div class="slide-label">Cabeçalho — opções</div>
+<h2 class="slide-h">Opções do cabeçalho</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div style="background:#F8F8F8;padding:6px 16px;border-bottom:1px solid #E8E8E8;font-size:12px;color:#1A73E8;display:flex;gap:20px">
+    <span>☑ Primeira página diferente</span>
+    <span style="color:#555">Margem: <strong>1,25 cm</strong></span>
+    <span style="margin-left:auto;color:#D93025">Opções ▾</span>
+  </div>
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area" style="background:#FFF5F5;border-color:#F4A8A8;color:#999;font-style:italic">Cabeçalho da primeira página (pode ser diferente ou vazio)</div>
+      <div class="page-body" style="min-height:40px"><div style="font-size:10px;color:#CCC;text-align:center;padding:6px">página 1 — capa</div></div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout a"><span class="callout-icon">📑</span><div class="callout-text"><strong>Primeira página diferente:</strong> ativa um cabeçalho separado para a página 1 — ideal para deixar a capa sem cabeçalho/rodapé (norma ABNT).</div></div>
+  <div class="callout g"><span class="callout-icon">📏</span><div class="callout-text"><strong>Margem do cabeçalho:</strong> distância entre a borda superior da folha e o início do cabeçalho. Padrão Google Docs: 1,25 cm. ABNT recomenda 2,0 cm.</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Dica ABNT:</strong> ative "Primeira página diferente" e deixe o cabeçalho da página 1 vazio — a capa fica limpa sem número ou título.</div></div>`},
+
+{id:'logo', title:'Cabeçalho com imagem ou logo',
+html:`
+<div class="slide-label">Cabeçalho — avançado</div>
+<h2 class="slide-h">Cabeçalho com imagem ou logotipo</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area editing" style="display:flex;gap:10px;align-items:center;padding:8px 20px">
+        <div style="width:32px;height:32px;border-radius:4px;background:linear-gradient(135deg,#1D6B3E,#2E8B57);display:flex;align-items:center;justify-content:center;font-size:12px;color:white;font-weight:800;flex-shrink:0">IF</div>
+        <div style="flex:1;font-size:12px;font-weight:600;color:#333">IFRN — Campus São Paulo do Potengi</div>
+        <div style="font-size:11px;color:#777">Educação em Tecnologias Digitais</div>
+      </div>
+      <div class="page-body" style="min-height:40px"><div style="font-size:10px;color:#CCC;text-align:center;padding:6px">Conteúdo...</div></div>
+    </div>
+  </div>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Clique dentro da área do cabeçalho</div><div class="step-desc">A área de edição azul será ativada.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Menu Inserir → Imagem → Fazer upload do computador</div><div class="step-desc">Ou use "Inserir → Imagem → Por URL" para uma imagem online.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Ajuste o tamanho e a posição</div><div class="step-desc">Redimensione arrastando os cantos. Use Tab para posicionar texto ao lado da imagem.</div></div></div>
+</div>`},
+
+{id:'rodape', title:'Inserindo o rodapé',
+html:`
+<div class="slide-label">Rodapé</div>
+<h2 class="slide-h">Inserindo e editando o rodapé</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area" style="background:#F8F8F8;border-color:#DDD;color:#AAA">Cabeçalho — IFRN SPP</div>
+      <div class="page-body" style="min-height:40px"><div style="font-size:10px;color:#CCC;text-align:center;padding:6px">Conteúdo do documento...</div></div>
+      <div class="page-footer-area editing">
+        ✏️ &nbsp; <span style="color:#555">Educação em Tecnologias Digitais · 2025</span>
+        <span style="color:#1A73E8;font-weight:600">1</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">📍</span><div class="callout-text"><strong>Inserir → Cabeçalho e número de página → Rodapé</strong> — ou clique duas vezes na margem inferior da página.</div></div>
+  <div class="callout b"><span class="callout-icon">↔️</span><div class="callout-text"><strong>Tabulação no rodapé:</strong> pressione <strong>Tab</strong> uma vez para mover para o centro, duas vezes para a direita — igual ao cabeçalho.</div></div>
+  <div class="callout a"><span class="callout-icon">💡</span><div class="callout-text"><strong>Conteúdo comum no rodapé:</strong> número de página, nome do autor, data, nome da disciplina ou instituição.</div></div>
+</div>`},
+
+{id:'numeracao', title:'Número de página — inserir',
+html:`
+<div class="slide-label">Paginação</div>
+<h2 class="slide-h">Inserindo número de página</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-menubar" style="padding:6px 8px">
+    <span class="gm-item hl">Inserir</span>
+  </div>
+  <div style="background:white;border:1px solid #E8E8E8;padding:6px 0;max-width:260px;margin:0 auto;border-radius:4px;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.12)">
+    <div style="padding:6px 16px;color:#555">Imagem</div>
+    <div style="padding:6px 16px;color:#555">Tabela</div>
+    <div style="height:1px;background:#EEE;margin:4px 0"></div>
+    <div style="padding:6px 16px;color:#1A73E8;font-weight:500;background:#EEF4FF">Cabeçalho e número de página ▶</div>
+    <div style="padding:6px 16px;color:#555">Link</div>
+    <div style="padding:6px 16px;color:#555">Sumário</div>
+  </div>
+</div>
+<div class="pn-demo" style="margin-top:14px">
+  <div class="pn-box">
+    <div class="pn-label">Cabeçalho — página no topo</div>
+    <div class="pn-page">
+      <div class="pn-top">1</div>
+      <div class="pn-mid">texto...</div>
+      <div class="pn-bot"></div>
+    </div>
+  </div>
+  <div class="pn-box">
+    <div class="pn-label" style="background:#E6F4ED;color:#1D6B3E">Rodapé — página no fundo ✔ ABNT</div>
+    <div class="pn-page">
+      <div class="pn-top"></div>
+      <div class="pn-mid">texto...</div>
+      <div class="pn-bot right">1</div>
+    </div>
+  </div>
+</div>`},
+
+{id:'posicao', title:'Posição e formato do número',
+html:`
+<div class="slide-label">Paginação</div>
+<h2 class="slide-h">Posição e formato do número</h2>
+<div class="pn-demo" style="margin-bottom:16px">
+  <div class="pn-box">
+    <div class="pn-label">Superior esquerdo</div>
+    <div class="pn-page"><div class="pn-top" style="text-align:left">1</div><div class="pn-mid">texto</div><div class="pn-bot"></div></div>
+  </div>
+  <div class="pn-box">
+    <div class="pn-label" style="background:#E6F4ED;color:#1D6B3E">Superior direito ✔ ABNT</div>
+    <div class="pn-page"><div class="pn-top" style="text-align:right">1</div><div class="pn-mid">texto</div><div class="pn-bot"></div></div>
+  </div>
+  <div class="pn-box">
+    <div class="pn-label">Inferior centralizado</div>
+    <div class="pn-page"><div class="pn-top"></div><div class="pn-mid">texto</div><div class="pn-bot center">1</div></div>
+  </div>
+  <div class="pn-box">
+    <div class="pn-label">Inferior direito</div>
+    <div class="pn-page"><div class="pn-top"></div><div class="pn-mid">texto</div><div class="pn-bot right">1</div></div>
+  </div>
+</div>
+<div class="callout a"><span class="callout-icon">📚</span><div class="callout-text"><strong>ABNT NBR 14724:</strong> numeração no canto superior direito da página, fonte igual ao corpo do texto (Arial ou Times, 12pt).</div></div>`},
+
+{id:'paginaXdeY', title:'Página X de Y',
+html:`
+<div class="slide-label">Paginação</div>
+<h2 class="slide-h">"Página X de Y" — número total de páginas</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-header-area" style="background:#F8F8F8;border-color:#DDD;color:#AAA">cabeçalho</div>
+      <div class="page-body" style="min-height:40px"><div style="font-size:10px;color:#CCC;text-align:center;padding:6px">...</div></div>
+      <div class="page-footer-area editing" style="justify-content:flex-end">
+        <span style="color:#333;font-weight:600;font-size:13px">Página 2 de 8</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Clique no rodapé onde quer inserir o texto</div><div class="step-desc">Posicione o cursor após os espaços ou tabulações.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Digite: "Página "</div><div class="step-desc">Texto fixo antes do número.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Inserir → Cabeçalho e número de página → Número de página</div><div class="step-desc">Insere o número dinâmico da página atual.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Digite: " de " e depois Inserir → Contagem de páginas</div><div class="step-desc">Insere o total de páginas. Resultado: "Página 2 de 8".</div></div></div>
+</div>`},
+
+{id:'sempaginacao', title:'Primeira página sem numeração',
+html:`
+<div class="slide-label">Paginação</div>
+<h2 class="slide-h">Primeira página sem numeração</h2>
+<div class="pn-demo" style="margin-bottom:16px">
+  <div class="pn-box">
+    <div class="pn-label" style="color:#D93025;background:#FEE8E8;border-color:#F4A8A8">❌ Errado — capa numerada</div>
+    <div class="pn-page">
+      <div class="pn-top" style="text-align:right;color:#D93025">1</div>
+      <div class="pn-mid">CAPA<br><span style="font-size:9px">título do trabalho</span></div>
+      <div class="pn-bot"></div>
+    </div>
+  </div>
+  <div class="pn-box">
+    <div class="pn-label" style="background:#E6F4ED;color:#1D6B3E">✅ Correto — capa sem número</div>
+    <div class="pn-page">
+      <div class="pn-top"></div>
+      <div class="pn-mid">CAPA<br><span style="font-size:9px">título do trabalho</span></div>
+      <div class="pn-bot"></div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">☑️</span><div class="callout-text"><strong>Solução:</strong> ative a opção <strong>"Primeira página diferente"</strong> no cabeçalho ou rodapé. Deixe o cabeçalho/rodapé da página 1 completamente vazio.</div></div>
+  <div class="callout a"><span class="callout-icon">📚</span><div class="callout-text"><strong>ABNT:</strong> a capa é <strong>contada</strong> mas <strong>não numerada</strong>. A numeração começa a aparecer geralmente a partir da introdução (a partir da folha de rosto ou da primeira página de conteúdo).</div></div>
+</div>`},
+
+{id:'abntcab', title:'Boas práticas ABNT',
+html:`
+<div class="slide-label">Referência</div>
+<h2 class="slide-h">Boas práticas — cabeçalho, rodapé e paginação</h2>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">✅</span><div class="callout-text"><strong>Número de página:</strong> canto superior direito · fonte Arial ou Times New Roman · tamanho 12pt · alinhado à margem direita</div></div>
+  <div class="callout g"><span class="callout-icon">✅</span><div class="callout-text"><strong>Capa e folha de rosto:</strong> contadas na numeração, mas o número não aparece na página</div></div>
+  <div class="callout g"><span class="callout-icon">✅</span><div class="callout-text"><strong>Margem do cabeçalho:</strong> 2,0 cm da borda superior</div></div>
+  <div class="callout"><span class="callout-icon">❌</span><div class="callout-text"><strong>Evite:</strong> cabeçalho com muita informação (sobrecarrega a leitura)</div></div>
+  <div class="callout"><span class="callout-icon">❌</span><div class="callout-text"><strong>Evite:</strong> fontes diferentes do corpo do texto no cabeçalho/rodapé</div></div>
+</div>
+<div class="tip"><span class="tip-icon">📌</span><div class="tip-text"><strong>Dica:</strong> verifique sempre o regulamento específico do seu curso ou instituição — ele pode ter normas próprias diferentes da ABNT geral.</div></div>`},
+
+{id:'prat1', title:'Atividade Prática 1',
+html:`
+<div class="activity-box">
+  <div class="activity-title">✏️ Atividade Prática 1</div>
+  <div class="activity-sub">Abra o documento <strong>Parte01_SeuNome</strong> criado na Parte 1</div>
+  <ul class="activity-steps">
+    <li data-n="1">Acesse o cabeçalho (Inserir → Cabeçalho e número de página → Cabeçalho)</li>
+    <li data-n="2">Digite no cabeçalho: <strong>IFRN — Campus SPP</strong> (à esquerda) e o nome da disciplina (à direita, usando Tab)</li>
+    <li data-n="3">Ative a opção <strong>"Primeira página diferente"</strong> e deixe o cabeçalho da página 1 vazio</li>
+    <li data-n="4">Acesse o rodapé e insira o número de página no <strong>canto direito</strong></li>
+    <li data-n="5">Confirme que a numeração <strong>não aparece na página 1</strong> mas aparece nas demais</li>
+    <li data-n="6">Se terminar: experimente adicionar "Página X de Y" no rodapé</li>
+  </ul>
+</div>`},
+
+{id:'gabarito1', title:'Gabarito — Atividade 1',
+html:`
+<div class="slide-label">Referência visual</div>
+<h2 class="slide-h">Como deve ficar — Atividade 1</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  <div>
+    <div style="font-size:12px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Página 1 (capa)</div>
+    <div class="gdocs-window">
+      <div class="gdocs-body" style="padding:8px 10px">
+        <div class="gdocs-page">
+          <div class="page-header-area" style="background:#F5F5F5;border-color:#DDD;color:#CCC;font-style:italic;font-size:10px">cabeçalho vazio (primeira página diferente)</div>
+          <div class="page-body" style="min-height:60px;display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center;font-size:11px;color:#555">
+              <strong>IFRN — Campus SPP</strong><br>
+              <span style="font-size:10px;color:#888">Educação em Tecnologias Digitais</span><br><br>
+              <em style="font-size:10px;color:#AAA">Parte01_SeuNome</em>
+            </div>
+          </div>
+          <div class="page-footer-area" style="background:#F5F5F5;border-color:#DDD;color:#CCC;font-size:10px">rodapé vazio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:12px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Página 2 em diante</div>
+    <div class="gdocs-window">
+      <div class="gdocs-body" style="padding:8px 10px">
+        <div class="gdocs-page">
+          <div class="page-header-area" style="background:#E6F4ED;border-color:#A8D4BB;color:#1D6B3E;font-size:11px;padding:6px 14px">
+            <span>IFRN — Campus SPP</span>
+            <span>Educ. Tecnologias Digitais</span>
+          </div>
+          <div class="page-body" style="min-height:50px;padding:10px 14px">
+            <div style="font-size:10px;color:#CCC">Conteúdo da apresentação pessoal...</div>
+          </div>
+          <div class="page-footer-area" style="background:#E6F4ED;border-color:#A8D4BB;color:#1D6B3E;font-size:11px">
+            <span></span><span style="font-weight:600">2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+/* ═══════════════════════ ESTILOS DE PARÁGRAFO ═══════════════════════ */
+
+{id:'estilosdef', title:'O que são estilos de parágrafo?',
+html:`
+<div class="slide-label">Estilos de Parágrafo</div>
+<h2 class="slide-h">O que são estilos de parágrafo?</h2>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">🎨</span><div class="callout-text"><strong>Estilo de parágrafo</strong> é um conjunto de formatações salvo com um nome. Ao aplicar um estilo, você aplica fonte, tamanho, espaçamento e cor de uma só vez.</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+  <div class="card"><div class="card-title">❌ Sem estilos — manual</div><div class="card-body" style="font-size:12px">Selecionar cada título → mudar fonte → tamanho → negrito → cor → espaçamento.<br><br>Repetir para cada título. Se quiser mudar depois, fazer tudo de novo!</div></div>
+  <div class="card green"><div class="card-title">✅ Com estilos</div><div class="card-body" style="font-size:12px">Selecionar o parágrafo → clicar em "Título 1".<br><br>Se quiser mudar o visual de TODOS os títulos: editar o estilo uma vez → atualiza tudo automaticamente!</div></div>
+</div>`},
+
+{id:'porqueestilos', title:'Por que usar estilos?',
+html:`
+<div class="slide-label">Estilos de Parágrafo</div>
+<h2 class="slide-h">Por que usar estilos?</h2>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">⚡</span><div class="callout-text"><strong>Velocidade:</strong> uma ação formata o parágrafo inteiro — fonte, tamanho, cor, espaçamento, tudo de uma vez.</div></div>
+  <div class="callout g"><span class="callout-icon">🔄</span><div class="callout-text"><strong>Consistência:</strong> todos os títulos do mesmo nível ficam idênticos em todo o documento, sem risco de inconsistência.</div></div>
+  <div class="callout g"><span class="callout-icon">✏️</span><div class="callout-text"><strong>Edição global:</strong> mudou o estilo? Todos os parágrafos que usam aquele estilo são atualizados automaticamente.</div></div>
+  <div class="callout g"><span class="callout-icon">📋</span><div class="callout-text"><strong>Sumário automático:</strong> o Google Docs usa os estilos Título 1, 2 e 3 para gerar o sumário com um clique. Sem estilos, não há sumário automático! (veremos na Parte 3)</div></div>
+  <div class="callout g"><span class="callout-icon">🗂️</span><div class="callout-text"><strong>Esboço do documento:</strong> o painel de esboço lateral mostra a estrutura de títulos do documento — navegação rápida em documentos longos.</div></div>
+</div>`},
+
+{id:'menuestilo', title:'Menu de estilos no Google Docs',
+html:`
+<div class="slide-label">Estilos — onde fica</div>
+<h2 class="slide-h">O menu de estilos</h2>
+<div class="gdocs-window" style="margin-bottom:16px">
+  <div class="gdocs-toolbar" style="padding:6px 8px">
+    <span class="gt" style="min-width:150px;border:1.5px solid #1A73E8;background:#E8F0FE;font-weight:600">Texto normal &nbsp;▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="min-width:110px;border:1px solid #DDD">Arial &nbsp;▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="width:40px;border:1px solid #DDD">12</span>
+    <span class="gt-sep"></span>
+    <span class="gt"><b>N</b></span><span class="gt"><i>I</i></span><span class="gt"><u>S</u></span>
+  </div>
+</div>
+<div style="display:flex;gap:12px">
+  <div style="flex:1">
+    <div style="background:white;border:1.5px solid #1A73E8;border-radius:8px;overflow:hidden;box-shadow:0 4px 16px rgba(26,115,232,.15)">
+      <div style="padding:6px 0">
+        <div style="padding:8px 16px;font-size:13px;color:#555;border-bottom:1px solid #F0F0F0">Texto normal</div>
+        <div style="padding:8px 16px;font-size:11px;color:#777;border-bottom:1px solid #F0F0F0">Título</div>
+        <div style="padding:8px 16px;font-size:11px;color:#999;font-style:italic;border-bottom:1px solid #F0F0F0">Subtítulo</div>
+        <div style="padding:8px 16px;font-size:16px;font-weight:700;color:#1A73E8;border-bottom:1px solid #F0F0F0">Título 1</div>
+        <div style="padding:8px 16px;font-size:14px;font-weight:600;color:#188038;border-bottom:1px solid #F0F0F0">Título 2</div>
+        <div style="padding:8px 16px;font-size:13px;font-weight:600;color:#555;border-bottom:1px solid #F0F0F0">Título 3</div>
+        <div style="padding:6px 16px;font-size:12px;color:#1A73E8">Opções de estilo...</div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1.2">
+    <div class="callouts">
+      <div class="callout b"><span class="callout-icon">👆</span><div class="callout-text"><strong>Para abrir:</strong> clique na seta ao lado de "Texto normal" na barra de ferramentas.</div></div>
+      <div class="callout a"><span class="callout-icon">⌨️</span><div class="callout-text"><strong>Atalho:</strong> Ctrl+Alt+1 para Título 1, Ctrl+Alt+2 para Título 2, Ctrl+Alt+3 para Título 3, Ctrl+Alt+0 para Texto normal.</div></div>
+    </div>
+  </div>
+</div>`},
+
+{id:'textonormal', title:'Texto Normal',
+html:`
+<div class="slide-label">Estilo</div>
+<h2 class="slide-h">Texto Normal</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-toolbar" style="padding:4px 8px">
+    <span class="gt" style="min-width:150px;border:1.5px solid #1A73E8;background:#E8F0FE;font-weight:600">Texto normal &nbsp;▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="min-width:110px;border:1px solid #DDD">Arial &nbsp;▾</span>
+    <span class="gt-sep"></span>
+    <span class="gt" style="border:1px solid #DDD;width:36px">12</span>
+  </div>
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-body" style="min-height:60px">
+        <p style="font-family:Arial,sans-serif;font-size:13px;color:#333;line-height:1.6;text-align:justify;text-indent:1.25cm">Este é um parágrafo em estilo Texto Normal. É o estilo padrão para o corpo do documento — o texto principal, os parágrafos de desenvolvimento, introdução e conclusão usam este estilo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout g"><span class="callout-icon">📝</span><div class="callout-text"><strong>Padrão Google Docs:</strong> Arial 11pt. Mas após nossas formatações da Parte 1, está Arial 12pt, justificado, 1,5 de espaçamento.</div></div>
+  <div class="callout b"><span class="callout-icon">🎯</span><div class="callout-text"><strong>Uso:</strong> todo o corpo do texto do documento — parágrafos de desenvolvimento, introdução, conclusão.</div></div>
+  <div class="callout a"><span class="callout-icon">⌨️</span><div class="callout-text"><strong>Atalho:</strong> <span style="font-family:monospace;background:#EEE;padding:1px 6px;border-radius:4px">Ctrl+Alt+0</span></div></div>
+</div>`},
+
+{id:'titulo', title:'Estilo Título (documento)',
+html:`
+<div class="slide-label">Estilo</div>
+<h2 class="slide-h">Título e Subtítulo do documento</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-body" style="min-height:80px">
+        <p style="font-family:Georgia,serif;font-size:24px;font-weight:700;color:#1A1A1A;text-align:center;margin-bottom:4px">Título do Documento</p>
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#777;text-align:center;margin-bottom:12px;font-style:italic">Subtítulo ou informação complementar</p>
+        <div style="height:1px;background:#DDD;margin-bottom:12px"></div>
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#444;line-height:1.6;text-align:justify;text-indent:1.25cm">Parágrafo de texto normal...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout b"><span class="callout-icon">📌</span><div class="callout-text"><strong>"Título"</strong> (sem número) é para o título principal do documento — aparece geralmente na capa ou no início. Georgia 26pt, negrito.</div></div>
+  <div class="callout"><span class="callout-icon">📌</span><div class="callout-text"><strong>"Subtítulo"</strong> é para uma linha de apoio abaixo do título principal — arial 15pt, itálico, cinza.</div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text">Os estilos "Título" e "Subtítulo" <strong>não aparecem</strong> no sumário automático. Apenas os estilos Título 1, 2 e 3 são indexados.</div></div>`},
+
+{id:'titulo1', title:'Título 1',
+html:`
+<div class="slide-label">Estilo</div>
+<h2 class="slide-h">Título 1 — seções principais</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-toolbar" style="padding:4px 8px">
+    <span class="gt" style="min-width:150px;border:1.5px solid #1A73E8;background:#E8F0FE;font-weight:600">Título 1 &nbsp;▾</span>
+  </div>
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-body" style="min-height:80px">
+        <p style="font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#1A73E8;margin-bottom:8px">1. Introdução</p>
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#444;line-height:1.6;text-align:justify;text-indent:1.25cm">Texto do parágrafo de introdução...</p>
+        <p style="font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#1A73E8;margin-top:12px;margin-bottom:8px">2. Desenvolvimento</p>
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#444;line-height:1.6;text-align:justify;text-indent:1.25cm">Texto do desenvolvimento...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="callouts">
+  <div class="callout b"><span class="callout-icon">1️⃣</span><div class="callout-text"><strong>Título 1:</strong> capítulos ou seções principais do documento. Padrão: Arial 20pt, azul escuro, negrito.</div></div>
+  <div class="callout g"><span class="callout-icon">📋</span><div class="callout-text"><strong>No sumário:</strong> aparece como item de primeiro nível (ex: "1. Introdução .......... 3")</div></div>
+  <div class="callout a"><span class="callout-icon">⌨️</span><div class="callout-text"><strong>Atalho:</strong> <span style="font-family:monospace;background:#EEE;padding:1px 6px;border-radius:4px">Ctrl+Alt+1</span></div></div>
+</div>`},
+
+{id:'titulo23', title:'Título 2 e Título 3',
+html:`
+<div class="slide-label">Estilo</div>
+<h2 class="slide-h">Título 2 e Título 3 — subseções</h2>
+<div class="gdocs-window" style="margin-bottom:14px">
+  <div class="gdocs-body" style="padding:10px 14px">
+    <div class="gdocs-page">
+      <div class="page-body" style="min-height:100px">
+        <p style="font-size:18px;font-weight:700;color:#1A73E8;margin-bottom:6px">1. Desenvolvimento</p>
+        <p style="font-size:15px;font-weight:700;color:#188038;margin-bottom:6px;margin-left:4px">1.1 Contexto histórico</p>
+        <p style="font-size:12px;color:#444;line-height:1.5;text-indent:1.25cm;margin-bottom:6px">Parágrafo de texto normal...</p>
+        <p style="font-size:13px;font-weight:600;color:#555;margin-bottom:4px;margin-left:8px">1.1.1 Antecedentes</p>
+        <p style="font-size:12px;color:#444;line-height:1.5;text-indent:1.25cm">Parágrafo de texto normal...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div class="callout b"><span class="callout-icon">2️⃣</span><div class="callout-text"><strong>Título 2:</strong> subseções dentro de um capítulo. Arial 16pt, verde, negrito.<br><span style="font-family:monospace;font-size:11px;background:#EEE;padding:1px 5px;border-radius:3px">Ctrl+Alt+2</span></div></div>
+  <div class="callout"><span class="callout-icon">3️⃣</span><div class="callout-text"><strong>Título 3:</strong> subseções mais específicas. Arial 14pt, cinza escuro, negrito.<br><span style="font-family:monospace;font-size:11px;background:#EEE;padding:1px 5px;border-radius:3px">Ctrl+Alt+3</span></div></div>
+</div>
+<div class="tip"><span class="tip-icon">📋</span><div class="tip-text">Títulos 2 e 3 também <strong>aparecem no sumário</strong> como sub-itens indentados.</div></div>`},
+
+{id:'hierarquia', title:'Hierarquia completa dos estilos',
+html:`
+<div class="slide-label">Hierarquia</div>
+<h2 class="slide-h">Hierarquia visual dos estilos</h2>
+<div class="hier-demo">
+  <div class="hier-row"><div class="hier-bar" style="width:4px;height:28px;opacity:1;background:#1A73E8"></div><div class="hier-text" style="font-size:22px;font-weight:800;color:#1A73E8">Título 1 — Capítulo principal</div></div>
+  <div class="hier-row" style="margin-left:16px"><div class="hier-bar" style="width:3px;height:20px;opacity:.8;background:#188038"></div><div class="hier-text" style="font-size:17px;font-weight:700;color:#188038">Título 2 — Seção do capítulo</div></div>
+  <div class="hier-row" style="margin-left:32px"><div class="hier-bar" style="width:2px;height:16px;opacity:.6;background:#555"></div><div class="hier-text" style="font-size:14px;font-weight:600;color:#555">Título 3 — Subseção</div></div>
+  <div class="hier-row" style="margin-left:48px;margin-top:4px"><div class="hier-bar" style="width:2px;height:13px;opacity:.3;background:#777"></div><div class="hier-text" style="font-size:12px;color:#444;line-height:1.6">Texto normal — parágrafo do corpo do documento, fonte Arial 12pt, justificado, espaçamento 1,5.</div></div>
+</div>
+<div class="tip" style="margin-top:14px"><span class="tip-icon">🎯</span><div class="tip-text"><strong>Regra de ouro:</strong> nunca "pule" um nível — não use Título 2 logo após Título 0 sem um Título 1. A hierarquia precisa ser respeitada para o sumário funcionar corretamente.</div></div>`},
+
+{id:'aplicar', title:'Como aplicar um estilo',
+html:`
+<div class="slide-label">Passo a passo</div>
+<h2 class="slide-h">Como aplicar um estilo de parágrafo</h2>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Posicione o cursor no parágrafo</div><div class="step-desc">Não precisa selecionar o parágrafo inteiro — basta clicar em qualquer ponto dentro dele. O estilo se aplica ao parágrafo todo.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Abra o menu de estilos</div><div class="step-desc">Clique na seta ao lado de "Texto normal" na barra de ferramentas — ou use Ctrl+Alt+1/2/3.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Clique no estilo desejado</div><div class="step-desc">Ex: "Título 1". O parágrafo assume instantaneamente as formatações do estilo.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Verifique o esboço lateral</div><div class="step-desc">O painel de esboço (Visualizar → Mostrar esboço) deve mostrar o título recém-aplicado na hierarquia do documento.</div></div></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text"><strong>Seleção múltipla:</strong> para aplicar o mesmo estilo a vários parágrafos não contíguos, use Ctrl+clique para selecionar cada um, depois aplique o estilo.</div></div>`},
+
+{id:'modificar', title:'Modificando um estilo',
+html:`
+<div class="slide-label">Personalização</div>
+<h2 class="slide-h">Modificando um estilo padrão</h2>
+<div class="steps">
+  <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Aplique o estilo a um parágrafo</div><div class="step-desc">Ex: aplique "Título 1" em um trecho do texto.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Altere a formatação desse parágrafo</div><div class="step-desc">Mude a fonte, tamanho, cor ou espaçamento como desejar — como se fosse uma formatação manual.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Abra o menu de estilos → passe o mouse em "Título 1"</div><div class="step-desc">Um ícone de seta aparece ao lado do estilo.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Clique na seta → "Atualizar 'Título 1' para corresponder"</div><div class="step-desc">Todos os parágrafos com Título 1 no documento são atualizados imediatamente com o novo visual!</div></div></div>
+</div>
+<div class="tip"><span class="tip-icon">⚠️</span><div class="tip-text"><strong>Atenção:</strong> essa alteração vale apenas para o documento atual. Para criar um padrão permanente, use "Opções de estilo → Salvar como estilos padrão".</div></div>`},
+
+{id:'esbozo', title:'Esboço do documento',
+html:`
+<div class="slide-label">Navegação</div>
+<h2 class="slide-h">Esboço do documento — navegação por títulos</h2>
+<div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start">
+  <div>
+    <div class="esbozo">
+      <div class="esbozo-title">Esboço</div>
+      <div class="esbozo-item t1">📌 Introdução</div>
+      <div class="esbozo-item t1">📌 Desenvolvimento</div>
+      <div class="esbozo-item t2">→ Contexto histórico</div>
+      <div class="esbozo-item t3">· Antecedentes</div>
+      <div class="esbozo-item t3">· Consequências</div>
+      <div class="esbozo-item t2">→ Análise atual</div>
+      <div class="esbozo-item t1">📌 Conclusão</div>
+      <div class="esbozo-item t1">📌 Referências</div>
+    </div>
+    <div style="font-size:11px;color:var(--ink3);margin-top:8px;text-align:center">Painel lateral do Google Docs</div>
+  </div>
+  <div class="callouts">
+    <div class="callout g"><span class="callout-icon">🗂️</span><div class="callout-text"><strong>O que é:</strong> painel lateral que mostra todos os títulos do documento em hierarquia. Aparece automaticamente ao usar estilos de título.</div></div>
+    <div class="callout b"><span class="callout-icon">👁️</span><div class="callout-text"><strong>Como ativar:</strong> Visualizar → Mostrar esboço — ou use o ícone de esboço na lateral esquerda da tela.</div></div>
+    <div class="callout g"><span class="callout-icon">🖱️</span><div class="callout-text"><strong>Navegar:</strong> clique em qualquer item do esboço para ir direto àquela seção. Essencial em documentos longos!</div></div>
+    <div class="callout a"><span class="callout-icon">📋</span><div class="callout-text"><strong>Prévia do sumário:</strong> a estrutura do esboço é exatamente o que aparecerá no sumário automático — o que você vê aqui é o que o sumário vai gerar.</div></div>
+  </div>
+</div>`},
+
+{id:'sumarioprev', title:'Prévia: estilos → sumário automático',
+html:`
+<div class="slide-label">Prévia · Parte 3</div>
+<h2 class="slide-h">Como estilos geram o sumário automático</h2>
+<div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:8px;align-items:center">
+  <div class="gdocs-window">
+    <div style="padding:8px 12px;background:#F8F8F8;font-size:11px;font-weight:600;color:#555;border-bottom:1px solid #EEE">Documento com estilos aplicados</div>
+    <div class="gdocs-body" style="padding:8px 10px">
+      <div class="gdocs-page" style="padding:12px 16px">
+        <p style="font-size:16px;font-weight:700;color:#1A73E8;margin-bottom:6px">1. Introdução</p>
+        <p style="font-size:11px;color:#AAA;margin-bottom:8px">texto normal...</p>
+        <p style="font-size:13px;font-weight:700;color:#188038;margin-bottom:6px">1.1 Contexto</p>
+        <p style="font-size:11px;color:#AAA;margin-bottom:8px">texto normal...</p>
+        <p style="font-size:16px;font-weight:700;color:#1A73E8;margin-bottom:6px">2. Desenvolvimento</p>
+        <p style="font-size:11px;color:#AAA">texto normal...</p>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:24px;color:var(--g)">→</div>
+  <div class="gdocs-window">
+    <div style="padding:8px 12px;background:#F8F8F8;font-size:11px;font-weight:600;color:#555;border-bottom:1px solid #EEE">Sumário gerado automaticamente</div>
+    <div class="gdocs-body" style="padding:8px 10px">
+      <div class="gdocs-page" style="padding:12px 16px">
+        <p style="font-size:13px;font-weight:700;text-align:center;margin-bottom:10px">SUMÁRIO</p>
+        <div style="font-size:12px;color:#333;display:flex;justify-content:space-between;margin-bottom:4px"><span>1. Introdução</span><span style="color:#AAA">3</span></div>
+        <div style="font-size:11px;color:#555;display:flex;justify-content:space-between;margin-bottom:4px;padding-left:14px"><span>1.1 Contexto</span><span style="color:#AAA">4</span></div>
+        <div style="font-size:12px;color:#333;display:flex;justify-content:space-between;margin-bottom:4px"><span>2. Desenvolvimento</span><span style="color:#AAA">5</span></div>
+        <div style="font-size:10px;color:#1A73E8;margin-top:6px;text-align:center">atualiza automaticamente 🔄</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="tip" style="margin-top:10px"><span class="tip-icon">📅</span><div class="tip-text"><strong>Na Parte 3</strong> vamos inserir o sumário automático com um clique, adicionar legendas em imagens e tabelas, e criar referências cruzadas.</div></div>`},
+
+{id:'prat2', title:'Atividade Prática 2',
+html:`
+<div class="activity-box">
+  <div class="activity-title">✏️ Atividade Prática 2</div>
+  <div class="activity-sub">No documento <strong>Parte01_SeuNome</strong> — estruture o texto com estilos de parágrafo</div>
+  <ul class="activity-steps">
+    <li data-n="1">Aplique o estilo <strong>Título</strong> ao seu nome no topo do documento</li>
+    <li data-n="2">Adicione ao documento os seguintes títulos em estilo <strong>Título 1</strong>: "Sobre mim", "Minhas expectativas", "Minhas habilidades"</li>
+    <li data-n="3">Mova os parágrafos e as listas para dentro das seções correspondentes</li>
+    <li data-n="4">Dentro de "Sobre mim", adicione um subtítulo em <strong>Título 2</strong>: "Minha trajetória"</li>
+    <li data-n="5">Abra o painel de <strong>Esboço</strong> (Visualizar → Mostrar esboço) e confirme que a estrutura aparece corretamente</li>
+    <li data-n="6">Se terminar: experimente modificar o visual do Título 1 (cor ou tamanho) e atualizar o estilo</li>
+  </ul>
+</div>`},
+
+{id:'gabarito2', title:'Gabarito — Atividade 2',
+html:`
+<div class="slide-label">Referência visual</div>
+<h2 class="slide-h">Como deve ficar — Atividade 2</h2>
+<div style="display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:start">
+  <div>
+    <div class="esbozo">
+      <div class="esbozo-title">Esboço esperado</div>
+      <div class="esbozo-item t1">📌 Sobre mim</div>
+      <div class="esbozo-item t2">→ Minha trajetória</div>
+      <div class="esbozo-item t1">📌 Minhas expectativas</div>
+      <div class="esbozo-item t1">📌 Minhas habilidades</div>
+    </div>
+  </div>
+  <div class="gdocs-window">
+    <div class="gdocs-body" style="padding:8px 10px">
+      <div class="gdocs-page" style="padding:14px 20px">
+        <p style="font-size:20px;font-weight:800;text-align:center;margin-bottom:12px;color:#1A1A1A">João Pedro Silva</p>
+        <p style="font-size:16px;font-weight:700;color:#1A73E8;margin-bottom:6px">Sobre mim</p>
+        <p style="font-size:13px;font-weight:600;color:#188038;margin-bottom:4px;margin-left:4px">Minha trajetória</p>
+        <p style="font-size:11px;color:#444;line-height:1.5;text-indent:1cm;margin-bottom:10px">Estou cursando Técnico em Informática para Internet...</p>
+        <p style="font-size:16px;font-weight:700;color:#1A73E8;margin-bottom:6px">Minhas expectativas</p>
+        <p style="font-size:11px;color:#444;line-height:1.5;text-indent:1cm;margin-bottom:10px">Espero aprender programação web...</p>
+        <p style="font-size:16px;font-weight:700;color:#1A73E8;margin-bottom:6px">Minhas habilidades</p>
+        <ol style="font-size:11px;color:#444;margin-left:16px;line-height:1.6">
+          <li>HTML e CSS</li><li>Python</li><li>Banco de dados</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>`},
+
+{id:'atalhos2', title:'Atalhos essenciais — Parte 2',
+html:`
+<div class="slide-label">Referência rápida</div>
+<h2 class="slide-h">Atalhos essenciais — Parte 2</h2>
+<div class="shortcut-grid">
+  <div class="sc-row"><span class="sc-key">Ctrl + Alt + 0</span><span class="sc-desc">Aplicar estilo Texto Normal</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Alt + 1</span><span class="sc-desc">Aplicar estilo Título 1</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Alt + 2</span><span class="sc-desc">Aplicar estilo Título 2</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Alt + 3</span><span class="sc-desc">Aplicar estilo Título 3</span></div>
+  <div class="sc-row"><span class="sc-key">Duplo clique</span><span class="sc-desc">Ativar área de cabeçalho ou rodapé</span></div>
+  <div class="sc-row"><span class="sc-key">Esc</span><span class="sc-desc">Sair do cabeçalho / rodapé</span></div>
+  <div class="sc-row"><span class="sc-key">Tab</span><span class="sc-desc">Avançar para centro/direita no cabeçalho</span></div>
+  <div class="sc-row"><span class="sc-key">Ctrl + Alt + M</span><span class="sc-desc">Mostrar / ocultar painel de esboço</span></div>
+</div>
+<div class="tip"><span class="tip-icon">💡</span><div class="tip-text">Os atalhos de formatação da Parte 1 (Ctrl+B, Ctrl+I, alinhamento, etc.) continuam funcionando normalmente dentro do cabeçalho e rodapé.</div></div>`},
+
+{id:'resumo', title:'Resumo e prévia da Parte 3',
+html:`
+<div class="slide-label">Encerramento · Parte 2</div>
+<h2 class="slide-h">O que aprendemos na Parte 2</h2>
+<div class="summary-grid">
+  <div class="summary-item"><span class="sum-icon">📄</span><div class="sum-text"><strong>Cabeçalho</strong>Inserir, editar, opções — primeira página diferente, margem, imagem/logo.</div></div>
+  <div class="summary-item"><span class="sum-icon">📋</span><div class="sum-text"><strong>Rodapé</strong>Inserir e editar. Tabulação para posicionamento.</div></div>
+  <div class="summary-item"><span class="sum-icon">🔢</span><div class="sum-text"><strong>Paginação</strong>Número de página, "Página X de Y", posição, primeira página sem número.</div></div>
+  <div class="summary-item"><span class="sum-icon">📚</span><div class="sum-text"><strong>ABNT</strong>Número no canto superior direito, capa contada mas não numerada.</div></div>
+  <div class="summary-item"><span class="sum-icon">🎨</span><div class="sum-text"><strong>Estilos de parágrafo</strong>Texto Normal, Título 1 / 2 / 3 — hierarquia e consistência.</div></div>
+  <div class="summary-item"><span class="sum-icon">🗂️</span><div class="sum-text"><strong>Esboço do documento</strong>Painel de navegação por títulos — prévia do sumário automático.</div></div>
+</div>
+<div class="card green" style="margin-top:12px">
+  <div class="card-title">📅 Parte 3 — O que vem por aí</div>
+  <div class="card-body">
+    <strong>Aula 5:</strong> Imagens, tabelas e elementos visuais<br>
+    <strong>Aula 6:</strong> Sumário automático, legendas e referências cruzadas<br><br>
+    O documento <code>Parte01_SeuNome</code> continuará sendo enriquecido. 📄
+  </div>
+</div>`},
+
+];
+
+/* ─── BUILD ─── */
+const deck = document.getElementById('deck');
+let cur = 0;
+
+slides.forEach((s,i)=>{
+  const el = document.createElement('div');
+  el.className = 'slide'+(s.type==='cover'?' cover-slide':'');
+  el.dataset.i = i;
+  const chapterLabel = s.chapter || 'Parte 2 · Google Docs';
+  const titleBar = s.title ? `<div class="slide-title-bar">${s.title}</div>` : '';
+  el.innerHTML = `
+    <div class="slide-header">
+      <div class="ifrn-logo">IFRN</div>
+      <span class="slide-chapter">${chapterLabel}</span>
+      ${titleBar}
+    </div>
+    <div class="slide-body${s.type==='cover'?' center':''}">
+      ${s.html}
+    </div>
+    <div class="slide-footer">
+      <button class="nav-btn" onclick="go(${i-1})" ${i===0?'disabled':''}>← Anterior</button>
+      <div class="progress-dots" id="dots${i}"></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="slide-counter">${i+1} / ${slides.length}</span>
+        <button class="nav-btn primary" onclick="go(${i+1})" ${i===slides.length-1?'disabled':''}>Próximo →</button>
+      </div>
+    </div>`;
+  deck.appendChild(el);
+});
+
+function buildDots(a){
+  const c = document.getElementById('dots'+a);
+  if(!c) return;
+  c.innerHTML='';
+  slides.forEach((_,i)=>{
+    const d = document.createElement('span');
+    d.className='dot'+(i===a?' active':'');
+    d.onclick=()=>go(i);
+    c.appendChild(d);
+  });
+}
+
+function go(n){
+  if(n<0||n>=slides.length) return;
+  document.querySelectorAll('.slide').forEach(el=>el.classList.remove('active'));
+  document.querySelector('.slide[data-i="'+n+'"]').classList.add('active');
+  buildDots(n);
+  cur=n;
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp') go(cur-1);
+});
+
+go(0);
+</script>
+</body>
+</html>
