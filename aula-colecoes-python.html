@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coleções em Python — INFO2M</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f7;
+    --surface:#ffffff;
+    --ink:#16202e;
+    --ink-soft:#46556b;
+    --line:#d4deeb;
+    --py-blue:#306998;
+    --py-blue-deep:#214d72;
+    --py-yellow:#ffd43b;
+    --accent-soft:#e3edf7;
+    --code-bg:#1b2433;
+    --code-line:#2a3650;
+    --ok:#2f9e7e;
+    --warn:#d98324;
+    --err:#cf5050;
+    --shadow:0 18px 50px -22px rgba(28,52,84,.45);
+    --kw:#ff9d66;
+    --str:#a8e6a0;
+    --fn:#7cc4ff;
+    --com:#7587a0;
+    --num:#ffd479;
+    --cls:#ffd43b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 700px at 85% -10%, #dfe9f5 0%, transparent 55%),
+      radial-gradient(900px 600px at 5% 110%, #e6edf6 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Estrutura ---------- */
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vh,40px)}
+  .stage{position:relative;width:min(1080px,94vw);height:min(660px,90vh)}
+  .slide{
+    position:absolute;inset:0;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:clamp(26px,4.2vw,54px);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .slide.on{display:flex}
+
+  .logo{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;
+    color:var(--ink-soft);text-transform:uppercase;display:flex;align-items:center;gap:9px
+  }
+  .logo .dot{width:9px;height:9px;border-radius:50%;background:var(--py-yellow);border:2px solid var(--py-blue)}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.16em;
+    color:var(--py-blue);text-transform:uppercase;margin-bottom:10px
+  }
+  h1{
+    font-family:'IBM Plex Serif',serif;font-weight:600;
+    font-size:clamp(2.3rem,4.6vw,3.4rem);line-height:1.06;letter-spacing:-.02em;margin-top:auto
+  }
+  h2{
+    font-family:'IBM Plex Serif',serif;font-weight:600;
+    font-size:clamp(1.45rem,2.6vw,2rem);line-height:1.15;letter-spacing:-.01em;
+    padding-bottom:12px;border-bottom:2px solid var(--accent-soft);margin-bottom:18px
+  }
+  h3{font-size:.95rem;font-weight:600;color:var(--py-blue-deep);margin-bottom:9px;letter-spacing:.01em}
+  p{line-height:1.6;color:var(--ink-soft);font-size:.98rem}
+  p.sub{font-size:clamp(1rem,1.5vw,1.15rem);max-width:60ch;margin-top:16px;color:var(--ink-soft)}
+  .body{flex:1;overflow:auto;min-height:0}
+  .body.center{display:flex;flex-direction:column;justify-content:center}
+  .cols{display:grid;gap:24px}
+  .cols.c2{grid-template-columns:1fr 1fr}
+  .cols.c2u{grid-template-columns:1.15fr .85fr}
+  .cols.c3{grid-template-columns:repeat(3,1fr)}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:9px}
+  ul.clean li{position:relative;padding-left:20px;line-height:1.5;color:var(--ink-soft);font-size:.96rem}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:7px;border-radius:2px;background:var(--py-blue)}
+  ul.clean li strong{color:var(--ink)}
+
+  ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+  ol.steps li{position:relative;padding-left:32px;line-height:1.5;color:var(--ink-soft);font-size:.96rem}
+  ol.steps li::before{
+    counter-increment:s;content:counter(s);
+    position:absolute;left:0;top:.05em;width:22px;height:22px;border-radius:6px;
+    background:var(--accent-soft);color:var(--py-blue-deep);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;
+    display:flex;align-items:center;justify-content:center
+  }
+
+  .ic{
+    font-family:'IBM Plex Mono',monospace;font-size:.88em;
+    background:var(--accent-soft);color:var(--py-blue-deep);
+    padding:1px 6px;border-radius:5px;white-space:nowrap
+  }
+  .snip{
+    font-family:'IBM Plex Mono',monospace;font-size:.95rem;color:#e7eefc;
+    background:var(--code-bg);border:1px solid var(--code-line);border-radius:10px;
+    padding:9px 13px;display:inline-block
+  }
+  .code{
+    background:var(--code-bg);border:1px solid var(--code-line);border-radius:12px;
+    padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:.9rem;line-height:1.6;
+    color:#e7eefc;white-space:pre;overflow:auto
+  }
+  .code .kw{color:var(--kw)} .code .str{color:var(--str)} .code .fn{color:var(--fn)}
+  .code .com{color:var(--com)} .code .num{color:var(--num)} .code .cls{color:var(--cls)}
+  .code .out{color:#93a4bd}
+
+  .fig{
+    background:#fbfcfe;border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;display:flex;align-items:center;justify-content:center
+  }
+  .fig svg{max-width:100%;height:auto}
+  .card{
+    background:#f8fafd;border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    display:flex;flex-direction:column;gap:8px
+  }
+  .card .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--py-blue)
+  }
+  .callout{
+    border-left:4px solid var(--py-blue);background:var(--accent-soft);
+    border-radius:0 12px 12px 0;padding:13px 16px;font-size:.94rem;color:var(--ink-soft);line-height:1.55
+  }
+  .callout.warn{border-color:var(--warn);background:#fdf4e8}
+  .callout.err{border-color:var(--err);background:#fbeeee}
+  .callout.ok{border-color:var(--ok);background:#eaf6f2}
+  .callout strong{color:var(--ink)}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
+    background:var(--py-blue);color:#fff;border-radius:20px;padding:6px 14px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase
+  }
+  .pill.soft{background:var(--accent-soft);color:var(--py-blue-deep)}
+
+  table.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.tbl th{
+    text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    font-family:'IBM Plex Mono',monospace;color:var(--py-blue);
+    padding:8px 10px;border-bottom:2px solid var(--accent-soft);font-weight:600
+  }
+  table.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  table.tbl td:first-child{color:var(--ink);font-weight:500}
+  table.tbl tr:last-child td{border-bottom:0}
+
+  .meta{margin-top:24px;display:flex;gap:24px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace}
+  .cover-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;height:100%}
+  .cover-art{display:flex;align-items:center;justify-content:center}
+  .refs{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .refs li{font-size:.88rem;color:var(--ink-soft);line-height:1.55;padding-left:0;text-indent:-28px;margin-left:28px}
+  .refs li strong{color:var(--ink);font-weight:500}
+
+  /* ---------- HUD ---------- */
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--py-yellow);z-index:20;transition:width .3s ease}
+  .hud{
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:12px;z-index:20;
+    background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;
+    padding:6px 10px;box-shadow:0 8px 24px -14px rgba(28,52,84,.6);backdrop-filter:blur(6px)
+  }
+  .hud button{
+    border:0;background:var(--py-blue);color:#fff;width:30px;height:30px;border-radius:50%;
+    cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center
+  }
+  .hud button:disabled{background:#c3d2e2;cursor:default}
+  .hud .count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);min-width:56px;text-align:center}
+
+  @media (max-width:820px){
+    .cols.c2,.cols.c3,.cols.c2u,.cover-grid{grid-template-columns:1fr}
+    .cover-art{display:none}
+    .slide{padding:22px}
+  }
+
+  /* ---------- Impressão / PDF — A4 paisagem ---------- */
+  @page{size:A4 landscape;margin:0}
+  @media print{
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    html,body{height:auto !important;overflow:visible !important;background:#fff !important}
+    .progress,.hud{display:none !important}
+    .deck{position:static !important;display:block !important;padding:0 !important}
+    .stage{position:static !important;width:auto !important;height:auto !important}
+    .slide{
+      position:relative !important;inset:auto !important;display:flex !important;
+      width:297mm;height:210mm;padding:14mm 16mm;
+      margin:0;border:none;border-radius:0;box-shadow:none;overflow:hidden;
+      break-after:page;page-break-after:always;break-inside:avoid;page-break-inside:avoid
+    }
+    .slide:last-child{break-after:auto;page-break-after:auto}
+    .body{overflow:visible !important}
+    .cover-art{display:flex !important}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+<div class="deck">
+  <div class="stage">
+    <!-- 1 — CAPA -->
+    <section class="slide cover on">
+      <div class="cover-grid">
+        <div style="display:flex;flex-direction:column;height:100%">
+          <div class="logo"><span class="dot"></span> IFRN · TÉCNICO EM INFORMÁTICA PARA INTERNET</div>
+          <div style="margin-top:auto">
+            <div class="eyebrow">INFO2M · Programação Orientada a Objetos</div>
+            <h1>Coleções<br>em Python</h1>
+            <p class="sub">Listas, tuplas, dicionários e conjuntos: guardando vários dados em uma variável só.</p>
+            <div class="meta">
+              <span class="snip">frutas = ["maçã", "banana", "uva"]</span>
+            </div>
+            <p style="margin-top:22px;font-size:.9rem">Profa. Fernanda Lígia</p>
+          </div>
+        </div>
+        <div class="cover-art">
+          <svg viewBox="0 0 260 300" width="100%" style="max-width:245px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quatro cartões: lista, tupla, dicionário e conjunto">
+            <g font-family="IBM Plex Mono, monospace" font-weight="600">
+              <g transform="translate(4,6)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#306998"/>
+                <text x="59" y="64" text-anchor="middle" font-size="34" fill="#306998">[ ]</text>
+                <text x="59" y="93" text-anchor="middle" font-size="11" fill="#46556b" letter-spacing="1.4">LISTA</text>
+              </g>
+              <g transform="translate(138,6)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#214d72"/>
+                <text x="59" y="64" text-anchor="middle" font-size="34" fill="#214d72">( )</text>
+                <text x="59" y="93" text-anchor="middle" font-size="11" fill="#46556b" letter-spacing="1.4">TUPLA</text>
+              </g>
+              <g transform="translate(4,144)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#d98324"/>
+                <text x="59" y="62" text-anchor="middle" font-size="26" fill="#d98324">{k:v}</text>
+                <text x="59" y="93" text-anchor="middle" font-size="10.5" fill="#46556b" letter-spacing="1.2">DICIONÁRIO</text>
+              </g>
+              <g transform="translate(138,144)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#2f9e7e"/>
+                <text x="59" y="64" text-anchor="middle" font-size="34" fill="#2f9e7e">{ }</text>
+                <text x="59" y="93" text-anchor="middle" font-size="10.5" fill="#46556b" letter-spacing="1.2">CONJUNTO</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 — O QUE É UMA COLEÇÃO -->
+    <section class="slide">
+      <div class="eyebrow">Introdução</div>
+      <h2>O que são coleções?</h2>
+      <div class="body">
+        <p style="margin-bottom:16px">Coleções são estruturas que guardam <strong>vários valores em uma única variável</strong>. Pense em uma caixa onde você coloca vários itens — é isso que uma coleção faz no Python.</p>
+        <div class="fig">
+          <svg viewBox="0 0 860 190" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparação entre quatro variáveis separadas e uma única lista com quatro itens">
+            <g font-family="IBM Plex Sans, sans-serif">
+              <text x="10" y="18" font-size="13" font-weight="600" fill="#cf5050">Sem coleção: uma variável para cada valor</text>
+              <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#16202e">
+                <rect x="10" y="34" width="82" height="44" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="51" y="52" text-anchor="middle" font-size="11" fill="#cf5050">nota1</text>
+                <text x="51" y="70" text-anchor="middle">7.5</text>
+                <rect x="102" y="34" width="82" height="44" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="143" y="52" text-anchor="middle" font-size="11" fill="#cf5050">nota2</text>
+                <text x="143" y="70" text-anchor="middle">8.0</text>
+                <rect x="194" y="34" width="82" height="44" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="235" y="52" text-anchor="middle" font-size="11" fill="#cf5050">nota3</text>
+                <text x="235" y="70" text-anchor="middle">6.2</text>
+                <rect x="286" y="34" width="82" height="44" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="327" y="52" text-anchor="middle" font-size="11" fill="#cf5050">nota4</text>
+                <text x="327" y="70" text-anchor="middle">9.1</text>
+              </g>
+              <text x="10" y="104" font-size="12" fill="#46556b">40 alunos = 40 variáveis. Impossível percorrer com um laço.</text>
+
+              <g transform="translate(420,0)">
+                <text x="10" y="18" font-size="13" font-weight="600" fill="#2f9e7e">Com coleção: uma variável guarda tudo</text>
+                <rect x="10" y="30" width="400" height="60" rx="12" fill="#eaf6f2" stroke="#a8d8c9"/>
+                <text x="22" y="24" font-size="0" fill="none"></text>
+                <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#16202e">
+                  <rect x="26" y="44" width="76" height="32" rx="8" fill="#ffffff" stroke="#a8d8c9"/>
+                  <text x="64" y="65" text-anchor="middle">7.5</text>
+                  <rect x="114" y="44" width="76" height="32" rx="8" fill="#ffffff" stroke="#a8d8c9"/>
+                  <text x="152" y="65" text-anchor="middle">8.0</text>
+                  <rect x="202" y="44" width="76" height="32" rx="8" fill="#ffffff" stroke="#a8d8c9"/>
+                  <text x="240" y="65" text-anchor="middle">6.2</text>
+                  <rect x="290" y="44" width="76" height="32" rx="8" fill="#ffffff" stroke="#a8d8c9"/>
+                  <text x="328" y="65" text-anchor="middle">9.1</text>
+                  <text x="378" y="65" text-anchor="middle" font-size="14" fill="#46556b">…</text>
+                  <text x="10" y="112" font-family="IBM Plex Mono, monospace" font-size="13" fill="#214d72">notas = [7.5, 8.0, 6.2, 9.1]</text>
+                </g>
+                <text x="10" y="134" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">3 ou 3.000 valores: o código continua o mesmo.</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2" style="margin-top:14px">
+          <div class="callout"><strong>Por que usar?</strong> Organizam os dados, facilitam operações repetitivas e deixam o código bem menor.</div>
+          <div class="callout ok"><strong>Hoje veremos quatro tipos:</strong> listas, tuplas, dicionários e conjuntos.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 — PANORAMA -->
+    <section class="slide">
+      <div class="eyebrow">Visão geral</div>
+      <h2>As quatro coleções do Python</h2>
+      <div class="body">
+        <div class="fig" style="margin-bottom:16px">
+          <svg viewBox="0 0 880 150" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cartões das quatro coleções com sintaxe e uso">
+            <g font-family="IBM Plex Sans, sans-serif">
+              <g transform="translate(6,8)">
+                <rect width="200" height="130" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="200" height="6" rx="3" fill="#306998"/>
+                <text x="100" y="52" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#306998">[ ]</text>
+                <text x="100" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#16202e">Lista</text>
+                <text x="100" y="102" text-anchor="middle" font-size="12" fill="#46556b">ordenada e mutável</text>
+                <text x="100" y="119" text-anchor="middle" font-size="12" fill="#46556b">aceita repetidos</text>
+              </g>
+              <g transform="translate(230,8)">
+                <rect width="200" height="130" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="200" height="6" rx="3" fill="#214d72"/>
+                <text x="100" y="52" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#214d72">( )</text>
+                <text x="100" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#16202e">Tupla</text>
+                <text x="100" y="102" text-anchor="middle" font-size="12" fill="#46556b">ordenada e imutável</text>
+                <text x="100" y="119" text-anchor="middle" font-size="12" fill="#46556b">aceita repetidos</text>
+              </g>
+              <g transform="translate(454,8)">
+                <rect width="200" height="130" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="200" height="6" rx="3" fill="#d98324"/>
+                <text x="100" y="52" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="24" font-weight="600" fill="#d98324">{"a": 1}</text>
+                <text x="100" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#16202e">Dicionário</text>
+                <text x="100" y="102" text-anchor="middle" font-size="12" fill="#46556b">pares chave: valor</text>
+                <text x="100" y="119" text-anchor="middle" font-size="12" fill="#46556b">chaves únicas</text>
+              </g>
+              <g transform="translate(678,8)">
+                <rect width="196" height="130" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="196" height="6" rx="3" fill="#2f9e7e"/>
+                <text x="98" y="52" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="30" font-weight="600" fill="#2f9e7e">{ }</text>
+                <text x="98" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#16202e">Conjunto</text>
+                <text x="98" y="102" text-anchor="middle" font-size="12" fill="#46556b">sem ordem</text>
+                <text x="98" y="119" text-anchor="middle" font-size="12" fill="#46556b">itens únicos</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2">
+          <div>
+            <h3>Duas perguntas para escolher</h3>
+            <ul class="clean">
+              <li>Os dados vão <strong>mudar</strong> durante o programa?</li>
+              <li>Como vou <strong>buscar</strong> um item depois: pela posição ou por um nome/código?</li>
+            </ul>
+          </div>
+          <div class="callout">
+            <strong>Atenção à sintaxe:</strong> dicionário e conjunto usam as mesmas chaves <span class="ic">{ }</span>. A diferença é o conteúdo: <span class="ic">{"nome": "Ana"}</span> é dicionário, <span class="ic">{"Ana", "Bruno"}</span> é conjunto.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 — LISTAS: CRIANDO -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Criando uma lista</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+<div class="code">frutas = [<span class="str">"maçã"</span>, <span class="str">"banana"</span>, <span class="str">"laranja"</span>, <span class="str">"uva"</span>]
+numeros = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+misturado = [<span class="num">10</span>, <span class="str">"texto"</span>, <span class="kw">True</span>, <span class="num">3.14</span>]
+
+vazia = []          <span class="com"># lista vazia, para preencher depois</span></div>
+            <div class="callout" style="margin-top:16px">
+              Os itens ficam entre <strong>colchetes</strong> <span class="ic">[ ]</span> e são separados por vírgula.
+            </div>
+          </div>
+          <div>
+            <h3>Características das listas</h3>
+            <ul class="clean">
+              <li>São <strong>ordenadas</strong>: mantêm a ordem em que você colocou os itens.</li>
+              <li>São <strong>mutáveis</strong>: dá para alterar, adicionar e remover.</li>
+              <li>Permitem itens <strong>repetidos</strong>.</li>
+              <li>Podem misturar tipos, mas o normal é guardar itens do mesmo tipo.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 — LISTAS: ÍNDICES -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Cada item tem uma posição</h2>
+      <div class="body">
+        <p style="margin-bottom:14px">A posição de um item se chama <strong>índice</strong>. E atenção: a contagem começa no <strong>zero</strong>.</p>
+        <div class="fig">
+          <svg viewBox="0 0 860 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lista de frutas com índices positivos acima e negativos abaixo">
+            <g font-family="IBM Plex Mono, monospace">
+              <text x="20" y="26" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#306998">índice</text>
+              <g font-size="14" fill="#306998" text-anchor="middle">
+                <text x="130" y="26">0</text><text x="330" y="26">1</text>
+                <text x="530" y="26">2</text><text x="730" y="26">3</text>
+              </g>
+              <g>
+                <rect x="30" y="40" width="200" height="62" rx="12" fill="#e3edf7" stroke="#a9c4de"/>
+                <rect x="230" y="40" width="200" height="62" rx="12" fill="#ffffff" stroke="#a9c4de"/>
+                <rect x="430" y="40" width="200" height="62" rx="12" fill="#e3edf7" stroke="#a9c4de"/>
+                <rect x="630" y="40" width="200" height="62" rx="12" fill="#ffffff" stroke="#a9c4de"/>
+              </g>
+              <g font-size="16" fill="#16202e" text-anchor="middle">
+                <text x="130" y="78">"maçã"</text><text x="330" y="78">"banana"</text>
+                <text x="530" y="78">"laranja"</text><text x="730" y="78">"uva"</text>
+              </g>
+              <g font-size="14" fill="#d98324" text-anchor="middle">
+                <text x="130" y="124">-4</text><text x="330" y="124">-3</text>
+                <text x="530" y="124">-2</text><text x="730" y="124">-1</text>
+              </g>
+              <text x="20" y="124" font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="#d98324">de trás</text>
+              <g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#46556b">
+                <text x="30" y="164">frutas[0] devolve "maçã"  ·  frutas[2] devolve "laranja"  ·  frutas[-1] devolve o último item, "uva"</text>
+                <text x="30" y="186" fill="#cf5050">frutas[4] não existe: a lista tem 4 itens, então o maior índice é 3 → IndexError</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 — LISTAS: ACESSAR E ALTERAR -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Acessando e alterando</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code">frutas = [<span class="str">"maçã"</span>, <span class="str">"banana"</span>, <span class="str">"laranja"</span>, <span class="str">"uva"</span>]
+
+<span class="com"># acessando</span>
+<span class="fn">print</span>(frutas[<span class="num">0</span>])     <span class="out"># maçã</span>
+<span class="fn">print</span>(frutas[<span class="num">2</span>])     <span class="out"># laranja</span>
+
+<span class="com"># alterando um item</span>
+frutas[<span class="num">1</span>] = <span class="str">"morango"</span>
+<span class="fn">print</span>(frutas)
+<span class="out"># ['maçã', 'morango', 'laranja', 'uva']</span>
+
+<span class="com"># quantos itens tem?</span>
+<span class="fn">print</span>(<span class="fn">len</span>(frutas))   <span class="out"># 4</span>
+
+<span class="com"># o item está na lista?</span>
+<span class="kw">if</span> <span class="str">"uva"</span> <span class="kw">in</span> frutas:
+    <span class="fn">print</span>(<span class="str">"Tem uva!"</span>)</div>
+          </div>
+          <div>
+            <div class="card">
+              <span class="tag">len( )</span>
+              <p>Conta quantos itens a lista tem. Como a contagem de índices começa no zero, o último índice é sempre <span class="ic">len(lista) - 1</span>.</p>
+            </div>
+            <div class="card" style="margin-top:14px">
+              <span class="tag">operador in</span>
+              <p>Responde <span class="ic">True</span> ou <span class="ic">False</span> para "esse valor está na lista?". Serve também para tuplas, dicionários e conjuntos.</p>
+            </div>
+            <div class="callout ok" style="margin-top:14px">
+              Como a lista é <strong>mutável</strong>, escrever <span class="ic">frutas[1] = "morango"</span> troca o item que já estava lá.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 — LISTAS: ADICIONAR E REMOVER -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Adicionando e removendo itens</h2>
+      <div class="body">
+        <div class="fig" style="margin-bottom:14px">
+          <svg viewBox="0 0 880 210" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de append, insert, remove e pop atuando sobre uma lista">
+            <defs>
+              <marker id="setaAzul" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#306998"/>
+              </marker>
+              <marker id="setaVerm" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#cf5050"/>
+              </marker>
+            </defs>
+            <g font-family="IBM Plex Sans, sans-serif">
+              <g font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e" text-anchor="middle">
+                <rect x="150" y="86" width="140" height="46" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                <text x="220" y="115">"maçã"</text>
+                <rect x="300" y="86" width="140" height="46" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                <text x="370" y="115">"banana"</text>
+                <rect x="450" y="86" width="140" height="46" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                <text x="520" y="115">"laranja"</text>
+                <rect x="600" y="86" width="140" height="46" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                <text x="670" y="115">"uva"</text>
+              </g>
+              <text x="60" y="114" font-family="IBM Plex Mono, monospace" font-size="14" fill="#46556b">frutas</text>
+
+              <path d="M810,109 L752,109" stroke="#306998" stroke-width="2" marker-end="url(#setaAzul)"/>
+              <text x="806" y="90" font-size="12.5" font-weight="600" fill="#306998" text-anchor="end">append("abacaxi")</text>
+              <text x="806" y="132" font-size="11.5" fill="#46556b" text-anchor="end">entra no fim</text>
+
+              <path d="M295,50 L295,80" stroke="#306998" stroke-width="2" marker-end="url(#setaAzul)"/>
+              <text x="295" y="38" font-size="12.5" font-weight="600" fill="#306998" text-anchor="middle">insert(1, "kiwi")</text>
+              <text x="295" y="22" font-size="11.5" fill="#46556b" text-anchor="middle">entra na posição 1 e empurra o resto</text>
+
+              <path d="M520,140 L520,172" stroke="#cf5050" stroke-width="2" marker-end="url(#setaVerm)"/>
+              <text x="520" y="192" font-size="12.5" font-weight="600" fill="#cf5050" text-anchor="middle">remove("laranja") — sai pelo valor</text>
+
+              <path d="M670,140 L670,172" stroke="#cf5050" stroke-width="2" marker-end="url(#setaVerm)"/>
+              <text x="810" y="192" font-size="12.5" font-weight="600" fill="#cf5050" text-anchor="end">pop(3) — sai pelo índice</text>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.85rem">frutas.<span class="fn">append</span>(<span class="str">"abacaxi"</span>)   <span class="com"># adiciona no final</span>
+frutas.<span class="fn">insert</span>(<span class="num">1</span>, <span class="str">"kiwi"</span>)   <span class="com"># insere na posição 1</span></div>
+          </div>
+          <div>
+<div class="code" style="font-size:.85rem">frutas.<span class="fn">remove</span>(<span class="str">"laranja"</span>)   <span class="com"># remove pelo valor</span>
+frutas.<span class="fn">pop</span>(<span class="num">2</span>)               <span class="com"># remove pelo índice</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 — LISTAS: MÉTODOS -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Métodos principais</h2>
+      <div class="body">
+        <table class="tbl">
+          <tr><th>Método</th><th>O que faz</th><th>Exemplo</th></tr>
+          <tr><td><span class="ic">append()</span></td><td>Adiciona um item ao final da lista</td><td><span class="ic">lista.append(10)</span></td></tr>
+          <tr><td><span class="ic">insert()</span></td><td>Insere um item em uma posição específica</td><td><span class="ic">lista.insert(1, "a")</span></td></tr>
+          <tr><td><span class="ic">remove()</span></td><td>Remove o primeiro item com aquele valor</td><td><span class="ic">lista.remove("b")</span></td></tr>
+          <tr><td><span class="ic">pop()</span></td><td>Remove e devolve o item da posição (ou o último)</td><td><span class="ic">item = lista.pop(2)</span></td></tr>
+          <tr><td><span class="ic">index()</span></td><td>Devolve a posição do primeiro item com aquele valor</td><td><span class="ic">i = lista.index("x")</span></td></tr>
+          <tr><td><span class="ic">count()</span></td><td>Conta quantas vezes um valor aparece</td><td><span class="ic">n = lista.count(5)</span></td></tr>
+          <tr><td><span class="ic">sort()</span></td><td>Ordena a própria lista</td><td><span class="ic">lista.sort()</span></td></tr>
+          <tr><td><span class="ic">reverse()</span></td><td>Inverte a ordem dos itens</td><td><span class="ic">lista.reverse()</span></td></tr>
+          <tr><td><span class="ic">copy()</span></td><td>Cria uma cópia da lista</td><td><span class="ic">nova = lista.copy()</span></td></tr>
+          <tr><td><span class="ic">clear()</span></td><td>Remove todos os itens</td><td><span class="ic">lista.clear()</span></td></tr>
+        </table>
+        <div class="callout" style="margin-top:14px">
+          <strong>Dica:</strong> digite <span class="ic">help(list)</span> no Python para ver todos os métodos disponíveis.
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 — PERCORRENDO -->
+    <section class="slide">
+      <div class="eyebrow">Listas</div>
+      <h2>Percorrendo uma lista</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code">frutas = [<span class="str">"maçã"</span>, <span class="str">"banana"</span>, <span class="str">"uva"</span>]
+
+<span class="kw">for</span> f <span class="kw">in</span> frutas:
+    <span class="fn">print</span>(f)
+
+<span class="out"># maçã</span>
+<span class="out"># banana</span>
+<span class="out"># uva</span></div>
+            <div class="callout" style="margin-top:16px">
+              O <span class="ic">for</span> pega <strong>um item por vez</strong>, do primeiro ao último. A variável <span class="ic">f</span> muda de valor a cada volta do laço.
+            </div>
+          </div>
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 420 250" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="O laço for visitando cada item da lista">
+                <defs>
+                  <marker id="setaLoop" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                    <path d="M0,0 L9,4.5 L0,9 z" fill="#306998"/>
+                  </marker>
+                </defs>
+                <g font-family="IBM Plex Mono, monospace" font-size="14">
+                  <rect x="20" y="26" width="150" height="42" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                  <text x="95" y="53" text-anchor="middle" fill="#16202e">"maçã"</text>
+                  <rect x="20" y="94" width="150" height="42" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                  <text x="95" y="121" text-anchor="middle" fill="#16202e">"banana"</text>
+                  <rect x="20" y="162" width="150" height="42" rx="10" fill="#ffffff" stroke="#a9c4de"/>
+                  <text x="95" y="189" text-anchor="middle" fill="#16202e">"uva"</text>
+
+                  <path d="M178,47 L246,47" stroke="#306998" stroke-width="2" marker-end="url(#setaLoop)"/>
+                  <path d="M178,115 L246,115" stroke="#306998" stroke-width="2" marker-end="url(#setaLoop)"/>
+                  <path d="M178,183 L246,183" stroke="#306998" stroke-width="2" marker-end="url(#setaLoop)"/>
+
+                  <rect x="252" y="26" width="150" height="42" rx="10" fill="#e3edf7" stroke="#a9c4de"/>
+                  <text x="327" y="53" text-anchor="middle" fill="#214d72">print(f)</text>
+                  <rect x="252" y="94" width="150" height="42" rx="10" fill="#e3edf7" stroke="#a9c4de"/>
+                  <text x="327" y="121" text-anchor="middle" fill="#214d72">print(f)</text>
+                  <rect x="252" y="162" width="150" height="42" rx="10" fill="#e3edf7" stroke="#a9c4de"/>
+                  <text x="327" y="189" text-anchor="middle" fill="#214d72">print(f)</text>
+                </g>
+                <g font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">
+                  <text x="20" y="18">a lista</text>
+                  <text x="252" y="18">o que acontece a cada volta</text>
+                  <text x="20" y="230">1ª volta: f = "maçã" · 2ª volta: f = "banana" · 3ª volta: f = "uva"</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 — ATIVIDADE 1 -->
+    <section class="slide">
+      <div class="eyebrow">Mão na massa</div>
+      <h2>Atividade 1 — Lista de amigos</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <span class="pill">Tempo: 15 minutos</span>
+            <p style="margin:14px 0 12px">Crie o arquivo <span class="ic">amigos.py</span> com uma lista contendo o nome de 5 amigos. Depois:</p>
+            <ol class="steps">
+              <li>Adicione um novo amigo ao final da lista.</li>
+              <li>Remova o segundo amigo da lista.</li>
+              <li>Verifique se o seu melhor amigo está na lista e mostre uma mensagem.</li>
+              <li>Mostre quantos amigos há na lista agora.</li>
+              <li>Mostre todos os nomes, um por linha, usando <span class="ic">for</span>.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Prática rápida (bônus)</h3>
+            <ol class="steps">
+              <li>Crie uma lista com os números de 1 a 5.</li>
+              <li>Adicione o número 6 no final.</li>
+              <li>Insira o 0 no início.</li>
+              <li>Inverta a ordem da lista.</li>
+              <li>Conte quantas vezes o número 3 aparece.</li>
+            </ol>
+            <div class="callout" style="margin-top:14px">
+              Lembre: o segundo amigo está no índice <span class="ic">1</span>, não no <span class="ic">2</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 — TUPLAS -->
+    <section class="slide">
+      <div class="eyebrow">Tuplas</div>
+      <h2>Parecida com a lista, mas travada</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+<div class="code">coordenadas = (<span class="num">10</span>, <span class="num">20</span>)
+cores = (<span class="str">"vermelho"</span>, <span class="str">"verde"</span>, <span class="str">"azul"</span>)
+
+<span class="com"># acessar é igual ao da lista</span>
+<span class="fn">print</span>(cores[<span class="num">1</span>])      <span class="out"># verde</span>
+<span class="fn">print</span>(<span class="fn">len</span>(cores))    <span class="out"># 3</span>
+
+<span class="com"># alterar NÃO funciona</span>
+cores[<span class="num">1</span>] = <span class="str">"amarelo"</span>   <span class="out"># TypeError</span></div>
+            <div class="callout warn" style="margin-top:14px">
+              <strong>Curiosidade:</strong> tupla com um único elemento precisa da vírgula: <span class="ic">tupla = (1,)</span>. Sem ela, <span class="ic">(1)</span> é só o número 1.
+            </div>
+          </div>
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 400 210" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tupla trancada por um cadeado, alteração bloqueada">
+                <g font-family="IBM Plex Mono, monospace">
+                  <rect x="14" y="60" width="120" height="48" rx="10" fill="#eef2f7" stroke="#a9c4de"/>
+                  <text x="74" y="90" text-anchor="middle" font-size="13" fill="#16202e">"vermelho"</text>
+                  <rect x="140" y="60" width="110" height="48" rx="10" fill="#eef2f7" stroke="#a9c4de"/>
+                  <text x="195" y="90" text-anchor="middle" font-size="13" fill="#16202e">"verde"</text>
+                  <rect x="256" y="60" width="110" height="48" rx="10" fill="#eef2f7" stroke="#a9c4de"/>
+                  <text x="311" y="90" text-anchor="middle" font-size="13" fill="#16202e">"azul"</text>
+                </g>
+                <g>
+                  <rect x="176" y="122" width="40" height="30" rx="6" fill="#214d72"/>
+                  <path d="M186,122 v-10 a10,10 0 0 1 20,0 v10" fill="none" stroke="#214d72" stroke-width="4"/>
+                  <circle cx="196" cy="137" r="4" fill="#ffd43b"/>
+                </g>
+                <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle">
+                  <text x="196" y="34" font-size="13" font-weight="600" fill="#214d72">criada uma vez, nunca muda</text>
+                  <text x="196" y="176" font-size="12.5" fill="#cf5050">não dá para trocar, adicionar nem remover</text>
+                  <text x="196" y="196" font-size="12.5" fill="#46556b">se precisar mudar, use uma lista</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 — TUPLAS: QUANDO USAR -->
+    <section class="slide">
+      <div class="eyebrow">Tuplas</div>
+      <h2>Quando usar tupla?</h2>
+      <div class="body">
+        <div class="cols c3">
+          <div class="card">
+            <span class="tag">Dados fixos</span>
+            <p>Valores que não devem mudar: as cores oficiais de um site, os dias da semana, as coordenadas de um ponto.</p>
+<div class="code" style="font-size:.8rem">DIAS = (<span class="str">"seg"</span>, <span class="str">"ter"</span>, <span class="str">"qua"</span>)</div>
+          </div>
+          <div class="card">
+            <span class="tag">Segurança</span>
+            <p>Ninguém consegue alterar aquele dado por engano em outra parte do programa. O próprio Python impede.</p>
+<div class="code" style="font-size:.8rem">ponto = (<span class="num">10</span>, <span class="num">20</span>)
+ponto[<span class="num">0</span>] = <span class="num">99</span>  <span class="out"># erro</span></div>
+          </div>
+          <div class="card">
+            <span class="tag">Desempenho</span>
+            <p>Tuplas são mais leves e mais rápidas que listas. Em coleções grandes que só serão lidas, isso faz diferença.</p>
+<div class="code" style="font-size:.8rem">cores = (<span class="str">"azul"</span>, <span class="str">"verde"</span>)</div>
+          </div>
+        </div>
+        <div class="callout ok" style="margin-top:18px">
+          <strong>Resumindo:</strong> se o conteúdo vai mudar durante o programa, use <strong>lista</strong>. Se é uma informação fixa, use <strong>tupla</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 — DICIONÁRIOS: CHAVE E VALOR -->
+    <section class="slide">
+      <div class="eyebrow">Dicionários</div>
+      <h2>Cada valor tem um nome: a chave</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code">aluno = {
+    <span class="str">"nome"</span>: <span class="str">"João Silva"</span>,
+    <span class="str">"idade"</span>: <span class="num">16</span>,
+    <span class="str">"turma"</span>: <span class="str">"2ºA"</span>,
+    <span class="str">"notas"</span>: [<span class="num">7.5</span>, <span class="num">8.0</span>, <span class="num">6.5</span>]
+}
+
+<span class="fn">print</span>(aluno[<span class="str">"nome"</span>])   <span class="out"># João Silva</span></div>
+            <div class="callout" style="margin-top:14px">
+              Na lista você busca pela <strong>posição</strong> (<span class="ic">alunos[0]</span>). No dicionário você busca pelo <strong>nome da informação</strong> (<span class="ic">aluno["nome"]</span>) — bem mais claro de ler.
+            </div>
+          </div>
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 430 250" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chaves apontando para seus valores dentro de um dicionário">
+                <defs>
+                  <marker id="setaDic" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                    <path d="M0,0 L9,4.5 L0,9 z" fill="#d98324"/>
+                  </marker>
+                </defs>
+                <rect x="6" y="26" width="418" height="200" rx="14" fill="#fdf9f3" stroke="#e8d3b6"/>
+                <g font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">
+                  <text x="18" y="18">chave</text>
+                  <text x="250" y="18">valor</text>
+                  <text x="16" y="244" font-size="11.5" fill="#d98324">aluno</text>
+                </g>
+                <g font-family="IBM Plex Mono, monospace" font-size="13">
+                  <rect x="20" y="44" width="130" height="36" rx="9" fill="#ffffff" stroke="#e0c295"/>
+                  <text x="85" y="67" text-anchor="middle" fill="#d98324">"nome"</text>
+                  <path d="M158,62 L222,62" stroke="#d98324" stroke-width="2" marker-end="url(#setaDic)"/>
+                  <rect x="230" y="44" width="180" height="36" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+                  <text x="320" y="67" text-anchor="middle" fill="#16202e">"João Silva"</text>
+
+                  <rect x="20" y="92" width="130" height="36" rx="9" fill="#ffffff" stroke="#e0c295"/>
+                  <text x="85" y="115" text-anchor="middle" fill="#d98324">"idade"</text>
+                  <path d="M158,110 L222,110" stroke="#d98324" stroke-width="2" marker-end="url(#setaDic)"/>
+                  <rect x="230" y="92" width="180" height="36" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+                  <text x="320" y="115" text-anchor="middle" fill="#16202e">16</text>
+
+                  <rect x="20" y="140" width="130" height="36" rx="9" fill="#ffffff" stroke="#e0c295"/>
+                  <text x="85" y="163" text-anchor="middle" fill="#d98324">"turma"</text>
+                  <path d="M158,158 L222,158" stroke="#d98324" stroke-width="2" marker-end="url(#setaDic)"/>
+                  <rect x="230" y="140" width="180" height="36" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+                  <text x="320" y="163" text-anchor="middle" fill="#16202e">"2ºA"</text>
+
+                  <rect x="20" y="188" width="130" height="36" rx="9" fill="#ffffff" stroke="#e0c295"/>
+                  <text x="85" y="211" text-anchor="middle" fill="#d98324">"notas"</text>
+                  <path d="M158,206 L222,206" stroke="#d98324" stroke-width="2" marker-end="url(#setaDic)"/>
+                  <rect x="230" y="188" width="180" height="36" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+                  <text x="320" y="211" text-anchor="middle" fill="#16202e">[7.5, 8.0, 6.5]</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 — DICIONÁRIOS: ACESSO -->
+    <section class="slide">
+      <div class="eyebrow">Dicionários</div>
+      <h2>Acessando, adicionando e alterando</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+<div class="code">aluno = {<span class="str">"nome"</span>: <span class="str">"João"</span>, <span class="str">"idade"</span>: <span class="num">16</span>}
+
+<span class="com"># acesso direto</span>
+<span class="fn">print</span>(aluno[<span class="str">"nome"</span>])            <span class="out"># João</span>
+
+<span class="com"># acesso seguro</span>
+<span class="fn">print</span>(aluno.<span class="fn">get</span>(<span class="str">"idade"</span>))       <span class="out"># 16</span>
+<span class="fn">print</span>(aluno.<span class="fn">get</span>(<span class="str">"turma"</span>))       <span class="out"># None</span>
+<span class="fn">print</span>(aluno.<span class="fn">get</span>(<span class="str">"turma"</span>, <span class="str">"2ºA"</span>))  <span class="out"># 2ºA</span>
+
+<span class="com"># alterar um valor</span>
+aluno[<span class="str">"idade"</span>] = <span class="num">17</span>
+
+<span class="com"># adicionar uma chave nova</span>
+aluno[<span class="str">"escola"</span>] = <span class="str">"IFRN"</span></div>
+          </div>
+          <div>
+            <table class="tbl">
+              <tr><th>Forma</th><th>Quando usar</th></tr>
+              <tr><td><span class="ic">aluno["nome"]</span></td><td>quando você tem certeza de que a chave existe</td></tr>
+              <tr><td><span class="ic">aluno.get("nome")</span></td><td>quando a chave pode não existir</td></tr>
+            </table>
+            <div class="callout err" style="margin-top:16px">
+              <strong>Cuidado:</strong> <span class="ic">aluno["turma"]</span> gera <span class="ic">KeyError</span> se a chave não existir. Já <span class="ic">.get()</span> devolve <span class="ic">None</span> (ou o valor padrão que você indicar) sem quebrar o programa.
+            </div>
+            <div class="callout ok" style="margin-top:14px">
+              A mesma linha <span class="ic">aluno["escola"] = "IFRN"</span> <strong>altera</strong> se a chave já existe e <strong>cria</strong> se ainda não existe.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 — DICIONÁRIOS: REMOVER E PERCORRER -->
+    <section class="slide">
+      <div class="eyebrow">Dicionários</div>
+      <h2>Removendo e percorrendo</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+            <h3>Removendo</h3>
+<div class="code" style="font-size:.86rem">aluno.<span class="fn">pop</span>(<span class="str">"turma"</span>)   <span class="com"># remove e devolve o valor</span>
+<span class="kw">del</span> aluno[<span class="str">"idade"</span>]     <span class="com"># remove sem devolver</span>
+aluno.<span class="fn">clear</span>()          <span class="com"># esvazia o dicionário</span>
+
+<span class="com"># a chave existe?</span>
+<span class="kw">if</span> <span class="str">"notas"</span> <span class="kw">in</span> aluno:
+    <span class="fn">print</span>(<span class="str">"Tem informações de notas"</span>)</div>
+            <h3 style="margin-top:16px">Percorrendo os pares</h3>
+<div class="code" style="font-size:.86rem"><span class="kw">for</span> chave, valor <span class="kw">in</span> aluno.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="str">f"{chave}: {valor}"</span>)</div>
+          </div>
+          <div>
+            <h3>Três formas de percorrer</h3>
+            <div class="fig">
+              <svg viewBox="0 0 420 220" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="keys, values e items sobre um cadastro">
+                <g font-family="IBM Plex Mono, monospace" font-size="12.5">
+                  <rect x="8" y="30" width="130" height="150" rx="12" fill="#fdf9f3" stroke="#e8d3b6"/>
+                  <text x="73" y="22" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="#d98324">.keys()</text>
+                  <text x="73" y="58" text-anchor="middle" fill="#16202e">"001"</text>
+                  <text x="73" y="88" text-anchor="middle" fill="#16202e">"002"</text>
+                  <text x="73" y="118" text-anchor="middle" fill="#16202e">"003"</text>
+                  <text x="73" y="158" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#46556b">só as chaves</text>
+
+                  <rect x="146" y="30" width="130" height="150" rx="12" fill="#eef5f2" stroke="#a8d8c9"/>
+                  <text x="211" y="22" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="#2f9e7e">.values()</text>
+                  <text x="211" y="58" text-anchor="middle" fill="#16202e">"Ana"</text>
+                  <text x="211" y="88" text-anchor="middle" fill="#16202e">"Carlos"</text>
+                  <text x="211" y="118" text-anchor="middle" fill="#16202e">"Maria"</text>
+                  <text x="211" y="158" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#46556b">só os valores</text>
+
+                  <rect x="284" y="30" width="130" height="150" rx="12" fill="#e3edf7" stroke="#a9c4de"/>
+                  <text x="349" y="22" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" font-weight="600" fill="#306998">.items()</text>
+                  <text x="349" y="58" text-anchor="middle" font-size="11.5" fill="#16202e">"001", "Ana"</text>
+                  <text x="349" y="88" text-anchor="middle" font-size="11.5" fill="#16202e">"002", "Carlos"</text>
+                  <text x="349" y="118" text-anchor="middle" font-size="11.5" fill="#16202e">"003", "Maria"</text>
+                  <text x="349" y="158" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#46556b">os dois juntos</text>
+                </g>
+                <text x="8" y="206" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">cadastro = {"001": "Ana", "002": "Carlos", "003": "Maria"}</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 — ATIVIDADE 2 -->
+    <section class="slide">
+      <div class="eyebrow">Mão na massa</div>
+      <h2>Atividade 2 — Cadastro de um celular</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <span class="pill">Tempo: 15 minutos</span>
+            <p style="margin:14px 0 12px">Crie um dicionário representando um celular, com as chaves: <strong>marca</strong>, <strong>modelo</strong>, <strong>ano</strong>, <strong>preço</strong> e <strong>acessórios</strong> (uma lista com pelo menos 3 itens). Depois:</p>
+            <ol class="steps">
+              <li>Adicione uma nova chave <span class="ic">"cor"</span>.</li>
+              <li>Remova a chave <span class="ic">"preço"</span>.</li>
+              <li>Verifique se <span class="ic">"bateria"</span> está na lista de acessórios.</li>
+              <li>Mostre todas as chaves e valores usando <span class="ic">.items()</span>.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Ponto de partida</h3>
+<div class="code" style="font-size:.86rem">celular = {
+    <span class="str">"marca"</span>: <span class="str">"XPTO"</span>,
+    <span class="str">"modelo"</span>: <span class="str">"Z10"</span>,
+    <span class="str">"ano"</span>: <span class="num">2024</span>,
+    <span class="str">"preço"</span>: <span class="num">1200</span>,
+    <span class="str">"acessórios"</span>: [<span class="str">"capa"</span>, <span class="str">"fone"</span>, <span class="str">"carregador"</span>]
+}</div>
+            <div class="callout" style="margin-top:14px">
+              A chave <span class="ic">"acessórios"</span> guarda uma <strong>lista dentro do dicionário</strong>. Para verificar um acessório: <span class="ic">"bateria" in celular["acessórios"]</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 — CONJUNTOS -->
+    <section class="slide">
+      <div class="eyebrow">Conjuntos</div>
+      <h2>Itens únicos, sem repetição</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+<div class="code">numeros = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+
+<span class="com"># repetidos somem sozinhos</span>
+letras = <span class="fn">set</span>([<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>, <span class="str">"a"</span>])
+<span class="fn">print</span>(letras)          <span class="out"># {'a', 'b', 'c'}</span>
+
+<span class="com"># adicionando</span>
+numeros.<span class="fn">add</span>(<span class="num">6</span>)
+numeros.<span class="fn">update</span>([<span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>])
+
+<span class="com"># removendo</span>
+numeros.<span class="fn">remove</span>(<span class="num">3</span>)     <span class="com"># erro se não existir</span>
+numeros.<span class="fn">discard</span>(<span class="num">10</span>)   <span class="com"># não dá erro</span></div>
+          </div>
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 420 200" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lista com repetições virando conjunto sem repetições">
+                <defs>
+                  <marker id="setaSet" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                    <path d="M0,0 L9,4.5 L0,9 z" fill="#2f9e7e"/>
+                  </marker>
+                </defs>
+                <g font-family="IBM Plex Mono, monospace" font-size="13">
+                  <text x="14" y="26" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">lista com repetições</text>
+                  <rect x="14" y="36" width="52" height="36" rx="9" fill="#ffffff" stroke="#a9c4de"/><text x="40" y="60" text-anchor="middle">"a"</text>
+                  <rect x="72" y="36" width="52" height="36" rx="9" fill="#ffffff" stroke="#a9c4de"/><text x="98" y="60" text-anchor="middle">"b"</text>
+                  <rect x="130" y="36" width="52" height="36" rx="9" fill="#ffffff" stroke="#a9c4de"/><text x="156" y="60" text-anchor="middle">"c"</text>
+                  <rect x="14" y="82" width="52" height="36" rx="9" fill="#fbeeee" stroke="#e6c4c4"/><text x="40" y="106" text-anchor="middle" fill="#cf5050">"a"</text>
+                  <rect x="72" y="82" width="52" height="36" rx="9" fill="#fbeeee" stroke="#e6c4c4"/><text x="98" y="106" text-anchor="middle" fill="#cf5050">"b"</text>
+                  <text x="98" y="140" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#cf5050">duplicatas</text>
+
+                  <path d="M196,80 L246,80" stroke="#2f9e7e" stroke-width="2" marker-end="url(#setaSet)"/>
+                  <text x="221" y="68" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2f9e7e">set()</text>
+
+                  <text x="266" y="26" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">conjunto</text>
+                  <rect x="262" y="36" width="146" height="84" rx="14" fill="#eaf6f2" stroke="#a8d8c9"/>
+                  <rect x="276" y="60" width="38" height="34" rx="8" fill="#ffffff" stroke="#a8d8c9"/><text x="295" y="83" text-anchor="middle">"a"</text>
+                  <rect x="316" y="60" width="38" height="34" rx="8" fill="#ffffff" stroke="#a8d8c9"/><text x="335" y="83" text-anchor="middle">"b"</text>
+                  <rect x="356" y="60" width="38" height="34" rx="8" fill="#ffffff" stroke="#a8d8c9"/><text x="375" y="83" text-anchor="middle">"c"</text>
+                  <text x="335" y="140" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#2f9e7e">cada item aparece uma vez</text>
+                </g>
+                <text x="14" y="180" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">Conjunto não tem índice: letras[0] gera erro. Se precisar de ordem, converta em lista.</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 — OPERAÇÕES ENTRE CONJUNTOS -->
+    <section class="slide">
+      <div class="eyebrow">Conjuntos</div>
+      <h2>Operações entre conjuntos</h2>
+      <div class="body">
+        <div class="fig">
+          <svg viewBox="0 0 880 210" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagramas de Venn para união, interseção e diferença">
+            <g font-family="IBM Plex Sans, sans-serif" text-anchor="middle">
+              <g transform="translate(30,10)">
+                <circle cx="80" cy="90" r="58" fill="#306998" fill-opacity=".35" stroke="#306998"/>
+                <circle cx="140" cy="90" r="58" fill="#306998" fill-opacity=".35" stroke="#306998"/>
+                <text x="60" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e">1, 2</text>
+                <text x="110" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e">3</text>
+                <text x="160" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e">4, 5</text>
+                <text x="110" y="24" font-size="13.5" font-weight="600" fill="#214d72">União  A | B</text>
+                <text x="110" y="176" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#46556b">{1, 2, 3, 4, 5}</text>
+                <text x="110" y="196" font-size="11.5" fill="#46556b">tudo que está em A ou em B</text>
+              </g>
+              <g transform="translate(320,10)">
+                <circle cx="80" cy="90" r="58" fill="#ffffff" stroke="#a9c4de"/>
+                <circle cx="140" cy="90" r="58" fill="#ffffff" stroke="#a9c4de"/>
+                <path d="M110,42 A58,58 0 0 1 110,138 A58,58 0 0 1 110,42" fill="#2f9e7e" fill-opacity=".45" stroke="#2f9e7e"/>
+                <text x="60" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#46556b">1, 2</text>
+                <text x="110" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e">3</text>
+                <text x="160" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#46556b">4, 5</text>
+                <text x="110" y="24" font-size="13.5" font-weight="600" fill="#2f9e7e">Interseção  A &amp; B</text>
+                <text x="110" y="176" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#46556b">{3}</text>
+                <text x="110" y="196" font-size="11.5" fill="#46556b">o que está nos dois ao mesmo tempo</text>
+              </g>
+              <g transform="translate(610,10)">
+                <path d="M80,32 A58,58 0 1 0 80,148 A58,58 0 0 1 80,32" fill="#d98324" fill-opacity=".45" stroke="#d98324"/>
+                <circle cx="80" cy="90" r="58" fill="none" stroke="#d98324"/>
+                <circle cx="140" cy="90" r="58" fill="none" stroke="#a9c4de"/>
+                <text x="60" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#16202e">1, 2</text>
+                <text x="110" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#46556b">3</text>
+                <text x="160" y="96" font-family="IBM Plex Mono, monospace" font-size="14" fill="#46556b">4, 5</text>
+                <text x="110" y="24" font-size="13.5" font-weight="600" fill="#d98324">Diferença  A - B</text>
+                <text x="110" y="176" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#46556b">{1, 2}</text>
+                <text x="110" y="196" font-size="11.5" fill="#46556b">o que está em A e não está em B</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2" style="margin-top:12px">
+          <div>
+<div class="code" style="font-size:.86rem">A = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>}
+B = {<span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+
+<span class="fn">print</span>(A | B)   <span class="com"># ou A.union(B)</span>
+<span class="fn">print</span>(A &amp; B)   <span class="com"># ou A.intersection(B)</span>
+<span class="fn">print</span>(A - B)   <span class="com"># ou A.difference(B)</span></div>
+          </div>
+          <div>
+            <h3>Na prática, isso responde</h3>
+            <ul class="clean">
+              <li>Quem está nas <strong>duas</strong> turmas? → interseção</li>
+              <li>Quais alunos existem <strong>no total</strong>? → união</li>
+              <li>Quem ainda <strong>não</strong> entregou o trabalho? → diferença</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19 — ATIVIDADE 3 -->
+    <section class="slide">
+      <div class="eyebrow">Mão na massa</div>
+      <h2>Atividade 3 — Usuários do sistema</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <span class="pill">Tempo: 15 minutos</span>
+            <p style="margin:14px 0 12px">Usando os conjuntos ao lado, escreva um programa que responda:</p>
+            <ol class="steps">
+              <li>Quais usuários estão <strong>inativos</strong>: estão no cadastro total, mas não na lista de ativos.</li>
+              <li>Quais usuários são <strong>novos</strong>: estão entre os ativos, mas ainda não estão no cadastro total.</li>
+              <li>Um conjunto com <strong>todos</strong> os usuários, sem repetir ninguém.</li>
+              <li>Quantos usuários há em cada resposta, usando <span class="ic">len()</span>.</li>
+            </ol>
+          </div>
+          <div>
+<div class="code" style="font-size:.86rem">usuarios_total = {<span class="str">"Ana"</span>, <span class="str">"Carlos"</span>, <span class="str">"Maria"</span>,
+                  <span class="str">"Pedro"</span>, <span class="str">"Luiza"</span>}
+
+usuarios_ativos = {<span class="str">"Carlos"</span>, <span class="str">"Luiza"</span>, <span class="str">"Marcos"</span>}</div>
+            <div class="callout" style="margin-top:14px">
+              Escreva o resultado esperado no papel <strong>antes</strong> de rodar o código. Depois confira se o Python concorda com você.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 — COMPARANDO -->
+    <section class="slide">
+      <div class="eyebrow">Comparando</div>
+      <h2>Qual coleção usar?</h2>
+      <div class="body">
+        <table class="tbl">
+          <tr><th>Coleção</th><th>Sintaxe</th><th>Ordenada</th><th>Pode mudar</th><th>Aceita repetidos</th><th>Use quando</th></tr>
+          <tr><td>Lista</td><td><span class="ic">[ ]</span></td><td>Sim</td><td>Sim</td><td>Sim</td><td>a ordem importa e o conteúdo muda</td></tr>
+          <tr><td>Tupla</td><td><span class="ic">( )</span></td><td>Sim</td><td>Não</td><td>Sim</td><td>os dados não devem mudar</td></tr>
+          <tr><td>Dicionário</td><td><span class="ic">{chave: valor}</span></td><td>Sim</td><td>Sim</td><td>chaves não</td><td>cada dado tem um nome ou código</td></tr>
+          <tr><td>Conjunto</td><td><span class="ic">{ }</span></td><td>Não</td><td>Sim</td><td>Não</td><td>precisa de itens únicos</td></tr>
+        </table>
+        <div class="fig" style="margin-top:14px">
+          <svg viewBox="0 0 880 120" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Perguntas que levam à escolha da coleção">
+            <g font-family="IBM Plex Sans, sans-serif" font-size="12.5">
+              <g transform="translate(4,10)">
+                <rect width="210" height="96" rx="12" fill="#e3edf7" stroke="#a9c4de"/>
+                <text x="105" y="36" text-anchor="middle" fill="#214d72">Precisa de ordem</text>
+                <text x="105" y="54" text-anchor="middle" fill="#214d72">e poder mudar?</text>
+                <text x="105" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#306998">→ lista</text>
+              </g>
+              <g transform="translate(226,10)">
+                <rect width="210" height="96" rx="12" fill="#eef2f7" stroke="#a9c4de"/>
+                <text x="105" y="36" text-anchor="middle" fill="#214d72">Dados fixos</text>
+                <text x="105" y="54" text-anchor="middle" fill="#214d72">que não mudam?</text>
+                <text x="105" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#214d72">→ tupla</text>
+              </g>
+              <g transform="translate(448,10)">
+                <rect width="210" height="96" rx="12" fill="#fdf9f3" stroke="#e8d3b6"/>
+                <text x="105" y="36" text-anchor="middle" fill="#8a5a1c">Cada dado tem</text>
+                <text x="105" y="54" text-anchor="middle" fill="#8a5a1c">um identificador?</text>
+                <text x="105" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#d98324">→ dicionário</text>
+              </g>
+              <g transform="translate(670,10)">
+                <rect width="206" height="96" rx="12" fill="#eaf6f2" stroke="#a8d8c9"/>
+                <text x="103" y="36" text-anchor="middle" fill="#1f6e58">Precisa garantir</text>
+                <text x="103" y="54" text-anchor="middle" fill="#1f6e58">que não repita?</text>
+                <text x="103" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" fill="#2f9e7e">→ conjunto</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 21 — EXERCÍCIOS DE FIXAÇÃO -->
+    <section class="slide">
+      <div class="eyebrow">Para praticar</div>
+      <h2>Exercícios de fixação</h2>
+      <div class="body">
+        <div class="cols c3">
+          <div class="card">
+            <span class="tag">Exercício 1 · lista</span>
+            <h3>Lista de compras</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Pergunte ao usuário 5 itens para comprar no mercado.</li>
+              <li>Guarde tudo em uma lista.</li>
+              <li>Mostre a lista completa.</li>
+              <li>Pergunte se quer remover algum item e remova.</li>
+              <li>Mostre a lista final.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag">Exercício 2 · dicionário</span>
+            <h3>Cadastro de alunos</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Guarde 3 alunos em uma lista de dicionários.</li>
+              <li>Cada aluno tem nome, idade e uma lista com 3 notas.</li>
+              <li>Calcule a média de cada um e guarde na chave <span class="ic">"media"</span>.</li>
+              <li>Mostre todos os dados dos alunos.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag">Exercício 3 · conjunto</span>
+            <h3>Análise de texto</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Peça uma frase ao usuário.</li>
+              <li>Separe as palavras com <span class="ic">frase.split()</span>.</li>
+              <li>Conte quantas palavras <strong>diferentes</strong> existem (dica: conjunto).</li>
+              <li>Mostre quais palavras se repetiram.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          No exercício 2 aparece uma <strong>lista de dicionários</strong>: cada item da lista é um aluno completo. É assim que dados chegam de sites e aplicativos de verdade.
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 — RESUMO -->
+    <section class="slide">
+      <div class="eyebrow">Fechando</div>
+      <h2>O que aprendemos hoje</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <ul class="clean">
+              <li><strong>Listas</strong> <span class="ic">[ ]</span> — coleções ordenadas e que podem ser alteradas.</li>
+              <li><strong>Tuplas</strong> <span class="ic">( )</span> — ordenadas, mas imutáveis.</li>
+              <li><strong>Dicionários</strong> <span class="ic">{chave: valor}</span> — cada valor tem um nome.</li>
+              <li><strong>Conjuntos</strong> <span class="ic">{ }</span> — itens únicos, sem ordem.</li>
+              <li>Todas podem ser percorridas com <span class="ic">for</span> e testadas com <span class="ic">in</span>.</li>
+            </ul>
+            <div class="callout ok" style="margin-top:16px">
+              <strong>Próximos passos:</strong> pratique criando pequenos programas com cada tipo de coleção. É a prática que fixa o conteúdo.
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:center;gap:14px">
+            <div class="snip" style="display:block">for item in colecao:</div>
+            <p>Escolher a coleção certa é metade da solução de um problema. A outra metade é praticar até que a escolha vire automática.</p>
+            <span class="pill soft">Dúvidas? Traga seu código na próxima aula</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 23 — REFERÊNCIAS -->
+    <section class="slide">
+      <div class="eyebrow">Para estudar depois</div>
+      <h2>Referências</h2>
+      <div class="body">
+        <ul class="refs">
+          <li>PYTHON SOFTWARE FOUNDATION. <strong>O tutorial de Python — Estruturas de dados.</strong> Disponível em: https://docs.python.org/pt-br/3/tutorial/datastructures.html. Acesso em: 11 ago. 2026.</li>
+          <li>PYTHON SOFTWARE FOUNDATION. <strong>Tipos embutidos — sequências, conjuntos e mapeamentos.</strong> Disponível em: https://docs.python.org/pt-br/3/library/stdtypes.html. Acesso em: 11 ago. 2026.</li>
+          <li>MENEZES, Nilo Ney Coutinho. <strong>Introdução à programação com Python:</strong> algoritmos e lógica de programação para iniciantes. 4. ed. São Paulo: Novatec, 2022.</li>
+          <li>MATTHES, Eric. <strong>Curso Intensivo de Python:</strong> uma introdução prática e baseada em projetos à programação. 3. ed. São Paulo: Novatec, 2023.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="hud">
+  <button id="prev" aria-label="Slide anterior">&#8249;</button>
+  <span class="count" id="count">1 / 1</span>
+  <button id="next" aria-label="Próximo slide">&#8250;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let i = 0;
+
+  function show(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('on', k === i));
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    history.replaceState(null, '', '#' + (i + 1));
+    slides[i].querySelector('.body')?.scrollTo(0, 0);
+  }
+
+  prev.addEventListener('click', () => show(i - 1));
+  next.addEventListener('click', () => show(i + 1));
+
+  document.addEventListener('keydown', e => {
+    if(['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); show(i + 1); }
+    if(['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); show(i - 1); }
+    if(e.key === 'Home') show(0);
+    if(e.key === 'End') show(slides.length - 1);
+  });
+
+  let x0 = null;
+  document.addEventListener('touchstart', e => x0 = e.touches[0].clientX, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 55) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  });
+
+  const start = parseInt(location.hash.replace('#',''), 10);
+  show(Number.isInteger(start) && start > 0 ? start - 1 : 0);
+</script>
+</body>
+</html>
