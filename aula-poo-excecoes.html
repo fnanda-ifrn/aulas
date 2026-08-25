@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tratamento de Exceções — INFO2V</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f7;
+    --surface:#ffffff;
+    --ink:#16202e;
+    --ink-soft:#46556b;
+    --line:#d4deeb;
+    --py-blue:#306998;
+    --py-blue-deep:#214d72;
+    --py-yellow:#ffd43b;
+    --accent-soft:#e3edf7;
+    --code-bg:#1b2433;
+    --code-line:#2a3650;
+    --ok:#2f9e7e;
+    --warn:#d98324;
+    --err:#cf5050;
+    --shadow:0 18px 50px -22px rgba(28,52,84,.45);
+    --kw:#ff9d66;
+    --str:#a8e6a0;
+    --fn:#7cc4ff;
+    --com:#7587a0;
+    --num:#ffd479;
+    --cls:#ffd43b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 700px at 85% -10%, #dfe9f5 0%, transparent 55%),
+      radial-gradient(900px 600px at 5% 110%, #e6edf6 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Estrutura ---------- */
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vh,40px)}
+  .stage{position:relative;width:min(1080px,94vw);height:min(660px,90vh)}
+  .slide{
+    position:absolute;inset:0;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:clamp(26px,4.2vw,54px);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .slide.on{display:flex}
+
+  .logo{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;
+    color:var(--ink-soft);text-transform:uppercase;display:flex;align-items:center;gap:9px
+  }
+  .logo .dot{width:9px;height:9px;border-radius:50%;background:var(--py-yellow);border:2px solid var(--py-blue)}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.16em;
+    color:var(--py-blue);text-transform:uppercase;margin-bottom:10px
+  }
+  h1{
+    font-family:'IBM Plex Serif',serif;font-weight:600;
+    font-size:clamp(2.3rem,4.6vw,3.4rem);line-height:1.06;letter-spacing:-.02em;margin-top:auto
+  }
+  h2{
+    font-family:'IBM Plex Serif',serif;font-weight:600;
+    font-size:clamp(1.45rem,2.6vw,2rem);line-height:1.15;letter-spacing:-.01em;
+    padding-bottom:12px;border-bottom:2px solid var(--accent-soft);margin-bottom:18px
+  }
+  h3{font-size:.95rem;font-weight:600;color:var(--py-blue-deep);margin-bottom:9px;letter-spacing:.01em}
+  p{line-height:1.6;color:var(--ink-soft);font-size:.98rem}
+  p.sub{font-size:clamp(1rem,1.5vw,1.15rem);max-width:60ch;margin-top:16px;color:var(--ink-soft)}
+  .body{flex:1;overflow:auto;min-height:0}
+  .body.center{display:flex;flex-direction:column;justify-content:center}
+  .cols{display:grid;gap:24px}
+  .cols.c2{grid-template-columns:1fr 1fr}
+  .cols.c2u{grid-template-columns:1.15fr .85fr}
+  .cols.c3{grid-template-columns:repeat(3,1fr)}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:9px}
+  ul.clean li{position:relative;padding-left:20px;line-height:1.5;color:var(--ink-soft);font-size:.96rem}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:7px;border-radius:2px;background:var(--py-blue)}
+  ul.clean li strong{color:var(--ink)}
+
+  ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+  ol.steps li{position:relative;padding-left:32px;line-height:1.5;color:var(--ink-soft);font-size:.96rem}
+  ol.steps li::before{
+    counter-increment:s;content:counter(s);
+    position:absolute;left:0;top:.05em;width:22px;height:22px;border-radius:6px;
+    background:var(--accent-soft);color:var(--py-blue-deep);
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;
+    display:flex;align-items:center;justify-content:center
+  }
+
+  .ic{
+    font-family:'IBM Plex Mono',monospace;font-size:.88em;
+    background:var(--accent-soft);color:var(--py-blue-deep);
+    padding:1px 6px;border-radius:5px;white-space:nowrap
+  }
+  .snip{
+    font-family:'IBM Plex Mono',monospace;font-size:.95rem;color:#e7eefc;
+    background:var(--code-bg);border:1px solid var(--code-line);border-radius:10px;
+    padding:9px 13px;display:inline-block
+  }
+  .code{
+    background:var(--code-bg);border:1px solid var(--code-line);border-radius:12px;
+    padding:14px 16px;font-family:'IBM Plex Mono',monospace;font-size:.9rem;line-height:1.6;
+    color:#e7eefc;white-space:pre;overflow:auto
+  }
+  .code .kw{color:var(--kw)} .code .str{color:var(--str)} .code .fn{color:var(--fn)}
+  .code .com{color:var(--com)} .code .num{color:var(--num)} .code .cls{color:var(--cls)}
+  .code .out{color:#93a4bd}
+  .code .bad{color:#ff8a8a}
+
+  .fig{
+    background:#fbfcfe;border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;display:flex;align-items:center;justify-content:center
+  }
+  .fig svg{max-width:100%;height:auto}
+  .card{
+    background:#f8fafd;border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    display:flex;flex-direction:column;gap:8px
+  }
+  .card .tag{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--py-blue)
+  }
+  .callout{
+    border-left:4px solid var(--py-blue);background:var(--accent-soft);
+    border-radius:0 12px 12px 0;padding:13px 16px;font-size:.94rem;color:var(--ink-soft);line-height:1.55
+  }
+  .callout.warn{border-color:var(--warn);background:#fdf4e8}
+  .callout.err{border-color:var(--err);background:#fbeeee}
+  .callout.ok{border-color:var(--ok);background:#eaf6f2}
+  .callout strong{color:var(--ink)}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:7px;align-self:flex-start;
+    background:var(--py-blue);color:#fff;border-radius:20px;padding:6px 14px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase
+  }
+  .pill.soft{background:var(--accent-soft);color:var(--py-blue-deep)}
+
+  table.tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.tbl th{
+    text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    font-family:'IBM Plex Mono',monospace;color:var(--py-blue);
+    padding:8px 10px;border-bottom:2px solid var(--accent-soft);font-weight:600
+  }
+  table.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  table.tbl td:first-child{color:var(--ink);font-weight:500}
+  table.tbl tr:last-child td{border-bottom:0}
+
+  .meta{margin-top:24px;display:flex;gap:24px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace}
+  .cover-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;height:100%}
+  .cover-art{display:flex;align-items:center;justify-content:center}
+  .refs{list-style:none;display:flex;flex-direction:column;gap:14px}
+  .refs li{font-size:.88rem;color:var(--ink-soft);line-height:1.55;padding-left:0;text-indent:-28px;margin-left:28px}
+  .refs li strong{color:var(--ink);font-weight:500}
+
+  /* ---------- HUD ---------- */
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--py-yellow);z-index:20;transition:width .3s ease}
+  .hud{
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:12px;z-index:20;
+    background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;
+    padding:6px 10px;box-shadow:0 8px 24px -14px rgba(28,52,84,.6);backdrop-filter:blur(6px)
+  }
+  .hud button{
+    border:0;background:var(--py-blue);color:#fff;width:30px;height:30px;border-radius:50%;
+    cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center
+  }
+  .hud button:disabled{background:#c3d2e2;cursor:default}
+  .hud .count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);min-width:56px;text-align:center}
+
+  /* ---------- Revelação por clique ---------- */
+  .step{
+    opacity:0;transform:translateY(10px);
+    transition:opacity .3s ease, transform .3s ease;
+    pointer-events:none
+  }
+  .step.reveal{opacity:1;transform:none;pointer-events:auto}
+  @media (prefers-reduced-motion:reduce){
+    .step{transition:none;transform:none}
+  }
+
+  @media (max-width:820px){
+    .cols.c2,.cols.c3,.cols.c2u,.cover-grid{grid-template-columns:1fr}
+    .cover-art{display:none}
+    .slide{padding:22px}
+  }
+
+  /* ---------- Impressão / PDF — A4 paisagem ---------- */
+  @page{size:A4 landscape;margin:0}
+  @media print{
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    html,body{height:auto !important;overflow:visible !important;background:#fff !important}
+    .progress,.hud{display:none !important}
+    .deck{position:static !important;display:block !important;padding:0 !important}
+    .stage{position:static !important;width:auto !important;height:auto !important}
+    .slide{
+      position:relative !important;inset:auto !important;display:flex !important;
+      width:297mm;height:210mm;padding:14mm 16mm;
+      margin:0;border:none;border-radius:0;box-shadow:none;overflow:hidden;
+      break-after:page;page-break-after:always;break-inside:avoid;page-break-inside:avoid
+    }
+    .slide:last-child{break-after:auto;page-break-after:auto}
+    .body{overflow:visible !important}
+    .cover-art{display:flex !important}
+    .step{opacity:1 !important;transform:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+<div class="deck">
+  <div class="stage">
+
+    <!-- 1 — CAPA -->
+    <section class="slide cover on">
+      <div class="cover-grid">
+        <div style="display:flex;flex-direction:column;height:100%">
+          <div class="logo"><span class="dot"></span> IFRN · TÉCNICO EM INFORMÁTICA PARA INTERNET</div>
+          <div style="margin-top:auto">
+            <div class="eyebrow">INFO2V · Programação Orientada a Objetos</div>
+            <h1>Tratamento<br>de Exceções</h1>
+            <p class="sub">O que fazer quando o programa encontra um problema no meio do caminho — e como avisar que algo deu errado.</p>
+            <div class="meta">
+              <span class="snip">except ValueError as erro:</span>
+            </div>
+            <p style="margin-top:22px;font-size:.9rem">Profa. Fernanda Lígia</p>
+          </div>
+        </div>
+        <div class="cover-art">
+          <svg viewBox="0 0 260 300" width="100%" style="max-width:245px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Quatro cartões: try, except, else e finally">
+            <g font-family="IBM Plex Mono, monospace" font-weight="600">
+              <g transform="translate(4,6)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#306998"/>
+                <text x="59" y="66" text-anchor="middle" font-size="32" fill="#306998">try</text>
+                <text x="59" y="95" text-anchor="middle" font-size="10" fill="#46556b" letter-spacing="1.1">TENTA EXECUTAR</text>
+              </g>
+              <g transform="translate(138,6)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#cf5050"/>
+                <text x="59" y="66" text-anchor="middle" font-size="26" fill="#cf5050">except</text>
+                <text x="59" y="95" text-anchor="middle" font-size="10" fill="#46556b" letter-spacing="1.1">SE DER ERRO</text>
+              </g>
+              <g transform="translate(4,144)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#2f9e7e"/>
+                <text x="59" y="66" text-anchor="middle" font-size="30" fill="#2f9e7e">else</text>
+                <text x="59" y="95" text-anchor="middle" font-size="10" fill="#46556b" letter-spacing="1.1">SE DEU CERTO</text>
+              </g>
+              <g transform="translate(138,144)">
+                <rect width="118" height="120" rx="14" fill="#ffffff" stroke="#d4deeb"/>
+                <rect width="118" height="6" rx="3" fill="#d98324"/>
+                <text x="59" y="66" text-anchor="middle" font-size="23" fill="#d98324">finally</text>
+                <text x="59" y="95" text-anchor="middle" font-size="10" fill="#46556b" letter-spacing="1.1">SEMPRE RODA</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 — FALHAS E EXCEÇÕES -->
+    <section class="slide">
+      <div class="eyebrow">Falhas e exceções</div>
+      <h2>Quando o programa encontra um imprevisto</h2>
+      <div class="body">
+        <p style="margin-bottom:14px">Seu código está correto, mas o <strong>mundo real</strong> nem sempre colabora: o usuário digita letra onde era número, o arquivo foi apagado, a internet caiu, o servidor não respondeu. Chamamos isso de <strong>falha</strong> — e o Python avisa criando uma <strong>exceção</strong>.</p>
+        <div class="fig">
+          <svg viewBox="0 0 860 205" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparação entre execução normal e execução interrompida por uma exceção">
+            <defs>
+              <marker id="ok1" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2f9e7e"/></marker>
+              <marker id="er1" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#cf5050"/></marker>
+            </defs>
+            <g font-family="IBM Plex Sans, sans-serif">
+              <text x="10" y="18" font-size="13" font-weight="600" fill="#2f9e7e">Tudo dentro do previsto</text>
+              <g font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#16202e" text-anchor="middle">
+                <rect x="10" y="30" width="170" height="40" rx="10" fill="#eaf6f2" stroke="#a8d8c9"/>
+                <text x="95" y="55">input("Idade: ") → "16"</text>
+                <path d="M186,50 L222,50" stroke="#2f9e7e" stroke-width="2" marker-end="url(#ok1)"/>
+                <rect x="228" y="30" width="150" height="40" rx="10" fill="#eaf6f2" stroke="#a8d8c9"/>
+                <text x="303" y="55">int("16") → 16</text>
+                <path d="M384,50 L420,50" stroke="#2f9e7e" stroke-width="2" marker-end="url(#ok1)"/>
+                <rect x="426" y="30" width="160" height="40" rx="10" fill="#eaf6f2" stroke="#a8d8c9"/>
+                <text x="506" y="55">print(idade + 1)</text>
+                <path d="M592,50 L628,50" stroke="#2f9e7e" stroke-width="2" marker-end="url(#ok1)"/>
+                <rect x="634" y="30" width="130" height="40" rx="10" fill="#ffffff" stroke="#a8d8c9"/>
+                <text x="699" y="55" fill="#2f9e7e">fim normal</text>
+              </g>
+
+              <text x="10" y="112" font-size="13" font-weight="600" fill="#cf5050">Um valor inesperado aparece</text>
+              <g font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#16202e" text-anchor="middle">
+                <rect x="10" y="124" width="170" height="40" rx="10" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="95" y="149">input("Idade: ") → "abc"</text>
+                <path d="M186,144 L222,144" stroke="#cf5050" stroke-width="2" marker-end="url(#er1)"/>
+                <rect x="228" y="124" width="150" height="40" rx="10" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="303" y="149" fill="#cf5050">int("abc") ✕</text>
+                <path d="M384,144 L420,144" stroke="#cf5050" stroke-width="2" marker-end="url(#er1)"/>
+                <rect x="426" y="124" width="160" height="40" rx="10" fill="#ffffff" stroke="#e6c4c4"/>
+                <text x="506" y="149" fill="#cf5050">ValueError</text>
+                <path d="M592,144 L628,144" stroke="#cf5050" stroke-width="2" marker-end="url(#er1)"/>
+                <rect x="634" y="124" width="200" height="40" rx="10" fill="#fbeeee" stroke="#e6c4c4"/>
+                <text x="734" y="149" fill="#cf5050">programa encerrado</text>
+              </g>
+              <text x="10" y="192" font-size="12" fill="#46556b">A linha <tspan font-family="IBM Plex Mono, monospace">print(idade + 1)</tspan> nem chega a ser executada: o programa morre no meio.</text>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2" style="margin-top:14px">
+          <div class="callout"><strong>Exceção</strong> é um objeto que o Python cria para dizer: "aconteceu algo fora do previsto aqui".</div>
+          <div class="callout ok"><strong>Tratar a exceção</strong> é decidir o que fazer nesse caso, em vez de deixar o programa quebrar na cara do usuário.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 — ERRO DE SINTAXE x EXCEÇÃO -->
+    <section class="slide">
+      <div class="eyebrow">Falhas e exceções</div>
+      <h2>Dois problemas bem diferentes</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div class="card">
+            <span class="tag">Erro de sintaxe</span>
+            <h3>O código está escrito errado</h3>
+<div class="code" style="font-size:.85rem"><span class="kw">if</span> idade &gt; <span class="num">18</span>
+    <span class="fn">print</span>(<span class="str">"maior"</span>)
+
+<span class="bad">SyntaxError: expected ':'</span></div>
+            <p>O Python nem começa a rodar o programa. Faltou dois-pontos, parêntese, aspas... <strong>Não dá para tratar</strong>: tem que consertar o código.</p>
+          </div>
+          <div class="card">
+            <span class="tag">Exceção</span>
+            <h3>O código está certo, mas algo deu errado</h3>
+<div class="code" style="font-size:.85rem">idade = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Idade: "</span>))
+<span class="com"># usuário digitou "abc"</span>
+
+<span class="bad">ValueError: invalid literal for int()</span></div>
+            <p>O programa <strong>começou a rodar</strong> e travou no meio, por causa de um dado ou de uma situação inesperada. <strong>Isso, sim, dá para tratar.</strong></p>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:18px">
+          <strong>Regra prática:</strong> se o erro aparece antes de qualquer <span class="ic">print</span> ser executado, provavelmente é sintaxe. Se o programa rodou um pouco e parou, é exceção.
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 — TRACEBACK -->
+    <section class="slide">
+      <div class="eyebrow">Falhas e exceções</div>
+      <h2>Lendo a mensagem de erro</h2>
+      <div class="body">
+        <p style="margin-bottom:14px">Aquele bloco vermelho assustador se chama <strong>traceback</strong> e é o seu melhor amigo na hora de depurar. Leia sempre <strong>de baixo para cima</strong>.</p>
+        <div class="cols c2u">
+          <div>
+<div class="code" style="font-size:.85rem"><span class="com">Traceback (most recent call last):</span>
+  File <span class="str">"media.py"</span>, line <span class="num">7</span>, in &lt;module&gt;
+    media = calcular(notas)
+  File <span class="str">"media.py"</span>, line <span class="num">3</span>, in calcular
+    <span class="kw">return</span> <span class="fn">sum</span>(lista) / <span class="fn">len</span>(lista)
+<span class="bad">ZeroDivisionError: division by zero</span></div>
+          </div>
+          <div>
+            <ol class="steps">
+              <li><strong>Última linha:</strong> o <strong>tipo</strong> da exceção e a <strong>mensagem</strong>. É o que você procura no Google.</li>
+              <li><strong>Linha acima dela:</strong> exatamente o comando que quebrou.</li>
+              <li><strong>Arquivo e número da linha:</strong> onde procurar no seu código.</li>
+              <li><strong>De cima para baixo:</strong> o caminho que o programa percorreu até chegar lá.</li>
+            </ol>
+            <div class="callout" style="margin-top:14px">
+              Aqui a lista <span class="ic">notas</span> chegou vazia, então <span class="ic">len(lista)</span> deu <span class="ic">0</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 — TRY / EXCEPT -->
+    <section class="slide">
+      <div class="eyebrow">Captura de exceções</div>
+      <h2>try e except: a rede de proteção</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code"><span class="kw">try</span>:
+    idade = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Sua idade: "</span>))
+    <span class="fn">print</span>(<span class="str">f"Ano que vem: {idade + 1}"</span>)
+<span class="kw">except</span> <span class="cls">ValueError</span>:
+    <span class="fn">print</span>(<span class="str">"Digite apenas números!"</span>)
+
+<span class="fn">print</span>(<span class="str">"O programa continua rodando."</span>)</div>
+            <div class="callout ok" style="margin-top:16px">
+              Com <span class="ic">"abc"</span> o programa <strong>não quebra</strong>: mostra a mensagem amigável e segue em frente.
+            </div>
+          </div>
+          <div>
+            <h3>Lendo o bloco em português</h3>
+            <ul class="clean">
+              <li><span class="ic">try</span> — <strong>tente</strong> executar estas linhas.</li>
+              <li><span class="ic">except</span> — <strong>se</strong> acontecer uma exceção desse tipo, faça isto em vez de quebrar.</li>
+            </ul>
+            <div class="callout" style="margin-top:14px">
+              Dentro do <span class="ic">try</span> coloque <strong>só o que pode falhar</strong>. Um <span class="ic">try</span> gigante esconde de você onde está o problema de verdade.
+            </div>
+            <div class="callout warn" style="margin-top:14px">
+              O <span class="ic">except</span> <strong>não conserta</strong> o erro: ele decide o que fazer quando o erro acontece. Muitas vezes o certo é pedir o dado de novo.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 — FLUXO -->
+    <section class="slide">
+      <div class="eyebrow">Captura de exceções</div>
+      <h2>Como o Python percorre o bloco</h2>
+      <div class="body">
+        <div class="fig">
+          <svg viewBox="0 0 880 300" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxograma do try except: caminho sem erro e caminho com erro">
+            <defs>
+              <marker id="fa" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#306998"/></marker>
+              <marker id="fg" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#2f9e7e"/></marker>
+              <marker id="fr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#cf5050"/></marker>
+            </defs>
+            <g font-family="IBM Plex Sans, sans-serif" font-size="12.5">
+              <rect x="40" y="120" width="150" height="50" rx="12" fill="#e3edf7" stroke="#a9c4de"/>
+              <text x="115" y="143" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="14" fill="#214d72">try:</text>
+              <text x="115" y="160" text-anchor="middle" font-size="11" fill="#46556b">executa as linhas</text>
+
+              <path d="M196,145 L246,145" stroke="#306998" stroke-width="2" marker-end="url(#fa)"/>
+
+              <path d="M340,110 L410,145 L340,180 L270,145 Z" fill="#fdf9f3" stroke="#e0c295"/>
+              <text x="340" y="141" text-anchor="middle" font-size="12" fill="#8a5a1c">deu</text>
+              <text x="340" y="157" text-anchor="middle" font-size="12" fill="#8a5a1c">erro?</text>
+
+              <path d="M340,104 L340,64" stroke="#2f9e7e" stroke-width="2" marker-end="url(#fg)"/>
+              <text x="352" y="88" font-size="12" font-weight="600" fill="#2f9e7e">não</text>
+              <rect x="430" y="26" width="230" height="52" rx="12" fill="#eaf6f2" stroke="#a8d8c9"/>
+              <text x="545" y="48" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#1f6e58">pula todos os except</text>
+              <text x="545" y="66" text-anchor="middle" font-size="11" fill="#46556b">(e roda o else, se existir)</text>
+              <path d="M340,52 L424,52" stroke="#2f9e7e" stroke-width="2" marker-end="url(#fg)"/>
+
+              <path d="M340,186 L340,226" stroke="#cf5050" stroke-width="2" marker-end="url(#fr)"/>
+              <text x="352" y="210" font-size="12" font-weight="600" fill="#cf5050">sim</text>
+              <rect x="430" y="212" width="230" height="52" rx="12" fill="#fbeeee" stroke="#e6c4c4"/>
+              <text x="545" y="234" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#a83c3c">procura um except</text>
+              <text x="545" y="252" text-anchor="middle" font-size="11" fill="#46556b">que combine com o tipo do erro</text>
+              <path d="M340,238 L424,238" stroke="#cf5050" stroke-width="2" marker-end="url(#fr)"/>
+
+              <rect x="700" y="120" width="160" height="52" rx="12" fill="#ffffff" stroke="#a9c4de"/>
+              <text x="780" y="142" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#214d72">finally</text>
+              <text x="780" y="160" text-anchor="middle" font-size="11" fill="#46556b">e segue o programa</text>
+              <path d="M666,52 L780,52 L780,114" stroke="#306998" stroke-width="2" fill="none" marker-end="url(#fa)"/>
+              <path d="M666,238 L780,238 L780,178" stroke="#306998" stroke-width="2" fill="none" marker-end="url(#fa)"/>
+
+              <text x="40" y="288" font-size="12" fill="#cf5050">Se nenhum except combinar com o tipo do erro, a exceção continua subindo — e aí sim o programa quebra.</text>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c3" style="margin-top:14px">
+          <div class="callout"><strong>Só um except roda.</strong> Encontrado o primeiro que combina, os outros são ignorados.</div>
+          <div class="callout warn"><strong>O resto do try é abandonado.</strong> As linhas depois do ponto do erro não são executadas.</div>
+          <div class="callout ok"><strong>Depois de tratado, a vida segue.</strong> O programa continua da linha seguinte ao bloco.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 — MÚLTIPLOS EXCEPT -->
+    <section class="slide">
+      <div class="eyebrow">Captura de exceções</div>
+      <h2>Cada problema, uma resposta</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.86rem"><span class="kw">try</span>:
+    n = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Um número: "</span>))
+    <span class="fn">print</span>(<span class="num">100</span> / n)
+    <span class="fn">print</span>(nomes[n])
+
+<span class="kw">except</span> <span class="cls">ValueError</span>:
+    <span class="fn">print</span>(<span class="str">"Isso não é um número inteiro."</span>)
+
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="str">"Não dá para dividir por zero."</span>)
+
+<span class="kw">except</span> (<span class="cls">IndexError</span>, <span class="cls">KeyError</span>):
+    <span class="fn">print</span>(<span class="str">"Essa posição não existe."</span>)</div>
+          </div>
+          <div>
+            <h3>O que está acontecendo</h3>
+            <ul class="clean">
+              <li>O Python testa os <span class="ic">except</span> <strong>de cima para baixo</strong> e executa <strong>apenas o primeiro</strong> que combina.</li>
+              <li>Vários tipos com a mesma resposta? Agrupe em uma <strong>tupla</strong>: <span class="ic">except (IndexError, KeyError):</span></li>
+              <li>Assim o usuário recebe uma mensagem que <strong>explica o problema dele</strong>, não um traceback.</li>
+            </ul>
+            <div class="callout err" style="margin-top:14px">
+              <strong>Evite o <span class="ic">except:</span> pelado.</strong> Ele captura literalmente tudo — inclusive o <span class="ic">Ctrl+C</span> do usuário querendo fechar o programa — e esconde bugs seus.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 — ELSE E FINALLY -->
+    <section class="slide">
+      <div class="eyebrow">Captura de exceções</div>
+      <h2>O bloco completo: else e finally</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+<div class="code" style="font-size:.86rem">notas = [<span class="num">7.5</span>, <span class="num">8.0</span>, <span class="num">6.2</span>]
+
+<span class="kw">try</span>:
+    pos = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Posição da nota: "</span>))
+    nota = notas[pos]
+
+<span class="kw">except</span> <span class="cls">ValueError</span>:
+    <span class="fn">print</span>(<span class="str">"Digite um número inteiro."</span>)
+
+<span class="kw">except</span> <span class="cls">IndexError</span>:
+    <span class="fn">print</span>(<span class="str">"Essa posição não existe."</span>)
+
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">f"Nota encontrada: {nota}"</span>)
+
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="str">"Consulta encerrada."</span>)</div>
+          </div>
+          <div>
+            <table class="tbl">
+              <tr><th>Bloco</th><th>Quando roda</th></tr>
+              <tr><td><span class="ic">try</span></td><td>sempre — é a tentativa</td></tr>
+              <tr><td><span class="ic">except</span></td><td>só se ocorrer aquele tipo de exceção</td></tr>
+              <tr><td><span class="ic">else</span></td><td>só se <strong>não</strong> ocorrer nenhuma exceção</td></tr>
+              <tr><td><span class="ic">finally</span></td><td><strong>sempre</strong>, com erro ou sem erro</td></tr>
+            </table>
+            <div class="callout ok" style="margin-top:14px">
+              O <span class="ic">else</span> só roda quando <strong>nada deu errado</strong>. Isso deixa o <span class="ic">try</span> enxuto: nele fica só o que pode falhar; o resultado fica no <span class="ic">else</span>.
+            </div>
+            <div class="callout" style="margin-top:12px">
+              O <span class="ic">finally</span> é o lugar de <strong>encerrar o que você começou</strong> — liberar um recurso, registrar no log, avisar que a operação terminou. Ele vai ser bem útil quando chegarmos em <strong>arquivos</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 — O OBJETO DA EXCEÇÃO -->
+    <section class="slide">
+      <div class="eyebrow">Captura de exceções</div>
+      <h2>Guardando a exceção em uma variável</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.86rem"><span class="kw">try</span>:
+    numero = <span class="fn">int</span>(<span class="str">"abc"</span>)
+
+<span class="kw">except</span> <span class="cls">ValueError</span> <span class="kw">as</span> erro:
+    <span class="fn">print</span>(<span class="str">"Deu problema:"</span>, erro)
+    <span class="fn">print</span>(<span class="fn">type</span>(erro))
+    <span class="fn">print</span>(erro.args)
+
+<span class="out"># Deu problema: invalid literal for int()</span>
+<span class="out">#   with base 10: 'abc'</span>
+<span class="out"># &lt;class 'ValueError'&gt;</span>
+<span class="out"># ("invalid literal for int()...",)</span></div>
+          </div>
+          <div>
+            <p style="margin-bottom:12px">Exceção é <strong>objeto</strong>: tem tipo, atributos e métodos, como qualquer outro objeto que vocês já criaram.</p>
+            <ul class="clean">
+              <li><span class="ic">as erro</span> guarda o objeto na variável <span class="ic">erro</span>.</li>
+              <li><span class="ic">print(erro)</span> mostra a mensagem que o Python gerou.</li>
+              <li><span class="ic">erro.args</span> é a tupla com os argumentos da exceção.</li>
+            </ul>
+            <div class="callout warn" style="margin-top:14px">
+              A mensagem original é escrita <strong>para o programador</strong>, em inglês. Use-a no log; para o usuário final, escreva uma mensagem em português e sem jargão.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 — ATIVIDADE 1 -->
+    <section class="slide">
+      <div class="eyebrow">Mão na massa</div>
+      <h2>Atividade 1 — Calculadora que não quebra</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <span class="pill">Tempo: 15 minutos</span>
+            <p style="margin:14px 0 12px">Crie o arquivo <span class="ic">calculadora.py</span> que peça dois números e mostre a divisão do primeiro pelo segundo. Depois:</p>
+            <ol class="steps">
+              <li>Trate o caso de o usuário digitar texto em vez de número.</li>
+              <li>Trate o caso de o segundo número ser zero.</li>
+              <li>Use <span class="ic">else</span> para mostrar o resultado só quando der tudo certo.</li>
+              <li>Use <span class="ic">finally</span> para escrever "Operação finalizada".</li>
+              <li><strong>Desafio:</strong> repita a pergunta até o usuário digitar valores válidos (dica: <span class="ic">while True</span> + <span class="ic">break</span>).</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Ponto de partida</h3>
+<div class="code" style="font-size:.84rem"><span class="kw">while</span> <span class="kw">True</span>:
+    <span class="kw">try</span>:
+        a = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Número 1: "</span>))
+        b = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Número 2: "</span>))
+        r = a / b
+    <span class="kw">except</span> ...:
+        ...
+    <span class="kw">else</span>:
+        <span class="fn">print</span>(r)
+        <span class="kw">break</span></div>
+            <div class="callout" style="margin-top:14px">
+              Teste com <span class="ic">10 e 0</span>, depois com <span class="ic">dez</span>. Cada teste precisa cair em um <span class="ic">except</span> diferente.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 — RAISE -->
+    <section class="slide">
+      <div class="eyebrow">Lançamento de exceções</div>
+      <h2>raise: lançando uma exceção de propósito</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.86rem"><span class="kw">def</span> <span class="fn">definir_idade</span>(idade):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(idade, <span class="cls">int</span>):
+        <span class="kw">raise</span> <span class="cls">TypeError</span>(<span class="str">"Idade deve ser inteiro"</span>)
+    <span class="kw">if</span> idade &lt; <span class="num">0</span>:
+        <span class="kw">raise</span> <span class="cls">ValueError</span>(<span class="str">"Idade não pode ser negativa"</span>)
+    <span class="kw">return</span> idade
+
+<span class="com"># quem chama decide o que fazer</span>
+<span class="kw">try</span>:
+    definir_idade(-<span class="num">5</span>)
+<span class="kw">except</span> <span class="cls">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Dado inválido:"</span>, e)</div>
+          </div>
+          <div>
+            <h3>Por que não usar só um print?</h3>
+            <ul class="clean">
+              <li>Um <span class="ic">print</span> avisa, mas o programa <strong>continua com o dado errado</strong> e o estrago aparece lá na frente.</li>
+              <li>O <span class="ic">raise</span> <strong>interrompe na hora</strong> e obriga quem chamou a função a lidar com o problema.</li>
+              <li>Sua função fica <strong>reutilizável</strong>: ela avisa o que houve, e cada programa decide se mostra na tela, grava em log ou pede de novo.</li>
+            </ul>
+            <div class="callout ok" style="margin-top:14px">
+              <strong>Divisão de papéis:</strong> quem <strong>detecta</strong> o problema usa <span class="ic">raise</span>; quem <strong>sabe o que fazer</strong> com ele usa <span class="ic">except</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 — PROPAGAÇÃO -->
+    <section class="slide">
+      <div class="eyebrow">Lançamento de exceções</div>
+      <h2>A exceção sobe até alguém tratar</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 480 290" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A exceção subindo da função interna até o bloco try do programa principal">
+                <defs>
+                  <marker id="up" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#cf5050"/></marker>
+                </defs>
+                <g font-family="IBM Plex Mono, monospace" font-size="13">
+                  <rect x="30" y="196" width="250" height="56" rx="12" fill="#fbeeee" stroke="#e6c4c4"/>
+                  <text x="155" y="220" text-anchor="middle" fill="#cf5050">definir_idade(-5)</text>
+                  <text x="155" y="240" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#a83c3c">raise ValueError — nasce aqui</text>
+
+                  <rect x="30" y="112" width="250" height="56" rx="12" fill="#ffffff" stroke="#e6c4c4"/>
+                  <text x="155" y="136" text-anchor="middle" fill="#16202e">cadastrar_aluno()</text>
+                  <text x="155" y="156" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#46556b">não tem except: deixa passar</text>
+
+                  <rect x="30" y="28" width="250" height="56" rx="12" fill="#eaf6f2" stroke="#a8d8c9"/>
+                  <text x="155" y="52" text-anchor="middle" fill="#1f6e58">programa principal</text>
+                  <text x="155" y="72" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#1f6e58">except ValueError: tratou!</text>
+
+                  <path d="M310,215 L310,190 L310,145" stroke="#cf5050" stroke-width="2" fill="none" marker-end="url(#up)"/>
+                  <path d="M310,130 L310,60" stroke="#cf5050" stroke-width="2" fill="none" marker-end="url(#up)"/>
+                  <text x="326" y="172" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#cf5050">sobe</text>
+                  <text x="326" y="100" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#cf5050">sobe</text>
+                </g>
+                <text x="30" y="278" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">Se ninguém tratar, a exceção chega ao topo e vira aquele traceback na tela.</text>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h3>Relançar depois de registrar</h3>
+<div class="code" style="font-size:.84rem"><span class="kw">try</span>:
+    media = calcular_media(notas)
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Turma sem notas:"</span>, e)
+    <span class="kw">raise</span>   <span class="com"># manda a exceção adiante</span></div>
+            <div class="callout" style="margin-top:14px">
+              <span class="ic">raise</span> sozinho, dentro de um <span class="ic">except</span>, relança <strong>a mesma exceção</strong>. Útil quando você quer registrar o problema mas não é você quem deve resolvê-lo.
+            </div>
+            <div class="callout warn" style="margin-top:12px">
+              Trate a exceção <strong>onde existe informação suficiente</strong> para decidir. Uma função de cálculo raramente sabe se deve mostrar uma janela de erro ou tentar de novo.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 — HIERARQUIA -->
+    <section class="slide">
+      <div class="eyebrow">Hierarquia da biblioteca padrão</div>
+      <h2>Exceções são classes — e formam uma família</h2>
+      <div class="body">
+        <p style="margin-bottom:10px;font-size:.94rem">Toda exceção do Python é uma <strong>classe</strong>, e essas classes herdam umas das outras. Quem está mais acima na árvore é mais <strong>genérico</strong>; quem está embaixo é mais <strong>específico</strong>.</p>
+        <div class="fig">
+          <svg viewBox="0 0 880 250" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árvore da hierarquia de exceções do Python, de BaseException até as exceções mais comuns">
+            <g font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">
+              <g stroke="#c0cede" stroke-width="1.5" fill="none">
+                <path d="M425,44 L425,58 L165,58 L165,70"/>
+                <path d="M425,58 L335,58 L335,70"/>
+                <path d="M425,58 L505,58 L505,70"/>
+                <path d="M505,104 L505,122 L94,122 L94,140"/>
+                <path d="M505,122 L262,122 L262,140"/>
+                <path d="M505,122 L407,122 L407,140"/>
+                <path d="M505,122 L537,122 L537,140"/>
+                <path d="M505,122 L664,122 L664,140"/>
+                <path d="M505,122 L797,122 L797,140"/>
+                <path d="M94,174 L94,205"/>
+                <path d="M262,174 L262,190 L242,190 L242,205"/>
+                <path d="M262,190 L342,190 L342,205"/>
+                <path d="M407,174 L407,190 L472,190 L472,205"/>
+              </g>
+
+              <rect x="340" y="10" width="170" height="34" rx="9" fill="#eef2f7" stroke="#a9c4de"/>
+              <text x="425" y="32" fill="#214d72">BaseException</text>
+
+              <rect x="100" y="70" width="130" height="34" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+              <text x="165" y="92" fill="#46556b">SystemExit</text>
+              <rect x="250" y="70" width="170" height="34" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+              <text x="335" y="92" fill="#46556b">KeyboardInterrupt</text>
+              <rect x="430" y="70" width="150" height="34" rx="9" fill="#e3edf7" stroke="#306998" stroke-width="2"/>
+              <text x="505" y="92" fill="#214d72" font-weight="600">Exception</text>
+
+              <rect x="14" y="140" width="160" height="34" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+              <text x="94" y="162" fill="#16202e">ArithmeticError</text>
+              <rect x="192" y="140" width="140" height="34" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+              <text x="262" y="162" fill="#16202e">LookupError</text>
+              <rect x="352" y="140" width="110" height="34" rx="9" fill="#ffffff" stroke="#d4deeb"/>
+              <text x="407" y="162" fill="#16202e">OSError</text>
+              <rect x="482" y="140" width="110" height="34" rx="9" fill="#fdf9f3" stroke="#e0c295"/>
+              <text x="537" y="162" fill="#8a5a1c">ValueError</text>
+              <rect x="612" y="140" width="105" height="34" rx="9" fill="#fdf9f3" stroke="#e0c295"/>
+              <text x="664" y="162" fill="#8a5a1c">TypeError</text>
+              <rect x="737" y="140" width="120" height="34" rx="9" fill="#fdf9f3" stroke="#e0c295"/>
+              <text x="797" y="162" fill="#8a5a1c">NameError</text>
+
+              <rect x="8" y="205" width="172" height="32" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+              <text x="94" y="226" font-size="11.5" fill="#a83c3c">ZeroDivisionError</text>
+              <rect x="192" y="205" width="100" height="32" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+              <text x="242" y="226" font-size="11.5" fill="#a83c3c">IndexError</text>
+              <rect x="298" y="205" width="88" height="32" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+              <text x="342" y="226" font-size="11.5" fill="#a83c3c">KeyError</text>
+              <rect x="396" y="205" width="152" height="32" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+              <text x="472" y="226" font-size="11.5" fill="#a83c3c">FileNotFoundError</text>
+            </g>
+          </svg>
+        </div>
+        <div class="cols c2" style="margin-top:10px">
+          <div class="callout"><strong>Herança na prática:</strong> <span class="ic">except ArithmeticError</span> também captura <span class="ic">ZeroDivisionError</span>, porque toda ZeroDivisionError <strong>é uma</strong> ArithmeticError.</div>
+          <div class="callout err"><strong>Nunca use <span class="ic">except BaseException</span>.</strong> Ele impede até o <span class="ic">Ctrl+C</span> de encerrar o programa. Sua rede de segurança máxima é <span class="ic">Exception</span>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 — TABELA DE EXCEÇÕES COMUNS -->
+    <section class="slide">
+      <div class="eyebrow">Hierarquia da biblioteca padrão</div>
+      <h2>As que vocês mais vão encontrar</h2>
+      <div class="body">
+        <table class="tbl">
+          <tr><th>Exceção</th><th>Acontece quando</th><th>Exemplo que provoca</th></tr>
+          <tr><td><span class="ic">ValueError</span></td><td>o tipo está certo, mas o valor não serve</td><td><span class="ic">int("abc")</span></td></tr>
+          <tr><td><span class="ic">TypeError</span></td><td>a operação não existe para aquele tipo</td><td><span class="ic">"3" + 5</span></td></tr>
+          <tr><td><span class="ic">ZeroDivisionError</span></td><td>divisão ou resto por zero</td><td><span class="ic">10 / 0</span></td></tr>
+          <tr><td><span class="ic">IndexError</span></td><td>índice fora do tamanho da sequência</td><td><span class="ic">[1, 2, 3][7]</span></td></tr>
+          <tr><td><span class="ic">KeyError</span></td><td>a chave não existe no dicionário</td><td><span class="ic">aluno["turma"]</span></td></tr>
+          <tr><td><span class="ic">AttributeError</span></td><td>o objeto não tem esse atributo ou método</td><td><span class="ic">"texto".append("a")</span></td></tr>
+          <tr><td><span class="ic">NameError</span></td><td>a variável nunca foi criada</td><td><span class="ic">print(totall)</span></td></tr>
+          <tr><td><span class="ic">ModuleNotFoundError</span></td><td>o módulo importado não foi encontrado</td><td><span class="ic">import mudulo</span></td></tr>
+        </table>
+        <div class="cols c2" style="margin-top:14px">
+          <div class="callout"><strong>Dica:</strong> provoque cada erro desta tabela no terminal do Python. Ver o traceback nascendo é a melhor forma de reconhecê-lo depois.</div>
+          <div class="callout ok">Existe uma família inteira ligada a <strong>arquivos</strong> — <span class="ic">FileNotFoundError</span>, <span class="ic">PermissionError</span> — que vocês vão encontrar na aula de manipulação de arquivos.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15 — ORDEM DOS EXCEPT -->
+    <section class="slide">
+      <div class="eyebrow">Hierarquia da biblioteca padrão</div>
+      <h2>A ordem dos except importa</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+            <h3 style="color:var(--err)">Errado — do geral para o específico</h3>
+<div class="code" style="font-size:.85rem"><span class="kw">try</span>:
+    <span class="fn">print</span>(<span class="num">10</span> / <span class="num">0</span>)
+
+<span class="kw">except</span> <span class="cls">Exception</span>:
+    <span class="fn">print</span>(<span class="str">"Algum erro aconteceu"</span>)
+
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="str">"Divisão por zero"</span>)
+    <span class="com"># nunca será executado</span></div>
+            <div class="callout err" style="margin-top:14px">
+              Como <span class="ic">ZeroDivisionError</span> é filha de <span class="ic">Exception</span>, o primeiro <span class="ic">except</span> já captura tudo. O segundo vira código morto.
+            </div>
+          </div>
+          <div>
+            <h3 style="color:var(--ok)">Certo — do específico para o geral</h3>
+<div class="code" style="font-size:.85rem"><span class="kw">try</span>:
+    <span class="fn">print</span>(<span class="num">10</span> / <span class="num">0</span>)
+
+<span class="kw">except</span> <span class="cls">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="str">"Divisão por zero"</span>)
+
+<span class="kw">except</span> <span class="cls">Exception</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Erro inesperado:"</span>, e)</div>
+            <div class="callout ok" style="margin-top:14px">
+              Primeiro os casos que você <strong>sabe explicar</strong>; por último, um <span class="ic">Exception</span> genérico como rede de segurança — e sempre <strong>mostrando o erro</strong>, nunca engolindo em silêncio.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 — ATIVIDADE 2 -->
+    <section class="slide">
+      <div class="eyebrow">Mão na massa</div>
+      <h2>Atividade 2 — Cadastro com validação</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <span class="pill">Tempo: 15 minutos</span>
+            <p style="margin:14px 0 12px">Escreva a função <span class="ic">cadastrar_aluno(nome, idade, nota)</span> que <strong>lança</strong> exceções da biblioteca padrão quando os dados não fazem sentido:</p>
+            <ol class="steps">
+              <li><span class="ic">ValueError</span> se o nome for vazio.</li>
+              <li><span class="ic">ValueError</span> se a idade não estiver entre 10 e 100.</li>
+              <li><span class="ic">ValueError</span> se a nota não estiver entre 0 e 10.</li>
+              <li><span class="ic">TypeError</span> se a nota não for um número.</li>
+              <li>No programa principal, chame a função dentro de um <span class="ic">try</span> e mostre uma mensagem clara para cada problema.</li>
+            </ol>
+          </div>
+          <div>
+            <h3>Casos de teste obrigatórios</h3>
+<div class="code" style="font-size:.84rem">cadastrar_aluno(<span class="str">""</span>, <span class="num">16</span>, <span class="num">8</span>)
+cadastrar_aluno(<span class="str">"Ana"</span>, <span class="num">5</span>, <span class="num">8</span>)
+cadastrar_aluno(<span class="str">"Ana"</span>, <span class="num">16</span>, <span class="num">15</span>)
+cadastrar_aluno(<span class="str">"Ana"</span>, <span class="num">16</span>, <span class="str">"oito"</span>)
+cadastrar_aluno(<span class="str">"Ana"</span>, <span class="num">16</span>, <span class="num">8</span>)  <span class="com"># válido</span></div>
+            <div class="callout" style="margin-top:14px">
+              Escreva na mensagem da exceção <strong>o que foi recebido</strong>: <span class="ic">f"Idade inválida: {idade}"</span>. Isso economiza horas de depuração depois.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 — CRIANDO EXCEÇÕES -->
+    <section class="slide">
+      <div class="eyebrow">Criação de classes de exceção</div>
+      <h2>Criando a sua própria exceção</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.86rem"><span class="kw">class</span> <span class="cls">SaldoInsuficienteError</span>(<span class="cls">Exception</span>):
+    <span class="str">"""Saque maior que o saldo da conta."""</span>
+
+
+<span class="kw">def</span> <span class="fn">sacar</span>(saldo, valor):
+    <span class="kw">if</span> valor &gt; saldo:
+        <span class="kw">raise</span> <span class="cls">SaldoInsuficienteError</span>(
+            <span class="str">"Saldo insuficiente para o saque"</span>)
+    <span class="kw">return</span> saldo - valor
+
+
+<span class="kw">try</span>:
+    sacar(<span class="num">100</span>, <span class="num">250</span>)
+<span class="kw">except</span> <span class="cls">SaldoInsuficienteError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Operação negada:"</span>, e)</div>
+          </div>
+          <div>
+            <h3>É só uma classe que herda de Exception</h3>
+            <ul class="clean">
+              <li>Herde sempre de <span class="ic">Exception</span> (nunca de <span class="ic">BaseException</span>).</li>
+              <li>O corpo pode ser só uma <em>docstring</em> ou <span class="ic">pass</span> — a classe já funciona.</li>
+              <li>Por convenção, o nome termina em <strong>Error</strong> e usa <em>CamelCase</em>.</li>
+            </ul>
+            <div class="callout ok" style="margin-top:14px">
+              <strong>Por que criar a minha?</strong> <span class="ic">SaldoInsuficienteError</span> diz exatamente o que aconteceu no <strong>seu</strong> sistema. Um <span class="ic">ValueError</span> genérico se confunde com qualquer outro erro de valor do programa.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 18 — EXCEÇÃO COM DADOS -->
+    <section class="slide">
+      <div class="eyebrow">Criação de classes de exceção</div>
+      <h2>Exceções que carregam informação</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.84rem"><span class="kw">class</span> <span class="cls">SaldoInsuficienteError</span>(<span class="cls">Exception</span>):
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, saldo, valor):
+        <span class="kw">self</span>.saldo = saldo
+        <span class="kw">self</span>.valor = valor
+        <span class="kw">self</span>.falta = valor - saldo
+        <span class="fn">super</span>().<span class="fn">__init__</span>(
+            <span class="str">f"Faltam R$ {self.falta:.2f}"</span>)</div>
+<div class="code" style="font-size:.84rem;margin-top:12px"><span class="kw">except</span> <span class="cls">SaldoInsuficienteError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(e)              <span class="out"># Faltam R$ 150.00</span>
+    <span class="fn">print</span>(e.saldo, e.falta)  <span class="out"># 100 150</span></div>
+          </div>
+          <div>
+            <h3>O que ganhamos com isso</h3>
+            <ol class="steps">
+              <li>O <span class="ic">__init__</span> recebe os dados do problema e os guarda como <strong>atributos</strong>.</li>
+              <li>O <span class="ic">super().__init__(...)</span> monta a <strong>mensagem</strong> da exceção — é o que aparece no <span class="ic">print(e)</span>.</li>
+              <li>Quem captura pode usar <span class="ic">e.falta</span> para sugerir um depósito, gerar um relatório ou tomar uma decisão.</li>
+            </ol>
+            <div class="callout" style="margin-top:14px">
+              Tudo isso é <strong>herança e polimorfismo</strong>, os mesmos conceitos das aulas anteriores — aplicados a uma classe que já existe no Python.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 19 — FAMÍLIA DE EXCEÇÕES -->
+    <section class="slide">
+      <div class="eyebrow">Criação de classes de exceção</div>
+      <h2>Uma família de exceções para o seu projeto</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <div class="fig">
+              <svg viewBox="0 0 520 230" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árvore com Exception, BancoError e três exceções específicas do projeto">
+                <g font-family="IBM Plex Mono, monospace" font-size="12" text-anchor="middle">
+                  <g stroke="#c0cede" stroke-width="1.5" fill="none">
+                    <path d="M260,44 L260,74"/>
+                    <path d="M260,110 L260,128 L92,128 L92,148"/>
+                    <path d="M260,128 L260,148"/>
+                    <path d="M260,128 L428,128 L428,148"/>
+                  </g>
+                  <rect x="190" y="10" width="140" height="34" rx="9" fill="#e3edf7" stroke="#a9c4de"/>
+                  <text x="260" y="32" fill="#214d72">Exception</text>
+
+                  <rect x="180" y="74" width="160" height="36" rx="9" fill="#fdf9f3" stroke="#e0c295" stroke-width="2"/>
+                  <text x="260" y="97" fill="#8a5a1c" font-weight="600">BancoError</text>
+
+                  <rect x="8" y="148" width="168" height="46" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                  <text x="92" y="167" font-size="11" fill="#a83c3c">SaldoInsuficiente</text>
+                  <text x="92" y="183" font-size="11" fill="#a83c3c">Error</text>
+
+                  <rect x="180" y="148" width="160" height="46" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                  <text x="260" y="167" font-size="11" fill="#a83c3c">ContaInexistente</text>
+                  <text x="260" y="183" font-size="11" fill="#a83c3c">Error</text>
+
+                  <rect x="344" y="148" width="168" height="46" rx="9" fill="#fbeeee" stroke="#e6c4c4"/>
+                  <text x="428" y="167" font-size="11" fill="#a83c3c">ValorInvalido</text>
+                  <text x="428" y="183" font-size="11" fill="#a83c3c">Error</text>
+                </g>
+                <text x="8" y="220" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="#46556b">Uma exceção-base por projeto ou módulo, e as específicas herdando dela.</text>
+              </svg>
+            </div>
+          </div>
+          <div>
+<div class="code" style="font-size:.84rem"><span class="kw">class</span> <span class="cls">BancoError</span>(<span class="cls">Exception</span>):
+    <span class="str">"""Base de todos os erros do banco."""</span>
+
+<span class="kw">class</span> <span class="cls">SaldoInsuficienteError</span>(<span class="cls">BancoError</span>):
+    <span class="kw">pass</span>
+
+<span class="kw">class</span> <span class="cls">ContaInexistenteError</span>(<span class="cls">BancoError</span>):
+    <span class="kw">pass</span></div>
+            <div class="callout ok" style="margin-top:14px">
+              Agora <span class="ic">except BancoError</span> captura <strong>qualquer erro do seu sistema</strong> de uma vez — e você ainda pode tratar um caso específico antes, se quiser.
+            </div>
+            <div class="callout" style="margin-top:12px">
+              É exatamente a mesma ideia da hierarquia do Python: do <strong>específico</strong> para o <strong>geral</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 20 — BOAS PRÁTICAS -->
+    <section class="slide">
+      <div class="eyebrow">Boas práticas</div>
+      <h2>O que fazer e o que evitar</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+            <h3 style="color:var(--ok)">Faça</h3>
+            <ul class="clean">
+              <li>Capture o tipo <strong>mais específico</strong> que você consegue tratar.</li>
+              <li>Deixe no <span class="ic">try</span> <strong>só as linhas que podem falhar</strong>.</li>
+              <li>Escreva mensagens que ajudem: o que houve e o que o usuário deve fazer.</li>
+              <li>Use <span class="ic">finally</span> para encerrar o que você começou.</li>
+              <li>Crie exceções próprias quando o erro for uma <strong>regra do seu domínio</strong>.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color:var(--err)">Evite</h3>
+<div class="code" style="font-size:.82rem"><span class="kw">try</span>:
+    processar()
+<span class="kw">except</span>:          <span class="com"># captura até Ctrl+C</span>
+    <span class="kw">pass</span>         <span class="com"># e apaga o rastro do bug</span></div>
+            <ul class="clean" style="margin-top:12px">
+              <li><strong>Engolir a exceção</strong> com <span class="ic">pass</span>: o erro vira um mistério.</li>
+              <li>Usar exceção como <span class="ic">if</span>: se dá para testar antes, teste antes.</li>
+              <li>Mostrar o traceback cru para o usuário final.</li>
+              <li>Um <span class="ic">try</span> gigante em volta do programa inteiro.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout warn" style="margin-top:16px">
+          <strong>O pior erro é o silencioso.</strong> Se você não sabe o que fazer com uma exceção, é melhor deixá-la subir do que fingir que nada aconteceu.
+        </div>
+      </div>
+    </section>
+
+    <!-- 21 — EXEMPLO COMPLETO -->
+    <section class="slide">
+      <div class="eyebrow">Juntando tudo</div>
+      <h2>Exemplo completo: caixa eletrônico</h2>
+      <div class="body">
+        <div class="cols c2">
+          <div>
+<div class="code" style="font-size:.78rem"><span class="kw">class</span> <span class="cls">BancoError</span>(<span class="cls">Exception</span>):
+    <span class="str">"""Erro base do sistema bancário."""</span>
+
+<span class="kw">class</span> <span class="cls">SaldoInsuficienteError</span>(<span class="cls">BancoError</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, saldo, valor):
+        <span class="kw">self</span>.falta = valor - saldo
+        <span class="fn">super</span>().<span class="fn">__init__</span>(<span class="str">f"Faltam R$ {self.falta:.2f}"</span>)
+
+<span class="kw">class</span> <span class="cls">ValorInvalidoError</span>(<span class="cls">BancoError</span>):
+    <span class="kw">pass</span>
+
+<span class="kw">def</span> <span class="fn">sacar</span>(saldo, valor):
+    <span class="kw">if</span> valor &lt;= <span class="num">0</span>:
+        <span class="kw">raise</span> <span class="cls">ValorInvalidoError</span>(<span class="str">"O valor deve ser positivo"</span>)
+    <span class="kw">if</span> valor &gt; saldo:
+        <span class="kw">raise</span> <span class="cls">SaldoInsuficienteError</span>(saldo, valor)
+    <span class="kw">return</span> saldo - valor</div>
+          </div>
+          <div>
+<div class="code" style="font-size:.78rem">saldo = <span class="num">100.00</span>
+
+<span class="kw">try</span>:
+    valor = <span class="fn">float</span>(<span class="fn">input</span>(<span class="str">"Valor do saque: "</span>))
+    saldo = sacar(saldo, valor)
+<span class="kw">except</span> <span class="cls">ValueError</span>:
+    <span class="fn">print</span>(<span class="str">"Digite um número válido."</span>)
+<span class="kw">except</span> <span class="cls">SaldoInsuficienteError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Saque negado."</span>, e)
+    <span class="fn">print</span>(<span class="str">f"Deposite R$ {e.falta:.2f} antes."</span>)
+<span class="kw">except</span> <span class="cls">BancoError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="str">"Operação inválida:"</span>, e)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">f"Saque efetuado. Saldo: R$ {saldo:.2f}"</span>)
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="str">"Retire seu cartão."</span>)</div>
+            <div class="callout ok" style="margin-top:12px">
+              Repare na ordem: <span class="ic">SaldoInsuficienteError</span> vem <strong>antes</strong> de <span class="ic">BancoError</span>, que é a sua mãe.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 22 — EXERCÍCIOS -->
+    <section class="slide">
+      <div class="eyebrow">Para praticar</div>
+      <h2>Exercícios de fixação</h2>
+      <div class="body">
+        <div class="cols c3">
+          <div class="card">
+            <span class="tag">Exercício 1 · captura</span>
+            <h3>Consulta ao estoque</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Crie um dicionário <span class="ic">produto: quantidade</span>.</li>
+              <li>Peça um produto e trate <span class="ic">KeyError</span> se não existir.</li>
+              <li>Peça as unidades e trate <span class="ic">ValueError</span>.</li>
+              <li>Mostre o novo estoque no <span class="ic">else</span> e encerre no <span class="ic">finally</span>.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag">Exercício 2 · lançamento</span>
+            <h3>Validador de senha</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Escreva <span class="ic">validar_senha(senha)</span>.</li>
+              <li>Lance <span class="ic">ValueError</span> se tiver menos de 8 caracteres, se não tiver número ou se não tiver letra maiúscula.</li>
+              <li>Cada caso com uma mensagem própria.</li>
+              <li>Teste com 4 senhas diferentes.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="tag">Exercício 3 · classes</span>
+            <h3>Loja virtual</h3>
+            <ul class="clean" style="font-size:.9rem">
+              <li>Crie <span class="ic">LojaError</span> e, herdando dela, <span class="ic">EstoqueInsuficienteError</span> e <span class="ic">ProdutoNaoEncontradoError</span>.</li>
+              <li>A de estoque deve guardar <span class="ic">disponivel</span> e <span class="ic">pedido</span>.</li>
+              <li>Escreva <span class="ic">comprar(produto, quantidade)</span> usando as duas.</li>
+              <li>Trate tudo com um único <span class="ic">except LojaError</span>.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          No exercício 3 aparece uma <strong>hierarquia própria</strong>: é assim que bibliotecas de verdade organizam os erros que elas podem lançar.
+        </div>
+      </div>
+    </section>
+
+    <!-- 23 — RESUMO -->
+    <section class="slide">
+      <div class="eyebrow">Fechando</div>
+      <h2>O que aprendemos hoje</h2>
+      <div class="body">
+        <div class="cols c2u">
+          <div>
+            <ul class="clean">
+              <li><strong>Exceção</strong> é o aviso do Python de que algo saiu do previsto durante a execução.</li>
+              <li><strong>try / except</strong> capturam o problema; <strong>else</strong> roda quando dá tudo certo e <strong>finally</strong> roda sempre.</li>
+              <li><strong>raise</strong> lança uma exceção quando o seu código detecta que uma regra foi quebrada.</li>
+              <li>As exceções formam uma <strong>hierarquia de classes</strong>: capture do específico para o geral.</li>
+              <li>Você pode <strong>criar suas próprias exceções</strong> herdando de <span class="ic">Exception</span>.</li>
+            </ul>
+            <div class="callout ok" style="margin-top:16px">
+              <strong>Próximos passos:</strong> pegue um programa que você já escreveu e proteja as entradas dele. Todo programa que fala com o usuário precisa disso.
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:center;gap:14px">
+            <div class="snip" style="display:block">except Exception as e:</div>
+            <p>Programa robusto não é o que nunca encontra problemas: é o que sabe exatamente o que fazer quando eles aparecem.</p>
+            <span class="pill soft">Dúvidas? Traga seu código na próxima aula</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 24 — REFERÊNCIAS -->
+    <section class="slide">
+      <div class="eyebrow">Para estudar depois</div>
+      <h2>Referências</h2>
+      <div class="body">
+        <ul class="refs">
+          <li>PYTHON SOFTWARE FOUNDATION. <strong>O tutorial de Python — Erros e exceções.</strong> Disponível em: https://docs.python.org/pt-br/3/tutorial/errors.html. Acesso em: 25 ago. 2026.</li>
+          <li>PYTHON SOFTWARE FOUNDATION. <strong>Exceções embutidas.</strong> Disponível em: https://docs.python.org/pt-br/3/library/exceptions.html. Acesso em: 25 ago. 2026.</li>
+          <li>MENEZES, Nilo Ney Coutinho. <strong>Introdução à programação com Python:</strong> algoritmos e lógica de programação para iniciantes. 4. ed. São Paulo: Novatec, 2022.</li>
+          <li>MATTHES, Eric. <strong>Curso Intensivo de Python:</strong> uma introdução prática e baseada em projetos à programação. 3. ed. São Paulo: Novatec, 2023.</li>
+          <li>RAMALHO, Luciano. <strong>Python Fluente:</strong> programação clara, concisa e eficaz. 2. ed. São Paulo: Novatec, 2023.</li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="hud">
+  <button id="prev" aria-label="Slide anterior">&#8249;</button>
+  <span class="count" id="count">1 / 1</span>
+  <button id="next" aria-label="Próximo slide">&#8250;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let i = 0;   // slide atual
+  let k = 0;   // quantos blocos já foram revelados no slide atual
+
+  // Cada slide é dividido em blocos que aparecem um a um.
+  // Dentro de uma grade .cols, cada coluna é um bloco.
+  const passos = slides.map(s => {
+    if(s.classList.contains('cover')) return [];
+    const corpo = s.querySelector('.body');
+    if(!corpo) return [];
+    const lista = [];
+    for(const filho of corpo.children){
+      if(filho.classList.contains('cols')) lista.push(...filho.children);
+      else lista.push(filho);
+    }
+    lista.forEach(el => el.classList.add('step'));
+    return lista;
+  });
+
+  function pintar(){
+    passos[i].forEach((el, n) => el.classList.toggle('reveal', n < k));
+    const total = passos[i].length || 1;
+    const progresso = (i + Math.min(k, total) / total) / slides.length;
+    bar.style.width = (progresso * 100) + '%';
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    prev.disabled = i === 0 && k <= 1;
+    next.disabled = i === slides.length - 1 && k >= passos[i].length;
+  }
+
+  function show(n, tudo){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle('on', idx === i));
+    k = tudo ? passos[i].length : Math.min(1, passos[i].length);
+    history.replaceState(null, '', '#' + (i + 1));
+    slides[i].querySelector('.body')?.scrollTo(0, 0);
+    pintar();
+  }
+
+  function avancar(){
+    if(k < passos[i].length){ k++; pintar(); }
+    else if(i < slides.length - 1){ show(i + 1, false); }
+  }
+
+  function voltar(){
+    if(k > 1){ k--; pintar(); }
+    else if(i > 0){ show(i - 1, true); }
+  }
+
+  prev.addEventListener('click', e => { e.stopPropagation(); voltar(); });
+  next.addEventListener('click', e => { e.stopPropagation(); avancar(); });
+
+  // clique em qualquer lugar do slide avança
+  let ignorarClique = false;
+  document.addEventListener('click', e => {
+    if(ignorarClique) return;
+    if(e.target.closest('.hud')) return;
+    if(window.getSelection && String(window.getSelection())) return;
+    avancar();
+  });
+
+  document.addEventListener('keydown', e => {
+    if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){ e.preventDefault(); avancar(); }
+    if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); voltar(); }
+    if(e.key === 'Home'){ e.preventDefault(); show(0, false); }
+    if(e.key === 'End'){ e.preventDefault(); show(slides.length - 1, true); }
+    // "a" revela o slide inteiro de uma vez
+    if(e.key === 'a' || e.key === 'A'){ k = passos[i].length; pintar(); }
+  });
+
+  let x0 = null;
+  document.addEventListener('touchstart', e => x0 = e.touches[0].clientX, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 55){
+      dx < 0 ? avancar() : voltar();
+      ignorarClique = true;
+      setTimeout(() => ignorarClique = false, 400);
+    }
+    x0 = null;
+  });
+
+  const start = parseInt(location.hash.replace('#',''), 10);
+  show(Number.isInteger(start) && start > 0 ? start - 1 : 0, false);
+</script>
+</body>
+</html>
