@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persistência de Objetos — Arquivos e Fluxos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef2f7;
+    --surface:#ffffff;
+    --ink:#16202e;
+    --ink-soft:#46556b;
+    --line:#d4deeb;
+    --py-blue:#306998;
+    --py-blue-deep:#214d72;
+    --py-yellow:#ffd43b;
+    --accent-soft:#e3edf7;
+    --code-bg:#1b2433;
+    --code-line:#2a3650;
+    --ok:#2f9e7e;
+    --warn:#d98324;
+    --err:#cf5050;
+    --shadow:0 18px 50px -22px rgba(28,52,84,.45);
+    --kw:#ff9d66;
+    --str:#a8e6a0;
+    --fn:#7cc4ff;
+    --com:#7587a0;
+    --num:#ffd479;
+    --cls:#ffd43b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  html{font-size:clamp(11.5px,1.02vw,18px)}
+  body{
+    font-family:'IBM Plex Sans',system-ui,sans-serif;
+    background:
+      radial-gradient(1200px 700px at 85% -10%, #dfe9f5 0%, transparent 55%),
+      radial-gradient(900px 600px at 5% 110%, #e6edf6 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Estrutura ---------- */
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:clamp(14px,3vh,40px)}
+  .stage{position:relative;width:min(1080px,94vw);height:min(660px,88vh)}
+  .slide{
+    position:absolute;inset:0;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:2.4rem 2.8rem 2.2rem;
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .slide.active{display:flex}
+
+  /* ---------- Tipografia ---------- */
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;letter-spacing:.14em;
+    color:var(--py-blue);font-weight:500;
+    margin-bottom:.5rem;
+  }
+  .s-title{
+    font-size:1.95rem;line-height:1.14;font-weight:600;letter-spacing:-.015em;
+    margin-bottom:.35rem;
+  }
+  .lead{
+    font-size:1.02rem;color:var(--ink-soft);line-height:1.45;
+    max-width:62ch;margin-bottom:1.1rem;
+  }
+  .body{flex:1;min-height:0;display:flex;flex-direction:column;gap:.85rem}
+  p{line-height:1.5}
+  strong{font-weight:600}
+  .term{
+    font-family:'IBM Plex Mono',monospace;font-size:.92em;
+    background:var(--accent-soft);color:var(--py-blue-deep);
+    padding:.06em .38em;border-radius:5px;
+  }
+
+  /* ---------- Grades e cartões ---------- */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start}
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;align-items:start}
+  .cols-58{display:grid;grid-template-columns:1.15fr 1fr;gap:1.1rem;align-items:start}
+  .cols-46{display:grid;grid-template-columns:1fr 1.3fr;gap:1.1rem;align-items:start}
+  .stack{display:flex;flex-direction:column;gap:.75rem}
+
+  .card{
+    background:#f7fafd;border:1px solid var(--line);
+    border-left:3px solid var(--py-blue);
+    border-radius:12px;padding:.85rem 1rem;
+  }
+  .card h3{font-size:.95rem;font-weight:600;margin-bottom:.3rem;color:var(--py-blue-deep)}
+  .card p, .card li{font-size:.92rem;color:var(--ink-soft);line-height:1.45}
+  .card.warn{border-left-color:var(--warn);background:#fdf8f0}
+  .card.warn h3{color:#8a5510}
+  .card.ok{border-left-color:var(--ok);background:#f2faf7}
+  .card.ok h3{color:#1d6b55}
+  .card.err{border-left-color:var(--err);background:#fdf4f4}
+  .card.err h3{color:#9b3b3b}
+  .card.plain{border-left-color:var(--line)}
+
+  .note{
+    font-size:.88rem;color:var(--ink-soft);line-height:1.45;
+    background:var(--accent-soft);border-radius:10px;padding:.7rem .9rem;
+  }
+  .note.warn{background:#fdf3e4;color:#7d4d0c}
+  .note.ok{background:#eaf7f2;color:#1d6b55}
+
+  ul.list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+  ul.list li{
+    position:relative;padding-left:1.15rem;font-size:.98rem;line-height:1.45;color:var(--ink-soft);
+  }
+  ul.list li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:.42rem;height:.42rem;border-radius:2px;background:var(--py-blue);
+  }
+  ul.list li strong{color:var(--ink)}
+  ul.list.tight li{font-size:.9rem}
+
+  ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:.55rem}
+  ol.steps li{
+    counter-increment:s;position:relative;padding-left:1.9rem;
+    font-size:.95rem;line-height:1.45;color:var(--ink-soft);
+  }
+  ol.steps li::before{
+    content:counter(s);position:absolute;left:0;top:.02em;
+    width:1.35rem;height:1.35rem;border-radius:50%;
+    background:var(--py-blue);color:#fff;
+    font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ---------- Código ---------- */
+  .code{
+    background:var(--code-bg);border-radius:12px;overflow:hidden;
+    border:1px solid var(--code-line);
+  }
+  .code-tab{
+    font-family:'IBM Plex Mono',monospace;font-size:.72rem;
+    color:#93a4bd;background:#141c28;border-bottom:1px solid var(--code-line);
+    padding:.38rem .8rem;letter-spacing:.03em;
+  }
+  .code pre{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.82rem;line-height:1.55;color:#dfe7f3;
+    padding:.75rem .9rem;overflow:auto;white-space:pre;
+  }
+  .code.sm pre{font-size:.75rem;line-height:1.5}
+  .code.xs pre{font-size:.69rem;line-height:1.45}
+  .kw{color:var(--kw)}
+  .str{color:var(--str)}
+  .fn{color:var(--fn)}
+  .com{color:var(--com);font-style:italic}
+  .num{color:var(--num)}
+  .cl{color:var(--cls)}
+  .out{
+    background:#f4f7fb;border:1px dashed var(--line);border-radius:10px;
+    font-family:'IBM Plex Mono',monospace;font-size:.78rem;line-height:1.55;
+    color:var(--ink-soft);padding:.65rem .85rem;white-space:pre;overflow:auto;
+  }
+  .out b{color:var(--py-blue-deep);font-weight:600}
+
+  /* ---------- Tabelas ---------- */
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th{
+    text-align:left;font-family:'IBM Plex Mono',monospace;font-weight:500;
+    font-size:.72rem;letter-spacing:.06em;color:var(--py-blue);
+    padding:.45rem .6rem;border-bottom:1.5px solid var(--line);
+  }
+  td{padding:.42rem .6rem;border-bottom:1px solid #e7eef6;color:var(--ink-soft);vertical-align:top;line-height:1.4}
+  td code, th code{font-family:'IBM Plex Mono',monospace;color:var(--py-blue-deep);font-size:.95em}
+  tr:last-child td{border-bottom:none}
+  table.sm{font-size:.8rem}
+  table.sm td{padding:.32rem .5rem}
+
+  /* ---------- Figuras ---------- */
+  .fig{display:flex;align-items:center;justify-content:center;width:100%}
+  .fig svg{width:100%;height:auto;max-height:100%;display:block}
+  .cap{
+    font-size:.76rem;color:var(--ink-soft);text-align:center;margin-top:.35rem;
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  /* ---------- Capa ---------- */
+  .cover{justify-content:center;background:
+    radial-gradient(700px 420px at 88% 8%, #eaf1fa 0%, transparent 60%),
+    var(--surface);}
+  .cover .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:.8rem;letter-spacing:.16em;
+    color:var(--py-blue);margin-bottom:1rem;
+  }
+  .cover h1{
+    font-size:3.1rem;line-height:1.04;font-weight:600;letter-spacing:-.03em;max-width:16ch;
+  }
+  .cover h1 em{font-family:'IBM Plex Serif',serif;font-style:italic;font-weight:500;color:var(--py-blue-deep)}
+  .cover .rule{width:5.5rem;height:3px;background:var(--py-yellow);margin:1.3rem 0 1.1rem;border-radius:2px}
+  .cover .meta{font-size:.95rem;color:var(--ink-soft);line-height:1.7}
+  .cover .meta b{color:var(--ink);font-weight:500}
+  .cover-art{position:absolute;right:2.4rem;bottom:2rem;width:min(42%,430px);opacity:.95}
+
+  /* ---------- Divisor ---------- */
+  .divider{justify-content:center;background:linear-gradient(135deg,#25415e,#16202e);border-color:#16202e}
+  .divider .kicker{color:var(--py-yellow)}
+  .divider h2{font-size:2.4rem;color:#fff;font-weight:600;letter-spacing:-.02em;max-width:20ch}
+  .divider p{color:#b8c8dd;margin-top:.7rem;max-width:52ch;font-size:1rem}
+
+  /* ---------- Fragmentos ---------- */
+  .f{opacity:0;transform:translateY(6px);transition:opacity .28s ease,transform .28s ease}
+  .f.show{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.f{transition:none}}
+
+  /* ---------- HUD ---------- */
+  .hud{
+    position:fixed;left:0;right:0;bottom:0;height:2.6rem;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 1.4rem;font-family:'IBM Plex Mono',monospace;
+    font-size:.72rem;color:#7a8aa1;pointer-events:none;
+  }
+  .bar{position:fixed;top:0;left:0;height:3px;background:var(--py-blue);width:0;transition:width .3s ease;z-index:5}
+  .hud .hint{opacity:.75}
+
+  /* ---------- Impressão A4 paisagem ---------- */
+  @media print{
+    @page{size:A4 landscape;margin:0}
+    html{font-size:14.2px}
+    body{background:#fff;overflow:visible}
+    .deck{position:static;display:block;padding:0}
+    .stage{width:auto;height:auto}
+    .slide{
+      position:relative;inset:auto;
+      width:297mm;height:208.5mm;
+      display:flex !important;
+      border:none;border-radius:0;box-shadow:none;
+      page-break-after:always;break-after:page;
+      padding:16mm 18mm;
+    }
+    .f{opacity:1 !important;transform:none !important}
+    .hud,.bar{display:none}
+    .code pre,.out{overflow:hidden}
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="deck"><div class="stage" id="stage">
+<!-- 01 CAPA -->
+<section class="slide cover">
+  <p class="eyebrow">PROGRAMAÇÃO ORIENTADA A OBJETOS</p>
+  <h1>Persistência de <em>objetos</em></h1>
+  <div class="rule"></div>
+  <p class="meta">
+    <b>Arquivos e fluxos</b><br>
+    Python<br>
+    Profa. Fernanda Lígia<br>
+    IFRN · Campus São Paulo do Potengi · 2026.2
+  </p>
+  <svg class="cover-art" viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="8" y="60" width="150" height="120" rx="12" fill="#f4f8fc" stroke="#d4deeb"/>
+    <rect x="8" y="60" width="150" height="24" rx="12" fill="#e3edf7"/>
+    <rect x="8" y="72" width="150" height="12" fill="#e3edf7"/>
+    <circle cx="26" cy="72" r="4" fill="#cf5050"/><circle cx="40" cy="72" r="4" fill="#ffd43b"/><circle cx="54" cy="72" r="4" fill="#2f9e7e"/>
+    <rect x="24" y="98" width="90" height="7" rx="3.5" fill="#c6d5e6"/>
+    <rect x="24" y="114" width="118" height="7" rx="3.5" fill="#c6d5e6"/>
+    <rect x="24" y="130" width="70" height="7" rx="3.5" fill="#306998"/>
+    <rect x="24" y="146" width="104" height="7" rx="3.5" fill="#c6d5e6"/>
+    <text x="83" y="200" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">programa</text>
+
+    <path d="M170 106 H262" stroke="#306998" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M254 100 l8 6 -8 6" fill="none" stroke="#306998" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M262 140 H170" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="6 5"/>
+    <path d="M178 134 l-8 6 8 6" fill="none" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <path d="M282 52 h78 l32 32 v124 a10 10 0 0 1 -10 10 h-100 a10 10 0 0 1 -10 -10 v-146 a10 10 0 0 1 10 -10 z" fill="#ffffff" stroke="#306998" stroke-width="2"/>
+    <path d="M360 52 v32 h32" fill="none" stroke="#306998" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="298" y="104" width="74" height="6" rx="3" fill="#d4deeb"/>
+    <rect x="298" y="120" width="60" height="6" rx="3" fill="#d4deeb"/>
+    <rect x="298" y="136" width="80" height="6" rx="3" fill="#d4deeb"/>
+    <rect x="298" y="152" width="52" height="6" rx="3" fill="#ffd43b"/>
+    <text x="340" y="230" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">arquivo</text>
+  </svg>
+</section>
+
+<!-- 02 OBJETIVOS -->
+<section class="slide">
+  <p class="kicker">O QUE VAMOS APRENDER</p>
+  <h2 class="s-title">Ao final desta aula, você será capaz de…</h2>
+  <p class="lead">Guardar os dados dos seus objetos em um arquivo e recuperá-los depois — mesmo com o programa fechado e o computador desligado.</p>
+  <div class="body">
+    <div class="cols">
+      <ul class="list">
+        <li class="f">Explicar por que os dados <strong>somem</strong> quando o programa termina</li>
+        <li class="f">Entender o que é um <strong>arquivo</strong> e o que é um <strong>fluxo</strong></li>
+        <li class="f">Abrir, ler, escrever e fechar arquivos com <span class="term">open()</span></li>
+        <li class="f">Escolher o <strong>modo</strong> certo de abertura</li>
+      </ul>
+      <ul class="list">
+        <li class="f">Usar <span class="term">with</span> para nunca esquecer de fechar</li>
+        <li class="f">Tratar erros como <span class="term">FileNotFoundError</span></li>
+        <li class="f">Transformar um <strong>objeto em linha de texto</strong> e vice-versa</li>
+        <li class="f">Escrever uma classe que salva e carrega sua própria coleção</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 03 O PROBLEMA -->
+<section class="slide">
+  <p class="kicker">O PROBLEMA</p>
+  <h2 class="s-title">A memória do programa esquece tudo</h2>
+  <p class="lead">Tudo o que você cria em Python — objetos, listas, dicionários — vive na memória RAM. Quando o programa termina, essa memória é devolvida ao sistema e o conteúdo se perde.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="fig f">
+        <svg viewBox="0 0 480 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="10" y="20" width="200" height="150" rx="12" fill="#f7fafd" stroke="#d4deeb"/>
+          <text x="110" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">memória (RAM)</text>
+          <rect x="34" y="62" width="152" height="26" rx="6" fill="#e3edf7" stroke="#c6d5e6"/>
+          <text x="110" y="79" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#16202e">Livro("Dom Casmurro")</text>
+          <rect x="34" y="96" width="152" height="26" rx="6" fill="#e3edf7" stroke="#c6d5e6"/>
+          <text x="110" y="113" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#16202e">Livro("Vidas Secas")</text>
+          <rect x="34" y="130" width="152" height="26" rx="6" fill="#e3edf7" stroke="#c6d5e6"/>
+          <text x="110" y="147" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#16202e">Livro("Capitães…")</text>
+          <text x="110" y="192" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">enquanto o programa roda</text>
+
+          <path d="M225 95 H272" stroke="#cf5050" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M264 89 l8 6 -8 6" fill="none" stroke="#cf5050" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="248" y="82" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#cf5050">fim</text>
+
+          <rect x="288" y="20" width="180" height="150" rx="12" fill="#fdf4f4" stroke="#f0d6d6" stroke-dasharray="6 5"/>
+          <text x="378" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#cf5050">memória (RAM)</text>
+          <text x="378" y="108" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="15" fill="#cf5050">vazia</text>
+          <text x="378" y="192" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">depois que o programa fecha</text>
+        </svg>
+      </div>
+      <div class="stack">
+        <div class="card err f">
+          <h3>Já aconteceu com você</h3>
+          <p>Você cadastra 20 livros no seu sistema, testa tudo, fecha o programa… e na próxima execução a lista está vazia de novo.</p>
+        </div>
+        <div class="card f">
+          <h3>A pergunta da aula</h3>
+          <p>Como fazer os dados <strong>sobreviverem</strong> ao fim do programa?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 O QUE É PERSISTÊNCIA -->
+<section class="slide">
+  <p class="kicker">CONCEITO</p>
+  <h2 class="s-title">Persistência é fazer o dado durar</h2>
+  <div class="body">
+    <div class="note f" style="font-size:1.02rem;line-height:1.55">
+      <strong>Persistência</strong> é a capacidade de um dado continuar existindo depois que o programa que o criou terminou. Na prática: gravar em um lugar que não depende de energia elétrica — disco, pen drive, nuvem.
+    </div>
+    <div class="cols3">
+      <div class="card f">
+        <h3>Volátil</h3>
+        <p>Memória RAM. Rápida, mas apaga tudo ao desligar. É onde seus objetos vivem enquanto o programa roda.</p>
+      </div>
+      <div class="card ok f">
+        <h3>Persistente</h3>
+        <p>Disco (HD, SSD), pen drive, nuvem. Mais lento, mas o conteúdo continua lá amanhã.</p>
+      </div>
+      <div class="card plain f">
+        <h3>O caminho entre os dois</h3>
+        <p>É disso que trata a aula de hoje: como levar o dado da RAM para o disco e trazê-lo de volta.</p>
+      </div>
+    </div>
+    <div class="note warn f">Persistir <strong>não é</strong> a mesma coisa que salvar em banco de dados. Banco de dados é uma das formas de persistir. Arquivo é a mais simples — e é por ela que se começa.</div>
+  </div>
+</section>
+
+<!-- 05 ONDE GUARDAR -->
+<section class="slide">
+  <p class="kicker">PANORAMA</p>
+  <h2 class="s-title">Três lugares para guardar os dados</h2>
+  <p class="lead">Cada opção resolve um problema diferente.</p>
+  <div class="body">
+    <table class="f">
+      <tr><th style="width:20%">Onde</th><th style="width:30%">Como funciona</th><th style="width:25%">Bom para</th><th style="width:25%">Limitação</th></tr>
+      <tr><td><strong>Memória</strong><br><span style="font-size:.85em">listas, dicionários</span></td><td>Objetos vivos dentro do programa</td><td>Velocidade máxima durante a execução</td><td>Some ao fechar o programa</td></tr>
+      <tr><td><strong>Arquivo</strong><br><span style="font-size:.85em">.txt, .csv, .json</span></td><td>Bytes gravados no disco, com nome e pasta</td><td>Programas pequenos, configurações, exportação de dados</td><td>Buscar e atualizar um registro é trabalhoso</td></tr>
+      <tr><td><strong>Banco de dados</strong><br><span style="font-size:.85em">SQLite, MySQL</span></td><td>Um programa especializado guarda e indexa os dados</td><td>Muitos dados, buscas, vários usuários ao mesmo tempo</td><td>Exige instalar, modelar e aprender SQL</td></tr>
+    </table>
+    <div class="note f">Um arquivo bem usado resolve muito mais do que parece. Sistemas inteiros de configuração — inclusive os do próprio Python — são só arquivos de texto.</div>
+  </div>
+</section>
+
+<!-- 06 O QUE É UM ARQUIVO -->
+<section class="slide">
+  <p class="kicker">CONCEITO</p>
+  <h2 class="s-title">O que é um arquivo, de verdade</h2>
+  <p class="lead">Um arquivo é uma sequência de bytes gravada no disco, com um nome e um endereço (a pasta onde mora). Só isso.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="14" y="26" font-family="IBM Plex Mono, monospace" font-size="13" fill="#306998">livros.txt</text>
+        <rect x="14" y="40" width="872" height="52" rx="8" fill="#f7fafd" stroke="#d4deeb"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="15" fill="#16202e" text-anchor="middle">
+          <text x="46" y="72">D</text><text x="86" y="72">o</text><text x="126" y="72">m</text>
+          <text x="166" y="72" fill="#9fb6cf">␣</text>
+          <text x="206" y="72">C</text><text x="246" y="72">a</text><text x="286" y="72">s</text><text x="326" y="72">m</text><text x="366" y="72">u</text><text x="406" y="72">r</text><text x="446" y="72">r</text><text x="486" y="72">o</text>
+          <text x="526" y="72" fill="#306998">|</text>
+          <text x="566" y="72">1</text><text x="606" y="72">8</text><text x="646" y="72">9</text><text x="686" y="72">9</text>
+          <text x="730" y="72" fill="#cf5050">\n</text>
+          <text x="786" y="72">V</text><text x="826" y="72">i</text><text x="862" y="72">…</text>
+        </g>
+        <g stroke="#e0e8f2"><path d="M66 40 v52"/><path d="M106 40 v52"/><path d="M146 40 v52"/><path d="M186 40 v52"/><path d="M226 40 v52"/><path d="M266 40 v52"/><path d="M306 40 v52"/><path d="M346 40 v52"/><path d="M386 40 v52"/><path d="M426 40 v52"/><path d="M466 40 v52"/><path d="M506 40 v52"/><path d="M546 40 v52"/><path d="M586 40 v52"/><path d="M626 40 v52"/><path d="M666 40 v52"/><path d="M706 40 v52"/><path d="M756 40 v52"/><path d="M806 40 v52"/><path d="M846 40 v52"/></g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#7a8aa1" text-anchor="middle">
+          <text x="46" y="110">0</text><text x="166" y="110">3</text><text x="526" y="110">15</text><text x="730" y="110">20</text>
+        </g>
+        <text x="450" y="138" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">cada posição guarda um caractere — inclusive o espaço e a quebra de linha</text>
+      </svg>
+    </div>
+    <div class="cols3">
+      <div class="card f"><h3>Não existe "linha"</h3><p>O disco não sabe o que é linha. A quebra de linha é só mais um caractere: <span class="term">\n</span>.</p></div>
+      <div class="card f"><h3>Ordem importa</h3><p>Os bytes são lidos em sequência, do começo ao fim, como uma fita.</p></div>
+      <div class="card f"><h3>A extensão não muda nada</h3><p><span class="term">.txt</span>, <span class="term">.csv</span>, <span class="term">.py</span> são convenções para humanos e programas. O conteúdo é o mesmo tipo de coisa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 TEXTO x BINÁRIO -->
+<section class="slide">
+  <p class="kicker">DOIS TIPOS DE ARQUIVO</p>
+  <h2 class="s-title">Texto e binário</h2>
+  <p class="lead">A diferença está em como os bytes devem ser interpretados — e é você quem avisa isso ao Python na hora de abrir.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="stack">
+        <div class="card f">
+          <h3>Arquivo de texto</h3>
+          <p>Os bytes representam caracteres. Você consegue abrir no Bloco de Notas e entender. Exemplos: <span class="term">.txt</span>, <span class="term">.csv</span>, <span class="term">.json</span>, <span class="term">.py</span>, <span class="term">.html</span>.</p>
+        </div>
+        <div class="out f">Dom Casmurro|1899
+Vidas Secas|1938</div>
+      </div>
+      <div class="stack">
+        <div class="card plain f">
+          <h3>Arquivo binário</h3>
+          <p>Os bytes representam qualquer outra coisa: pixels, som, uma estrutura interna. Abrir no Bloco de Notas mostra símbolos sem sentido. Exemplos: <span class="term">.png</span>, <span class="term">.mp3</span>, <span class="term">.zip</span>, <span class="term">.pdf</span>.</p>
+        </div>
+        <div class="out f">‰PNG␍␊␚␊ ␀␀␀␍IHDR
+␀␀␁, ␀␀␀æ␈␆␀␀␀ÿ</div>
+      </div>
+    </div>
+    <div class="note f">Nesta aula trabalharemos com <strong>texto</strong>. Será apresentado brevemente o modo binário no final do assunto.</div>
+  </div>
+</section>
+
+<!-- 08 FLUXO -->
+<section class="slide">
+  <p class="kicker">CONCEITO-CHAVE</p>
+  <h2 class="s-title">Fluxo: o canal entre o programa e o arquivo</h2>
+  <p class="lead">Seu programa nunca toca o disco diretamente. Ele abre um <strong>fluxo</strong> (em inglês, <em>stream</em>) e envia ou recebe dados por esse canal, um pedaço de cada vez.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 900 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="10" y="46" width="170" height="118" rx="12" fill="#f7fafd" stroke="#d4deeb"/>
+        <text x="95" y="76" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="14" fill="#16202e" font-weight="600">programa</text>
+        <text x="95" y="98" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#46556b">objetos na RAM</text>
+        <rect x="42" y="112" width="106" height="16" rx="4" fill="#e3edf7"/>
+        <rect x="42" y="134" width="82" height="16" rx="4" fill="#e3edf7"/>
+
+        <rect x="210" y="62" width="480" height="86" rx="16" fill="#eaf1fa" stroke="#c6d5e6"/>
+        <text x="450" y="52" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">fluxo (stream)</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="13" fill="#214d72">
+          <rect x="240" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="255" y="110" text-anchor="middle">D</text>
+          <rect x="280" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="295" y="110" text-anchor="middle">o</text>
+          <rect x="320" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="335" y="110" text-anchor="middle">m</text>
+          <rect x="360" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="375" y="110" text-anchor="middle">␣</text>
+          <rect x="400" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="415" y="110" text-anchor="middle">C</text>
+          <rect x="440" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="455" y="110" text-anchor="middle">a</text>
+          <rect x="480" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="495" y="110" text-anchor="middle">s</text>
+          <rect x="520" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="535" y="110" text-anchor="middle">m</text>
+          <rect x="560" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="575" y="110" text-anchor="middle">u</text>
+          <rect x="600" y="92" width="30" height="26" rx="5" fill="#fff" stroke="#9fb6cf"/><text x="615" y="110" text-anchor="middle">…</text>
+        </g>
+        <path d="M186 105 H232" stroke="#306998" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M224 99 l8 6 -8 6" fill="none" stroke="#306998" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M660 105 H716" stroke="#306998" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M708 99 l8 6 -8 6" fill="none" stroke="#306998" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <path d="M722 40 h96 l32 32 v104 a10 10 0 0 1 -10 10 h-118 a10 10 0 0 1 -10 -10 v-126 a10 10 0 0 1 10 -10 z" fill="#fff" stroke="#306998" stroke-width="2"/>
+        <path d="M818 40 v32 h32" fill="none" stroke="#306998" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="740" y="96" width="80" height="6" rx="3" fill="#d4deeb"/>
+        <rect x="740" y="112" width="62" height="6" rx="3" fill="#d4deeb"/>
+        <rect x="740" y="128" width="72" height="6" rx="3" fill="#d4deeb"/>
+        <text x="792" y="200" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#16202e" font-weight="600">arquivo no disco</text>
+      </svg>
+    </div>
+    <div class="note f">Pense em uma mangueira ligando a caixa d'água à torneira. A água passa aos poucos, sempre na mesma direção, e alguém precisa <strong>abrir</strong> e depois <strong>fechar</strong> o registro.</div>
+  </div>
+</section>
+
+<!-- 09 ENTRADA E SAÍDA -->
+<section class="slide">
+  <p class="kicker">DUAS DIREÇÕES</p>
+  <h2 class="s-title">Fluxo de entrada e fluxo de saída</h2>
+  <p class="lead">O nome sempre é dado do ponto de vista do <strong>programa</strong>: entra nele ou sai dele.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="stack">
+        <div class="fig f">
+          <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="26" width="120" height="60" rx="10" fill="#f7fafd" stroke="#d4deeb"/>
+            <text x="68" y="62" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#16202e">programa</text>
+            <rect x="272" y="26" width="120" height="60" rx="10" fill="#fff" stroke="#306998" stroke-width="1.6"/>
+            <text x="332" y="62" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#16202e">arquivo</text>
+            <path d="M262 56 H142" stroke="#2f9e7e" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M152 48 l-10 8 10 8" fill="none" stroke="#2f9e7e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="202" y="40" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#2f9e7e">read()</text>
+          </svg>
+        </div>
+        <div class="card ok f">
+          <h3>Entrada — leitura</h3>
+          <p>Os dados vêm do arquivo <strong>para</strong> o programa. É o que acontece quando o sistema é iniciado e precisa carregar o que foi salvo antes.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="fig f">
+          <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="8" y="26" width="120" height="60" rx="10" fill="#f7fafd" stroke="#d4deeb"/>
+            <text x="68" y="62" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#16202e">programa</text>
+            <rect x="272" y="26" width="120" height="60" rx="10" fill="#fff" stroke="#306998" stroke-width="1.6"/>
+            <text x="332" y="62" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="#16202e">arquivo</text>
+            <path d="M138 56 H258" stroke="#306998" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M248 48 l10 8 -10 8" fill="none" stroke="#306998" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="198" y="40" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">write()</text>
+          </svg>
+        </div>
+        <div class="card f">
+          <h3>Saída — escrita</h3>
+          <p>Os dados vão do programa <strong>para</strong> o arquivo. É o que acontece quando o usuário cadastra algo novo e você salva.</p>
+        </div>
+      </div>
+    </div>
+    <div class="note f">Você já usa fluxos sem perceber: <span class="term">input()</span> lê do fluxo do teclado e <span class="term">print()</span> escreve no fluxo da tela.</div>
+  </div>
+</section>
+
+<!-- 10 CICLO -->
+<section class="slide">
+  <p class="kicker">O RITUAL DE SEMPRE</p>
+  <h2 class="s-title">Abrir, usar, fechar</h2>
+  <p class="lead">Todo trabalho com arquivo segue estes três passos, nesta ordem. Pular o último causa problemas difíceis de descobrir.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 900 168" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="14" y="24" width="250" height="106" rx="14" fill="#f7fafd" stroke="#d4deeb"/>
+        <circle cx="52" cy="58" r="15" fill="#306998"/><text x="52" y="63" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#fff">1</text>
+        <text x="80" y="63" font-family="IBM Plex Sans, sans-serif" font-size="16" fill="#16202e" font-weight="600">Abrir</text>
+        <text x="38" y="92" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">open("livros.txt", "r")</text>
+        <text x="38" y="112" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">o sistema reserva o canal</text>
+
+        <path d="M276 78 H310" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M302 72 l8 6 -8 6" fill="none" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <rect x="322" y="24" width="250" height="106" rx="14" fill="#f7fafd" stroke="#d4deeb"/>
+        <circle cx="360" cy="58" r="15" fill="#306998"/><text x="360" y="63" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#fff">2</text>
+        <text x="388" y="63" font-family="IBM Plex Sans, sans-serif" font-size="16" fill="#16202e" font-weight="600">Usar</text>
+        <text x="346" y="92" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">arquivo.read()  /  .write()</text>
+        <text x="346" y="112" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">os dados passam pelo fluxo</text>
+
+        <path d="M584 78 H618" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M610 72 l8 6 -8 6" fill="none" stroke="#9fb6cf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <rect x="630" y="24" width="256" height="106" rx="14" fill="#f2faf7" stroke="#cfe8df"/>
+        <circle cx="668" cy="58" r="15" fill="#2f9e7e"/><text x="668" y="63" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" fill="#fff">3</text>
+        <text x="696" y="63" font-family="IBM Plex Sans, sans-serif" font-size="16" fill="#16202e" font-weight="600">Fechar</text>
+        <text x="654" y="92" font-family="IBM Plex Mono, monospace" font-size="12" fill="#1d6b55">arquivo.close()</text>
+        <text x="654" y="112" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">grava o que faltou e libera</text>
+        <text x="450" y="156" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="#46556b">o passo 3 é o mais esquecido — e o único que corrompe dados quando falta</text>
+      </svg>
+    </div>
+    <div class="note warn f">Sem <span class="term">close()</span>, parte do que você escreveu pode ficar presa em um buffer na memória e nunca chegar ao disco. Daqui a pouco vamos ver o <span class="term">with</span>, que fecha sozinho.</div>
+  </div>
+</section>
+
+<!-- 11 OPEN -->
+<section class="slide">
+  <p class="kicker">A FUNÇÃO CENTRAL</p>
+  <h2 class="s-title">Anatomia do <span class="term" style="font-size:.8em">open()</span></h2>
+  <p class="lead">Uma única função abre o canal e devolve um objeto que representa o arquivo aberto.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 700 196" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="30" y="46" font-family="IBM Plex Mono, monospace" font-size="21" fill="#16202e">arquivo = open(<tspan fill="#2f9e7e">"livros.txt"</tspan>, <tspan fill="#d98324">"r"</tspan>, encoding=<tspan fill="#306998">"utf-8"</tspan>)</text>
+
+        <path d="M74 56 V72 H90 V80" stroke="#7a8aa1" stroke-width="1.4" fill="none"/>
+        <text x="90" y="98" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">objeto que representa</text>
+        <text x="90" y="116" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">o arquivo aberto</text>
+
+        <path d="M420 56 V80" stroke="#d98324" stroke-width="1.4" fill="none"/>
+        <text x="420" y="98" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#8a5510">modo: ler, escrever</text>
+        <text x="420" y="116" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">ou acrescentar</text>
+
+        <path d="M559 56 V72 H570 V80" stroke="#306998" stroke-width="1.4" fill="none"/>
+        <text x="570" y="98" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#214d72">codificação dos caracteres</text>
+        <text x="570" y="116" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">use sempre utf-8</text>
+
+        <path d="M295 56 V140" stroke="#2f9e7e" stroke-width="1.4" fill="none"/>
+        <text x="295" y="158" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#1d6b55">caminho do arquivo</text>
+        <text x="295" y="176" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">nome ou pasta + nome</text>
+      </svg>
+    </div>
+    <div class="cols">
+      <div class="card f"><h3>O que <span class="term">open()</span> devolve</h3><p>Não é o conteúdo do arquivo. É um <strong>objeto</strong> com métodos como <span class="term">read()</span>, <span class="term">write()</span> e <span class="term">close()</span> — o seu controle remoto do fluxo.</p></div>
+      <div class="card f"><h3>Se o modo não for informado</h3><p>Python assume <span class="term">"r"</span> (leitura de texto). Mesmo assim, escreva o modo: quem lê o código depois agradece.</p></div>
+    </div>
+  </div>
+</section>
+<!-- 12 MODOS -->
+<section class="slide">
+  <p class="kicker">SEGUNDO ARGUMENTO</p>
+  <h2 class="s-title">Os modos de abertura</h2>
+  <p class="lead">O modo diz duas coisas: o que você pode fazer com o arquivo e o que acontece com o conteúdo que já estava lá.</p>
+  <div class="body">
+    <table class="f">
+      <tr><th style="width:10%">Modo</th><th style="width:22%">Significa</th><th style="width:24%">Se o arquivo existe</th><th style="width:24%">Se não existe</th><th style="width:20%">Usar quando</th></tr>
+      <tr><td><code>"r"</code></td><td>read — só leitura</td><td>Lê do começo</td><td><span style="color:#cf5050">Erro</span> <code>FileNotFoundError</code></td><td>Carregar dados salvos</td></tr>
+      <tr><td><code>"w"</code></td><td>write — só escrita</td><td><span style="color:#cf5050">Apaga tudo</span> e começa vazio</td><td>Cria o arquivo</td><td>Regravar a lista inteira</td></tr>
+      <tr><td><code>"a"</code></td><td>append — acrescentar</td><td>Escreve no final, preserva o resto</td><td>Cria o arquivo</td><td>Registrar um novo item, um log</td></tr>
+      <tr><td><code>"x"</code></td><td>exclusive — criar</td><td><span style="color:#cf5050">Erro</span> <code>FileExistsError</code></td><td>Cria o arquivo</td><td>Garantir que não vai sobrescrever</td></tr>
+      <tr><td><code>"r+"</code></td><td>ler e escrever</td><td>Abre sem apagar</td><td>Erro</td><td>Casos específicos, raro no início</td></tr>
+    </table>
+    <div class="note f">Acrescentar <span class="term">"b"</span> ao modo (<span class="term">"rb"</span>, <span class="term">"wb"</span>) muda para binário. Sem o <span class="term">b</span>, o modo é sempre de texto.</div>
+  </div>
+</section>
+
+<!-- 13 CUIDADO COM W -->
+<section class="slide">
+  <p class="kicker">ARMADILHA CLÁSSICA</p>
+  <h2 class="s-title">O modo <span class="term" style="font-size:.8em">"w"</span> apaga antes de escrever</h2>
+  <p class="lead">Ele não avisa, não pergunta e não tem desfazer. O conteúdo antigo simplesmente deixa de existir no instante em que o arquivo é aberto.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="stack">
+        <div class="code f">
+          <div class="code-tab">o que você quis fazer</div>
+<pre><span class="com"># só queria adicionar mais um livro…</span>
+arquivo = <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"w"</span>)
+arquivo.<span class="fn">write</span>(<span class="str">"Grande Sertão|1956\n"</span>)
+arquivo.<span class="fn">close</span>()</pre>
+        </div>
+        <div class="note warn f">Os 19 livros que já estavam no arquivo foram embora. Sobrou um.</div>
+      </div>
+      <div class="stack">
+        <div class="code f">
+          <div class="code-tab">o que resolve</div>
+<pre><span class="com"># "a" escreve no final e preserva o resto</span>
+arquivo = <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"a"</span>)
+arquivo.<span class="fn">write</span>(<span class="str">"Grande Sertão|1956\n"</span>)
+arquivo.<span class="fn">close</span>()</pre>
+        </div>
+        <div class="card ok f">
+          <h3>Regra prática</h3>
+          <p><span class="term">"a"</span> para acrescentar um item. <span class="term">"w"</span> só quando você tem a lista completa em memória e vai regravar o arquivo inteiro — que é exatamente o que faremos no método <span class="term">salvar()</span> mais adiante.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 ESCREVENDO -->
+<section class="slide">
+  <p class="kicker">ESCRITA</p>
+  <h2 class="s-title">Escrevendo com <span class="term" style="font-size:.8em">write()</span></h2>
+  <p class="lead">O método recebe uma string e a envia pelo fluxo. Uma string por vez, exatamente como ela é.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="code f">
+        <div class="code-tab">escrever.py</div>
+<pre>arquivo = <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>)
+
+arquivo.<span class="fn">write</span>(<span class="str">"Dom Casmurro|1899\n"</span>)
+arquivo.<span class="fn">write</span>(<span class="str">"Vidas Secas|1938\n"</span>)
+arquivo.<span class="fn">write</span>(<span class="str">"Capitães da Areia|1937\n"</span>)
+
+arquivo.<span class="fn">close</span>()
+<span class="fn">print</span>(<span class="str">"Arquivo gravado."</span>)</pre>
+      </div>
+      <div class="stack">
+        <div class="card err f">
+          <h3><span class="term">write()</span> não pula linha</h3>
+          <p>Diferente do <span class="term">print()</span>, ele escreve só o que você mandou. Sem o <span class="term">\n</span> no fim, tudo vira uma linha só.</p>
+        </div>
+        <div class="out f">sem \n:
+<b>Dom Casmurro|1899Vidas Secas|1938Capitães…</b>
+
+com \n:
+<b>Dom Casmurro|1899</b>
+<b>Vidas Secas|1938</b>
+<b>Capitães da Areia|1937</b></div>
+      </div>
+    </div>
+    <div class="note f"><span class="term">write()</span> só aceita string. Para gravar um número, converta antes: <span class="term">write(str(1899))</span> — senão você recebe um <span class="term">TypeError</span>.</div>
+  </div>
+</section>
+
+<!-- 15 LENDO -->
+<section class="slide">
+  <p class="kicker">LEITURA</p>
+  <h2 class="s-title">Três formas de ler</h2>
+  <p class="lead">Todas leem o mesmo arquivo. O que muda é o formato do que você recebe de volta.</p>
+  <div class="body">
+    <div class="cols3">
+      <div class="stack f">
+        <div class="code sm">
+          <div class="code-tab">read()</div>
+<pre>texto = arquivo.<span class="fn">read</span>()</pre>
+        </div>
+        <div class="out">'Dom Casmurro|1899\n
+Vidas Secas|1938\n
+Capitães da Areia|1937\n'</div>
+        <div class="card plain"><h3>Uma string só</h3><p>O arquivo inteiro em uma única string. Simples, mas ocupa memória se o arquivo for grande.</p></div>
+      </div>
+      <div class="stack f">
+        <div class="code sm">
+          <div class="code-tab">readline()</div>
+<pre>linha = arquivo.<span class="fn">readline</span>()</pre>
+        </div>
+        <div class="out">'Dom Casmurro|1899\n'</div>
+        <div class="card plain"><h3>Uma linha</h3><p>Lê até a próxima quebra de linha. Chamar de novo devolve a linha seguinte. No fim, devolve string vazia.</p></div>
+      </div>
+      <div class="stack f">
+        <div class="code sm">
+          <div class="code-tab">readlines()</div>
+<pre>linhas = arquivo.<span class="fn">readlines</span>()</pre>
+        </div>
+        <div class="out">['Dom Casmurro|1899\n',
+ 'Vidas Secas|1938\n',
+ 'Capitães da Areia|1937\n']</div>
+        <div class="card plain"><h3>Uma lista</h3><p>Cada item é uma linha, com o <span class="term">\n</span> no final. Prático para percorrer com <span class="term">for</span>.</p></div>
+      </div>
+    </div>
+    <div class="note warn f">Repare: o <span class="term">\n</span> vem junto em todos os casos. Antes de usar o texto, limpe com <span class="term">linha.strip()</span>.</div>
+  </div>
+</section>
+
+<!-- 16 FOR NO ARQUIVO -->
+<section class="slide">
+  <p class="kicker">O JEITO RECOMENDADO</p>
+  <h2 class="s-title">Percorrer o arquivo linha a linha</h2>
+  <p class="lead">O objeto devolvido por <span class="term">open()</span> pode ser usado direto em um <span class="term">for</span>. O Python entrega uma linha por vez e carrega só o pedaço necessário na memória.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="code f">
+        <div class="code-tab">ler.py</div>
+<pre>arquivo = <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"r"</span>, encoding=<span class="str">"utf-8"</span>)
+
+<span class="kw">for</span> linha <span class="kw">in</span> arquivo:
+    linha = linha.<span class="fn">strip</span>()      <span class="com"># tira o \n</span>
+    <span class="kw">if</span> linha == <span class="str">""</span>:          <span class="com"># ignora linha vazia</span>
+        <span class="kw">continue</span>
+    titulo, ano = linha.<span class="fn">split</span>(<span class="str">"|"</span>)
+    <span class="fn">print</span>(<span class="str">f"{titulo} ({ano})"</span>)
+
+arquivo.<span class="fn">close</span>()</pre>
+      </div>
+      <div class="stack">
+        <div class="out f">Dom Casmurro (1899)
+Vidas Secas (1938)
+Capitães da Areia (1937)</div>
+        <div class="card f">
+          <h3>A dupla que sempre aparece</h3>
+          <p><span class="term">strip()</span> limpa espaços e quebras nas pontas. <span class="term">split("|")</span> reparte a linha nos campos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 CURSOR -->
+<section class="slide">
+  <p class="kicker">DETALHE QUE EXPLICA MUITO BUG</p>
+  <h2 class="s-title">O arquivo tem um cursor</h2>
+  <p class="lead">Enquanto o arquivo está aberto, o Python guarda em que posição você parou. Toda leitura continua de onde a anterior terminou.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 624 148" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="14" y="34" width="596" height="42" rx="8" fill="#f7fafd" stroke="#d4deeb"/>
+        <text x="30" y="61" font-family="IBM Plex Mono, monospace" font-size="15" fill="#16202e">Dom Casmurro|1899\n</text>
+        <text x="207" y="61" font-family="IBM Plex Mono, monospace" font-size="15" fill="#9fb6cf">Vidas Secas|1938\n Capitães da Areia|1937\n</text>
+        <path d="M203 26 v58" stroke="#cf5050" stroke-width="2.4"/>
+        <path d="M203 22 l-7 8 h14 z" fill="#cf5050"/>
+        <text x="203" y="108" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#cf5050">cursor após o primeiro readline()</text>
+        <text x="30" y="130" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">já lido</text>
+        <text x="400" y="130" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="#46556b">ainda por ler</text>
+      </svg>
+    </div>
+    <div class="cols">
+      <div class="card err f">
+        <h3>A consequência</h3>
+        <p>Depois de um <span class="term">read()</span>, o cursor está no fim. Um segundo <span class="term">read()</span> devolve string vazia — e o aluno jura que o arquivo está vazio.</p>
+      </div>
+      <div class="card f">
+        <h3>Como voltar</h3>
+        <p><span class="term">arquivo.seek(0)</span> leva o cursor de volta ao início. <span class="term">arquivo.tell()</span> mostra a posição atual. Fechar e abrir de novo também resolve.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 WITH -->
+<section class="slide">
+  <p class="kicker">BOA PRÁTICA OBRIGATÓRIA</p>
+  <h2 class="s-title">Use <span class="term" style="font-size:.8em">with</span> e esqueça o <span class="term" style="font-size:.8em">close()</span></h2>
+  <p class="lead">O bloco <span class="term">with</span> fecha o arquivo automaticamente ao terminar — inclusive quando acontece um erro no meio do caminho.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="stack">
+        <div class="code f">
+          <div class="code-tab">frágil</div>
+<pre>arquivo = <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"r"</span>)
+conteudo = arquivo.<span class="fn">read</span>()
+numero = <span class="fn">int</span>(conteudo)   <span class="com"># se der erro aqui…</span>
+arquivo.<span class="fn">close</span>()          <span class="com"># …esta linha nunca roda</span></pre>
+        </div>
+        <div class="note warn f">O arquivo fica aberto, segurando recursos do sistema, até o programa inteiro terminar.</div>
+      </div>
+      <div class="stack">
+        <div class="code f">
+          <div class="code-tab">correto</div>
+<pre><span class="kw">with</span> <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"r"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> arquivo:
+    <span class="kw">for</span> linha <span class="kw">in</span> arquivo:
+        <span class="fn">print</span>(linha.<span class="fn">strip</span>())
+
+<span class="com"># aqui fora o arquivo já está fechado</span></pre>
+        </div>
+        <div class="card ok f">
+          <h3>Como ler o <span class="term">with</span></h3>
+          <p>"Enquanto eu estiver dentro deste bloco, o arquivo está aberto com o apelido <span class="term">arquivo</span>. Ao sair — por qualquer motivo — feche."</p>
+        </div>
+      </div>
+    </div>
+    <div class="note f">A partir daqui, todo código desta aula usa <span class="term">with</span>. É o padrão esperado em qualquer código Python profissional.</div>
+  </div>
+</section>
+
+<!-- 19 CAMINHOS -->
+<section class="slide">
+  <p class="kicker">ONDE O ARQUIVO MORA</p>
+  <h2 class="s-title">Caminho relativo e caminho absoluto</h2>
+  <div class="body">
+    <div class="cols-46">
+      <div class="fig f">
+        <svg viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <text x="14" y="26" font-family="IBM Plex Mono, monospace" font-size="13" fill="#46556b">C:\Users\aluno\</text>
+          <path d="M22 34 v160" stroke="#d4deeb" stroke-width="1.5"/>
+          <path d="M22 60 h20" stroke="#d4deeb" stroke-width="1.5"/>
+          <rect x="46" y="46" width="150" height="26" rx="6" fill="#e3edf7" stroke="#c6d5e6"/>
+          <text x="58" y="64" font-family="IBM Plex Mono, monospace" font-size="12" fill="#214d72">biblioteca/</text>
+          <path d="M60 72 v100" stroke="#d4deeb" stroke-width="1.5"/>
+          <path d="M60 98 h20" stroke="#d4deeb" stroke-width="1.5"/>
+          <rect x="84" y="84" width="130" height="26" rx="6" fill="#fff" stroke="#306998"/>
+          <text x="96" y="102" font-family="IBM Plex Mono, monospace" font-size="12" fill="#16202e">main.py</text>
+          <path d="M60 136 h20" stroke="#d4deeb" stroke-width="1.5"/>
+          <rect x="84" y="122" width="130" height="26" rx="6" fill="#e3edf7" stroke="#c6d5e6"/>
+          <text x="96" y="140" font-family="IBM Plex Mono, monospace" font-size="12" fill="#214d72">dados/</text>
+          <path d="M98 148 v24" stroke="#d4deeb" stroke-width="1.5"/>
+          <path d="M98 172 h20" stroke="#d4deeb" stroke-width="1.5"/>
+          <rect x="122" y="158" width="140" height="26" rx="6" fill="#fffaf0" stroke="#ffd43b"/>
+          <text x="134" y="176" font-family="IBM Plex Mono, monospace" font-size="12" fill="#16202e">livros.txt</text>
+        </svg>
+      </div>
+      <div class="stack">
+        <div class="card f">
+          <h3>Relativo — a partir de onde o programa roda</h3>
+          <p>Rodando <span class="term">main.py</span> dentro de <span class="term">biblioteca/</span>:</p>
+          <p style="margin-top:.3rem"><span class="term">open("dados/livros.txt")</span></p>
+        </div>
+        <div class="card plain f">
+          <h3>Absoluto — o endereço completo</h3>
+          <p><span class="term">open("C:/Users/aluno/biblioteca/dados/livros.txt")</span></p>
+          <p style="margin-top:.3rem">Funciona só nesse computador. Evite em trabalhos que serão entregues.</p>
+        </div>
+        <div class="note warn f">Barra invertida em string é caractere especial. Use <span class="term">/</span> mesmo no Windows, ou <span class="term">r"C:\pasta\arq.txt"</span>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 ENCODING -->
+<section class="slide">
+  <p class="kicker">ACENTOS</p>
+  <h2 class="s-title">Sempre <span class="term" style="font-size:.8em">encoding="utf-8"</span></h2>
+  <p class="lead">Codificação é a tabela que diz qual byte corresponde a qual caractere. Se gravar com uma tabela e ler com outra, os acentos quebram.</p>
+  <div class="body">
+    <div class="cols">
+      <div class="stack">
+        <div class="out f">gravado em utf-8, lido em outra tabela:
+
+<b>CapitÃ£es da Areia</b>
+<b>SertÃ£o</b>
+<b>JosÃ©</b></div>
+        <div class="card err f"><h3>O sintoma</h3><p>Aquele texto estranho com Ã e �. Não é o arquivo corrompido — é só a tabela errada na leitura.</p></div>
+      </div>
+      <div class="stack">
+        <div class="code f">
+          <div class="code-tab">sempre assim</div>
+<pre><span class="kw">with</span> <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"w"</span>,
+          encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="str">"Capitães da Areia|1937\n"</span>)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"r"</span>,
+          encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+    <span class="fn">print</span>(f.<span class="fn">read</span>())</pre>
+        </div>
+        <div class="card ok f"><h3>A regra</h3><p>O mesmo <span class="term">encoding</span> na escrita e na leitura. Sem isso, o mesmo código funciona na sua máquina e falha na do colega.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 ERROS -->
+<section class="slide">
+  <p class="kicker">LIGANDO COM A AULA ANTERIOR</p>
+  <h2 class="s-title">Quando o arquivo não colabora</h2>
+  <p class="lead">Mexer com arquivo é mexer com o mundo de fora do programa: o arquivo pode não existir, estar protegido ou com conteúdo estragado. Tratar exceções deixa de ser enfeite e vira necessidade.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="code f">
+        <div class="code-tab">carregar_seguro.py</div>
+<pre><span class="kw">try</span>:
+    <span class="kw">with</span> <span class="fn">open</span>(<span class="str">"livros.txt"</span>, <span class="str">"r"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+        <span class="kw">for</span> linha <span class="kw">in</span> f:
+            titulo, ano = linha.<span class="fn">strip</span>().<span class="fn">split</span>(<span class="str">"|"</span>)
+            <span class="fn">print</span>(titulo, <span class="fn">int</span>(ano))
+
+<span class="kw">except</span> FileNotFoundError:
+    <span class="fn">print</span>(<span class="str">"Ainda não há livros cadastrados."</span>)
+<span class="kw">except</span> PermissionError:
+    <span class="fn">print</span>(<span class="str">"Sem permissão para ler o arquivo."</span>)
+<span class="kw">except</span> ValueError:
+    <span class="fn">print</span>(<span class="str">"Há uma linha fora do formato esperado."</span>)</pre>
+      </div>
+      <div class="stack">
+        <table class="sm f">
+          <tr><th>Exceção</th><th>Quando aparece</th></tr>
+          <tr><td><code>FileNotFoundError</code></td><td>Modo <code>"r"</code> e o arquivo não existe</td></tr>
+          <tr><td><code>PermissionError</code></td><td>Sem permissão, ou é uma pasta</td></tr>
+          <tr><td><code>ValueError</code></td><td>Linha com campos a menos, ou <code>int()</code> em texto</td></tr>
+          <tr><td><code>UnicodeDecodeError</code></td><td>Codificação errada na leitura</td></tr>
+        </table>
+        <div class="note ok f">Arquivo inexistente na <strong>primeira execução</strong> é normal, não é bug. Trate como lista vazia e siga em frente.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 SERIALIZAÇÃO -->
+<section class="slide divider">
+  <p class="kicker">CONTINUANDO…</p>
+  <h2>Do objeto para o arquivo</h2>
+  <p>Um arquivo de texto guarda caracteres. Um objeto tem atributos, tipos e comportamento. Alguém precisa fazer a tradução entre os dois mundos — e esse alguém é você.</p>
+</section>
+<!-- 23 SERIALIZAÇÃO -->
+<section class="slide">
+  <p class="kicker">CONCEITO</p>
+  <h2 class="s-title">Serializar é achatar o objeto em texto</h2>
+  <p class="lead">Não dá para escrever um objeto no disco do jeito que ele é. É preciso escolher um formato de texto que represente seus atributos — e saber remontar o objeto a partir dele.</p>
+  <div class="body">
+    <div class="fig f">
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="14" y="34" width="212" height="128" rx="12" fill="#f7fafd" stroke="#d4deeb"/>
+        <text x="120" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#306998">objeto na memória</text>
+        <text x="34" y="86" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#16202e">Livro</text>
+        <text x="34" y="108" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">titulo = "Vidas Secas"</text>
+        <text x="34" y="128" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">autor  = "Graciliano"</text>
+        <text x="34" y="148" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">ano    = 1938</text>
+
+        <path d="M240 98 H326" stroke="#306998" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M318 92 l8 6 -8 6" fill="none" stroke="#306998" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="283" y="86" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#306998">para_linha()</text>
+        <text x="283" y="126" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" fill="#46556b">serializar</text>
+
+        <rect x="340" y="72" width="252" height="52" rx="10" fill="#fffaf0" stroke="#ffd43b"/>
+        <text x="466" y="104" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12.5" fill="#16202e">Vidas Secas|Graciliano|1938</text>
+        <text x="466" y="60" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#8a5510">uma linha de texto</text>
+
+        <path d="M606 98 H692" stroke="#2f9e7e" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M684 92 l8 6 -8 6" fill="none" stroke="#2f9e7e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="649" y="86" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#2f9e7e">write()</text>
+
+        <path d="M706 34 h94 l32 32 v96 a10 10 0 0 1 -10 10 h-116 a10 10 0 0 1 -10 -10 v-118 a10 10 0 0 1 10 -10 z" fill="#fff" stroke="#306998" stroke-width="2"/>
+        <path d="M800 34 v32 h32" fill="none" stroke="#306998" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="724" y="88" width="80" height="6" rx="3" fill="#d4deeb"/>
+        <rect x="724" y="104" width="66" height="6" rx="3" fill="#ffd43b"/>
+        <rect x="724" y="120" width="74" height="6" rx="3" fill="#d4deeb"/>
+        <text x="778" y="188" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="#46556b">livros.txt</text>
+
+        <path d="M466 140 V172 H120 V168" stroke="#9fb6cf" stroke-width="1.8" fill="none" stroke-dasharray="6 5"/>
+        <path d="M114 176 l6 -8 6 8" fill="#9fb6cf"/>
+        <text x="300" y="188" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#46556b">de_linha() — desserializar, o caminho de volta</text>
+      </svg>
+    </div>
+    <div class="note f">Quem decide o formato é você. Aqui vamos usar campos separados por <span class="term">|</span> — o mesmo princípio de um arquivo CSV, só que com outro separador.</div>
+  </div>
+</section>
+
+<!-- 24 FORMATO DA LINHA -->
+<section class="slide">
+  <p class="kicker">DECISÃO DE PROJETO</p>
+  <h2 class="s-title">Escolhendo o formato da linha</h2>
+  <div class="body">
+    <div class="cols">
+      <ul class="list f">
+        <li><strong>Um objeto por linha.</strong> Fica fácil percorrer com <span class="term">for</span> e o arquivo continua legível por humanos.</li>
+        <li><strong>Ordem fixa dos campos.</strong> Título, autor, ano — sempre nessa ordem, para os dois lados saberem o que esperar.</li>
+        <li><strong>Um separador que não apareça nos dados.</strong> Vírgula é arriscada em títulos; <span class="term">|</span> quase nunca aparece.</li>
+        <li><strong>Tudo vira texto na ida.</strong> Na volta, converta de novo: <span class="term">int(ano)</span>.</li>
+      </ul>
+      <div class="stack">
+        <div class="out f"><b>Dom Casmurro|Machado de Assis|1899</b>
+     ↑          ↑                ↑
+  título      autor            ano</div>
+        <div class="card warn f">
+          <h3>O contrato invisível</h3>
+          <p>Se <span class="term">para_linha()</span> gravar em uma ordem e <span class="term">de_linha()</span> ler em outra, o programa não acusa erro — só passa a mostrar o autor no lugar do título.</p>
+        </div>
+        <div class="note f">Na parte 2 da aula veremos o <strong>JSON</strong>, que resolve isso com nomes de campos e dispensa esse acordo silencioso.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 CLASSE LIVRO -->
+<section class="slide">
+  <p class="kicker">EXEMPLO COMPLETO · 1 DE 4</p>
+  <h2 class="s-title">A classe que sabe se descrever</h2>
+  <p class="lead">Cada objeto conhece o próprio formato de gravação. A classe <span class="term">Livro</span> não abre arquivo nenhum — ela só traduz.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="code f">
+        <div class="code-tab">livro.py</div>
+<pre><span class="kw">class</span> <span class="cl">Livro</span>:
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, titulo, autor, ano):
+        self.titulo = titulo
+        self.autor = autor
+        self.ano = ano
+
+    <span class="kw">def</span> <span class="fn">para_linha</span>(self):
+        <span class="com">"""Objeto -> uma linha de texto."""</span>
+        <span class="kw">return</span> <span class="str">f"{self.titulo}|{self.autor}|{self.ano}\n"</span>
+
+    <span class="kw">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">de_linha</span>(linha):
+        <span class="com">"""Uma linha de texto -> objeto."""</span>
+        titulo, autor, ano = linha.<span class="fn">strip</span>().<span class="fn">split</span>(<span class="str">"|"</span>)
+        <span class="kw">return</span> <span class="cl">Livro</span>(titulo, autor, <span class="fn">int</span>(ano))
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> <span class="str">f"{self.titulo} — {self.autor} ({self.ano})"</span></pre>
+      </div>
+      <div class="stack">
+        <div class="card f">
+          <h3>Duas operações espelhadas</h3>
+          <p><span class="term">para_linha()</span> monta a string. <span class="term">de_linha()</span> desmonta. Uma é o inverso exato da outra.</p>
+        </div>
+        <div class="card f">
+          <h3>Por que <span class="term">@staticmethod</span></h3>
+          <p>Quando chamamos <span class="term">de_linha()</span> ainda não existe objeto — ele é justamente o resultado. Então o método pertence à classe, não a uma instância: <span class="term">Livro.de_linha(linha)</span>.</p>
+        </div>
+        <div class="note ok f">Isto é encapsulamento em ação: quem usa a classe não precisa saber que o separador é <span class="term">|</span>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 26 SALVAR -->
+<section class="slide">
+  <p class="kicker">EXEMPLO COMPLETO · 2 DE 4</p>
+  <h2 class="s-title">A classe que cuida do arquivo — salvar</h2>
+  <p class="lead">A <span class="term">Biblioteca</span> guarda a lista em memória e sabe gravá-la inteira no disco.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="code f">
+        <div class="code-tab">biblioteca.py</div>
+<pre><span class="kw">from</span> livro <span class="kw">import</span> <span class="cl">Livro</span>
+
+<span class="kw">class</span> <span class="cl">Biblioteca</span>:
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, arquivo=<span class="str">"livros.txt"</span>):
+        self.arquivo = arquivo
+        self.livros = []
+
+    <span class="kw">def</span> <span class="fn">adicionar</span>(self, livro):
+        self.livros.<span class="fn">append</span>(livro)
+
+    <span class="kw">def</span> <span class="fn">salvar</span>(self):
+        <span class="kw">with</span> <span class="fn">open</span>(self.arquivo, <span class="str">"w"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+            <span class="kw">for</span> livro <span class="kw">in</span> self.livros:
+                f.<span class="fn">write</span>(livro.<span class="fn">para_linha</span>())</pre>
+      </div>
+      <div class="stack">
+        <div class="card f">
+          <h3>Por que <span class="term">"w"</span> aqui é seguro</h3>
+          <p>A lista em memória é a versão completa e mais atual. Regravar o arquivo inteiro mantém os dois em sincronia, inclusive quando um livro foi removido.</p>
+        </div>
+        <div class="card f">
+          <h3>Divisão de responsabilidades</h3>
+          <p><span class="term">Livro</span> sabe virar texto. <span class="term">Biblioteca</span> sabe conversar com o arquivo. Nenhuma das duas faz o trabalho da outra.</p>
+        </div>
+        <div class="note f">Trocar o formato depois — para CSV ou JSON — vai mexer em duas ou três linhas, não no programa inteiro.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 27 CARREGAR -->
+<section class="slide">
+  <p class="kicker">EXEMPLO COMPLETO · 3 DE 4</p>
+  <h2 class="s-title">A classe que cuida do arquivo — carregar</h2>
+  <p class="lead">O caminho de volta: ler cada linha, reconstruir o objeto, encher a lista.</p>
+  <div class="body">
+    <div class="cols-58">
+      <div class="code f">
+        <div class="code-tab">biblioteca.py · continuação</div>
+<pre>    <span class="kw">def</span> <span class="fn">carregar</span>(self):
+        self.livros = []
+        <span class="kw">try</span>:
+            <span class="kw">with</span> <span class="fn">open</span>(self.arquivo, <span class="str">"r"</span>, encoding=<span class="str">"utf-8"</span>) <span class="kw">as</span> f:
+                <span class="kw">for</span> linha <span class="kw">in</span> f:
+                    <span class="kw">if</span> linha.<span class="fn">strip</span>() == <span class="str">""</span>:
+                        <span class="kw">continue</span>
+                    self.livros.<span class="fn">append</span>(<span class="cl">Livro</span>.<span class="fn">de_linha</span>(linha))
+
+        <span class="kw">except</span> FileNotFoundError:
+            <span class="com"># primeira execução: ainda não há arquivo</span>
+            <span class="kw">pass</span>
+        <span class="kw">except</span> ValueError:
+            <span class="fn">print</span>(<span class="str">"Aviso: há linha fora do formato; ignorando."</span>)
+
+    <span class="kw">def</span> <span class="fn">listar</span>(self):
+        <span class="kw">for</span> i, livro <span class="kw">in</span> <span class="fn">enumerate</span>(self.livros, start=<span class="num">1</span>):
+            <span class="fn">print</span>(<span class="str">f"{i}. {livro}"</span>)</pre>
+      </div>
+      <div class="stack">
+        <div class="card ok f">
+          <h3>Limpar antes de encher</h3>
+          <p><span class="term">self.livros = []</span> na primeira linha evita duplicar tudo se <span class="term">carregar()</span> for chamado duas vezes.</p>
+        </div>
+        <div class="card f">
+          <h3>Linha em branco no fim</h3>
+          <p>Quase todo arquivo termina com <span class="term">\n</span>, o que produz uma última linha vazia. O <span class="term">continue</span> resolve.</p>
+        </div>
+        <div class="note warn f">Note o <span class="term">pass</span> no <span class="term">except</span>: aqui ele é intencional e comentado. Um <span class="term">except</span> mudo e sem explicação é o que esconde bug.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 MAIN -->
+<section class="slide">
+  <p class="kicker">EXEMPLO COMPLETO · 4 DE 4</p>
+  <h2 class="s-title">Juntando tudo</h2>
+  <div class="body">
+    <div class="cols">
+      <div class="code f">
+        <div class="code-tab">main.py</div>
+<pre><span class="kw">from</span> livro <span class="kw">import</span> <span class="cl">Livro</span>
+<span class="kw">from</span> biblioteca <span class="kw">import</span> <span class="cl">Biblioteca</span>
+
+acervo = <span class="cl">Biblioteca</span>()
+acervo.<span class="fn">carregar</span>()
+<span class="fn">print</span>(<span class="str">f"{len(acervo.livros)} livro(s) no acervo."</span>)
+
+acervo.<span class="fn">adicionar</span>(<span class="cl">Livro</span>(<span class="str">"Dom Casmurro"</span>,
+                              <span class="str">"Machado de Assis"</span>, <span class="num">1899</span>))
+acervo.<span class="fn">adicionar</span>(<span class="cl">Livro</span>(<span class="str">"Vidas Secas"</span>,
+                              <span class="str">"Graciliano Ramos"</span>, <span class="num">1938</span>))
+
+acervo.<span class="fn">salvar</span>()
+acervo.<span class="fn">listar</span>()</pre>
+      </div>
+      <div class="stack">
+        <div class="out f">$ python main.py
+<b>0 livro(s) no acervo.</b>
+<b>1. Dom Casmurro — Machado de Assis (1899)</b>
+<b>2. Vidas Secas — Graciliano Ramos (1938)</b>
+
+$ python main.py
+<b>2 livro(s) no acervo.</b>
+<b>1. Dom Casmurro — Machado de Assis (1899)</b>
+<b>2. Vidas Secas — Graciliano Ramos (1938)</b>
+<b>3. Dom Casmurro — Machado de Assis (1899)</b>
+<b>4. Vidas Secas — Graciliano Ramos (1938)</b></div>
+        <div class="card f">
+          <h3>Funcionou — e mostrou um problema</h3>
+          <p>Na segunda execução os dados vieram do disco: a persistência está funcionando. Mas o programa adiciona os mesmos livros toda vez. Na prática, quem adiciona é o usuário, por um menu.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 29 PEGADINHAS -->
+<section class="slide">
+  <p class="kicker">ANTES DE PEDIR SOCORRO</p>
+  <h2 class="s-title">O que costuma dar errado</h2>
+  <div class="body">
+    <table class="f">
+      <tr><th style="width:28%">Sintoma</th><th style="width:36%">Causa provável</th><th style="width:36%">Conserto</th></tr>
+      <tr><td>O arquivo ficou vazio</td><td>Abriu com <code>"w"</code> só para conferir o conteúdo</td><td>Para ler, use <code>"r"</code></td></tr>
+      <tr><td>Tudo grudou em uma linha só</td><td>Faltou <code>\n</code> no fim da string</td><td>Termine sempre com <code>\n</code> em <code>write()</code></td></tr>
+      <tr><td>Segunda leitura vem vazia</td><td>O cursor já está no fim do arquivo</td><td><code>seek(0)</code> ou abra de novo</td></tr>
+      <tr><td><code>ValueError: not enough values</code></td><td>Linha vazia ou com menos campos no <code>split()</code></td><td>Pule linhas vazias antes de repartir</td></tr>
+      <tr><td>Comparação com número não funciona</td><td>O que veio do arquivo é <code>str</code>, não <code>int</code></td><td>Converta: <code>int(ano)</code></td></tr>
+      <tr><td>Acentos estranhos</td><td>Codificação diferente na escrita e na leitura</td><td><code>encoding="utf-8"</code> nas duas pontas</td></tr>
+      <tr><td>Escreveu, mas o arquivo está vazio</td><td>O programa terminou sem fechar o arquivo</td><td>Use <code>with</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 30 ATIVIDADE -->
+<section class="slide">
+  <p class="kicker">MÃO NA MASSA</p>
+  <h2 class="s-title">Atividade em sala</h2>
+  <p class="lead">Individual, no computador. Comece de um arquivo vazio e vá testando a cada passo.</p>
+  <div class="body">
+    <div class="cols">
+      <ol class="steps f">
+        <li>Crie a classe <span class="term">Contato</span> com <span class="term">nome</span>, <span class="term">telefone</span> e <span class="term">email</span>.</li>
+        <li>Implemente <span class="term">para_linha()</span> e <span class="term">de_linha()</span> usando <span class="term">;</span> como separador.</li>
+        <li>Crie a classe <span class="term">Agenda</span> com <span class="term">adicionar()</span>, <span class="term">salvar()</span> e <span class="term">carregar()</span>.</li>
+        <li>Faça um menu com as opções: adicionar, listar e sair. Salve ao sair.</li>
+        <li>Feche o programa, abra de novo e confirme que os contatos continuam lá.</li>
+      </ol>
+      <div class="stack">
+        <div class="card ok f">
+          <h3>Teste obrigatório</h3>
+          <p>Apague o arquivo <span class="term">agenda.txt</span> e rode o programa. Ele precisa abrir normalmente, com a agenda vazia, sem quebrar.</p>
+        </div>
+        <div class="card f">
+          <h3>Desafio para quem terminar antes</h3>
+          <p>Acrescente a opção <strong>buscar por nome</strong> e a opção <strong>remover contato</strong>. Depois de remover, o arquivo precisa refletir a remoção.</p>
+        </div>
+        <div class="note f">Entrega no Google Sala de Aula: pasta compactada com <span class="term">contato.py</span>, <span class="term">agenda.py</span> e <span class="term">main.py</span>.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 31 EXERCÍCIOS -->
+<section class="slide">
+  <p class="kicker">PARA CASA</p>
+  <h2 class="s-title">Exercícios</h2>
+  <div class="body">
+    <div class="cols">
+      <ul class="list tight f">
+        <li><strong>1.</strong> Escreva um programa que crie <span class="term">frases.txt</span> e grave cinco frases, uma por linha.</li>
+        <li><strong>2.</strong> Leia <span class="term">frases.txt</span> e mostre cada frase numerada.</li>
+        <li><strong>3.</strong> Conte quantas linhas e quantos caracteres o arquivo tem.</li>
+        <li><strong>4.</strong> Peça uma frase ao usuário e acrescente ao arquivo sem apagar as anteriores.</li>
+        <li><strong>5.</strong> Explique com suas palavras a diferença entre abrir com <span class="term">"w"</span> e com <span class="term">"a"</span>.</li>
+      </ul>
+      <ul class="list tight f">
+        <li><strong>6.</strong> Crie a classe <span class="term">Produto</span> (nome, preço, quantidade) com <span class="term">para_linha()</span> e <span class="term">de_linha()</span>.</li>
+        <li><strong>7.</strong> Crie <span class="term">Estoque</span> com <span class="term">salvar()</span>, <span class="term">carregar()</span> e <span class="term">valor_total()</span>.</li>
+        <li><strong>8.</strong> Trate o caso de o arquivo não existir e o caso de linha mal formada, sem derrubar o programa.</li>
+        <li><strong>9.</strong> Gere um relatório <span class="term">estoque_baixo.txt</span> só com os produtos de quantidade menor que 5.</li>
+        <li><strong>10.</strong> <em>Desafio:</em> permita atualizar a quantidade de um produto já cadastrado e regrave o arquivo.</li>
+      </ul>
+    </div>
+    <div class="note f">Entrega até a próxima aula. Código comentado, um arquivo <span class="term">.py</span> por classe.</div>
+  </div>
+</section>
+
+<!-- 32 RESUMO -->
+<section class="slide">
+  <p class="kicker">RESUMO</p>
+  <h2 class="s-title">O que fica desta aula</h2>
+  <div class="body">
+    <div class="cols3">
+      <div class="card f">
+        <h3>Conceitos</h3>
+        <p>Dados na memória são voláteis. Persistir é gravar em disco. O canal entre programa e arquivo é o <strong>fluxo</strong>, e ele tem duas direções.</p>
+      </div>
+      <div class="card f">
+        <h3>Ferramentas</h3>
+        <p><span class="term">open()</span> com caminho, modo e <span class="term">encoding</span>. <span class="term">write()</span> para gravar, <span class="term">for</span> no arquivo para ler. <span class="term">with</span> para fechar sozinho.</p>
+      </div>
+      <div class="card f">
+        <h3>Modos</h3>
+        <p><span class="term">"r"</span> lê, <span class="term">"a"</span> acrescenta, <span class="term">"w"</span> apaga e regrava. Escolher errado é a causa mais comum de dado perdido.</p>
+      </div>
+      <div class="card ok f">
+        <h3>Objetos</h3>
+        <p>Serializar é traduzir o objeto em uma linha de texto; desserializar é o caminho de volta. <span class="term">para_linha()</span> e <span class="term">de_linha()</span>.</p>
+      </div>
+      <div class="card ok f">
+        <h3>Projeto</h3>
+        <p>A classe do objeto sabe se traduzir; a classe da coleção sabe falar com o arquivo. Responsabilidades separadas.</p>
+      </div>
+      <div class="card warn f">
+        <h3>Robustez</h3>
+        <p>Arquivo é o mundo de fora: pode não existir, estar protegido ou vir estragado. Trate as exceções sempre.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 33 PRÓXIMA -->
+<section class="slide">
+  <p class="kicker">PARA CONHECER</p>
+  <h2 class="s-title">Outros formatos para persistência de objetos</h2>
+  <p class="lead">O formato com <span class="term">|</span> funciona, mas quebra quando o objeto tem lista dentro, ou quando o título contém o separador. Existem formatos prontos para isso.</p>
+  <div class="body">
+    <ul class="list f">
+      <li><strong>CSV</strong> com o módulo <span class="term">csv</span> — o formato de planilha, com o tratamento de vírgulas já resolvido</li>
+      <li><strong>JSON</strong> com o módulo <span class="term">json</span> — campos com nome, listas e objetos aninhados</li>
+      <li><strong>pickle</strong> — grava o objeto Python inteiro, em binário, sem escrever tradução à mão</li>
+    </ul>
+    <div class="note f">Mais adiante, a pergunta seguinte é quando o arquivo deixa de dar conta — e aí entram os <strong>bancos de dados</strong>.</div>
+  </div>
+</section>
+
+<!-- 34 REFERÊNCIAS -->
+<section class="slide">
+  <p class="kicker">REFERÊNCIAS</p>
+  <h2 class="s-title">Para consultar e aprofundar</h2>
+  <div class="body">
+    <div style="font-size:.84rem;line-height:1.55;color:var(--ink-soft);display:flex;flex-direction:column;gap:.55rem">
+      <p class="f">DOWNEY, Allen B. <strong>Pense em Python</strong>: pense como um cientista da computação. 3. ed. São Paulo: Novatec, 2024.</p>
+      <p class="f">LUTZ, Mark. <strong>Learning Python</strong>. 6. ed. Sebastopol: O'Reilly Media, 2025.</p>
+      <p class="f">MATTHES, Eric. <strong>Curso intensivo de Python</strong>: uma introdução prática e baseada em projetos à programação. 3. ed. São Paulo: Novatec, 2023.</p>
+      <p class="f">MENEZES, Nilo Ney Coutinho. <strong>Introdução à programação com Python</strong>: algoritmos e lógica de programação para iniciantes. 4. ed. São Paulo: Novatec, 2024.</p>
+      <p class="f">PYTHON SOFTWARE FOUNDATION. <strong>Entrada e saída</strong> — Tutorial do Python. Disponível em: https://docs.python.org/pt-br/3/tutorial/inputoutput.html. Acesso em: 1 set. 2026.</p>
+      <p class="f">PYTHON SOFTWARE FOUNDATION. <strong>Built-in Functions: open()</strong>. Disponível em: https://docs.python.org/3/library/functions.html#open. Acesso em: 1 set. 2026.</p>
+      <p class="f">RAMALHO, Luciano. <strong>Python fluente</strong>: programação clara, concisa e eficaz. 2. ed. São Paulo: Novatec, 2023.</p>
+    </div>
+    <div class="note f" style="margin-top:.6rem">Os exemplos de código, as ilustrações e os diagramas desta aula são de elaboração própria, construídos a partir dos conceitos apresentados nas obras acima.</div>
+  </div>
+</section>
+</div></div>
+
+<div class="hud">
+  <span class="hint">→ / clique: avançar · ← : voltar · F: tela cheia · Ctrl+P: PDF</span>
+  <span id="counter">1 / 1</span>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const bar = document.getElementById('bar');
+  const counter = document.getElementById('counter');
+  let i = 0;   // slide atual
+  let k = 0;   // fragmentos revelados no slide atual
+
+  const frags = s => Array.from(s.querySelectorAll('.f'));
+
+  function render(){
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    frags(slides[i]).forEach((f, idx) => f.classList.toggle('show', idx < k));
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+  }
+
+  function avancar(){
+    const total = frags(slides[i]).length;
+    if(k < total){ k++; }
+    else if(i < slides.length - 1){ i++; k = 0; }
+    else { return; }
+    render();
+  }
+  function voltar(){
+    if(k > 0){ k--; }
+    else if(i > 0){ i--; k = frags(slides[i]).length; }
+    else { return; }
+    render();
+  }
+  function irPara(n, revelarTudo){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    k = revelarTudo ? frags(slides[i]).length : 0;
+    render();
+  }
+
+  document.addEventListener('keydown', e => {
+    switch(e.key){
+      case 'ArrowRight': case ' ': case 'PageDown': case 'Enter':
+        e.preventDefault(); avancar(); break;
+      case 'ArrowLeft': case 'PageUp': case 'Backspace':
+        e.preventDefault(); voltar(); break;
+      case 'ArrowDown': e.preventDefault(); irPara(i + 1, false); break;
+      case 'ArrowUp': e.preventDefault(); irPara(i - 1, true); break;
+      case 'Home': e.preventDefault(); irPara(0, false); break;
+      case 'End': e.preventDefault(); irPara(slides.length - 1, true); break;
+      case 'f': case 'F':
+        if(document.fullscreenElement){ document.exitFullscreen(); }
+        else { document.documentElement.requestFullscreen(); }
+        break;
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if(e.target.closest('a')) return;
+    avancar();
+  });
+
+  let x0 = null;
+  document.addEventListener('touchstart', e => { x0 = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 45){ dx < 0 ? avancar() : voltar(); }
+    x0 = null;
+  }, {passive:true});
+
+  window.addEventListener('beforeprint', () => {
+    slides.forEach(s => { s.classList.add('active'); frags(s).forEach(f => f.classList.add('show')); });
+  });
+  window.addEventListener('afterprint', render);
+
+  render();
+})();
+</script>
+</body>
+</html>
